@@ -289,7 +289,7 @@ void PATTERN::ReadNextModPattern()
 
 void CIRCUIT::PrintIO()
 {
-    register unsigned i;
+    unsigned i;
 		VALUE temp;
 		cout << "PI: ";
 		ofs << "PI: ";
@@ -326,7 +326,7 @@ void CIRCUIT::PrintIO()
 
 void CIRCUIT::PrintModIO()
 {
-    register unsigned i;
+    unsigned i;
 		bitset<2> temp;
 		cout << "PI: ";
     for (i = 0;i<No_PI();++i){

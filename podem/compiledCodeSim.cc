@@ -62,7 +62,7 @@ void CIRCUIT::ccsParallelLogicSim(bool flag)
 //Evaluate parallel value of gptr
 void CIRCUIT::ccsParallelEvaluate(GATEPTR gptr, bool flag)
 {
-    register unsigned i;
+    unsigned i;
     bitset<PatternNum> new_value1(gptr->Fanin(0)->GetValue1());
     bitset<PatternNum> new_value2(gptr->Fanin(0)->GetValue2());
 

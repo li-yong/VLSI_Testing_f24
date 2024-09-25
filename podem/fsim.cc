@@ -110,7 +110,7 @@ unsigned CIRCUIT::FaultSimRandomPattern()
 //parallel fault number is defined by PatternNum in typeemu.h
 void CIRCUIT::FaultSim()
 {
-    register unsigned i, fault_idx(0);
+    unsigned i, fault_idx(0);
     GATEPTR gptr;
     FAULT *fptr;
     FAULT *simulate_flist[PatternNum];
@@ -249,7 +249,7 @@ void CIRCUIT::FaultSim()
 //evaluate parallel faulty value of gptr
 void CIRCUIT::FaultSimEvaluate(GATEPTR gptr)
 {
-    register unsigned i;
+    unsigned i;
     bitset<PatternNum> new_value1(gptr->Fanin(0)->GetValue1());
     bitset<PatternNum> new_value2(gptr->Fanin(0)->GetValue2());
     switch(gptr->GetFunction()) {
@@ -299,7 +299,7 @@ void CIRCUIT::FaultSimEvaluate(GATEPTR gptr)
 //check if the fault can be propagated
 bool CIRCUIT::CheckFaultyGate(FAULT* fptr)
 {
-    register unsigned i;
+    unsigned i;
     GATEPTR ogptr(fptr->GetOutputGate());
     VALUE ncv(NCV[ogptr->GetFunction()]);
     GATEPTR fanin, igptr(fptr->GetInputGate());

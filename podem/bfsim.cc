@@ -66,7 +66,7 @@ void CIRCUIT::BFaultSimVectors()
 //parallel fault number is defined by PatternNum in typeemu.h
 void CIRCUIT::BFaultSim()
 {
-    register unsigned i, fault_idx(0);
+    unsigned i, fault_idx(0);
     GATEPTR gptr1, gptr2, gptr;
     BRIDGING_FAULT *fptr;
     BRIDGING_FAULT *simulate_flist[PatternNum];

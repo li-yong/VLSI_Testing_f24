@@ -8,6 +8,16 @@ class GATE
 {
 	private:
 		string Name;
+
+		//extend to isc format
+		vector<string> isc_StuckAtFaults;
+		vector<string> isc_input_gates;
+		int isc_net_id; //uniq id for each gate. e.g 1
+		string isc_identifier; //name of the gate. e.g 1gat
+		// string isc_gate_type; //dup to Function
+		int isc_fo_Cnt;
+		int isc_fi_Cnt;
+
 		unsigned ID;
 		GATEFUNC Function;
 		vector<GATE*> Input_list;
@@ -18,6 +28,7 @@ class GATE
 		VALUE Value_t;
 		bool Inversion;
 		//Utility variable
+		unsigned StuckAt[2]; //ryan
 		unsigned Count[2]; //used by Levelize(), FindStaticPivot(),PathSearch
 		//one pair of WireValues (length defined by PatternNum)
 		bitset<PatternNum> WireValue[2]; 
@@ -32,6 +43,9 @@ class GATE
 		GATE(): Function(G_BAD), Level(0), Value(X), Value_t(X), Inversion(false) {
 			Input_list.reserve(4);
 			Output_list.reserve(4);
+			isc_StuckAtFaults.clear(); // Initialize the vector
+			// StuckAt[0]=0; //sa0 fault. 0 == no fault. 1==sa0. defined from ISCAS input.
+			// StuckAt[1]=0; //sa1 fault. 0 == no fault. 1==sa1
 			Count[0] = (0);
 			Count[1] = (0);
 			WireValue[0].set();   //All parallel bitsets are set to X
@@ -52,6 +66,23 @@ class GATE
 
 		DFS_STATUS getDFSStatus() {return dfs_status;}
 		void SetName(string n){ Name = n;}
+
+		void Set_isc_StuckAt(const vector<string>& faults){isc_StuckAtFaults = faults;}
+		vector<string> Set_isc_StuckAt(){return isc_StuckAtFaults;}
+
+		void Set_isc_net_id(int id){isc_net_id = id;}
+		int  Get_isc_net_id(){return isc_net_id;};
+
+		void Set_isc_identifier(string id){isc_identifier = id;}
+		string Get_isc_identifier(){return isc_identifier;}
+
+		void Set_isc_input_gates(const vector<string>& input_gates){isc_input_gates = input_gates;}
+		vector<string> Get_isc_input_gates(){return isc_input_gates;}
+
+		// void Set_isc_gate_type(string type){isc_gate_type = type;}
+		void Set_isc_fo_Cnt(int cnt){isc_fo_Cnt = cnt;}
+		void Set_isc_fi_Cnt(int cnt){isc_fi_Cnt = cnt;}	
+
 		void SetID(unsigned id){ ID = id;}
 		void SetFunction(GATEFUNC f){ Function = f;}
 		void AddInput_list(GATE* gptr){Input_list.push_back(gptr);}
@@ -69,6 +100,8 @@ class GATE
 		unsigned GetCount(unsigned i = 0) { return Count[i];}
 		string GetName(){ return Name;}
 		unsigned GetID(){ return ID;}
+		unsigned GetIscNetId() { return isc_net_id; }
+		unsigned GetStuckAt(unsigned i){ return StuckAt[i];}
 		GATEFUNC GetFunction(){ return Function;}
 		unsigned No_Fanin() { return Input_list.size();}
 		unsigned No_Fanout() { return Output_list.size();}

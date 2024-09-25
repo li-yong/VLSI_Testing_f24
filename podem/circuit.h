@@ -12,8 +12,8 @@
 #include <bitset>
 #include <iostream>
 
-#define xstr(s) str(s)
-#define str(s) #s
+#define xstr(s) ystr(s)
+#define ystr(s) #s
 #define OUTDIR output
 #define SIMDIR simulator
 
@@ -103,15 +103,53 @@ class CIRCUIT
 		void AddGate(GATE* gptr) { Netlist.push_back(gptr); }
 		void SetName(string n){ Name = n;}
 		string GetName(){ return Name;}
+
+
+		vector<GATE*> GetNetlist(){return Netlist;}
+		void SetNetlist(vector<GATE*> nlst ){Netlist = nlst;}
+
 		int GetMaxLevel(){ return MaxLevel;}
 		void SetBackTrackLimit(unsigned bt) { BackTrackLimit = bt; }
-
+		// GATE* GetNetlist()( return Netlist; ) //yong
 		//Access the gates by indexes
 		GATE* Gate(unsigned index) { return Netlist[index]; }
 		GATE* PIGate(unsigned index) { return PIlist[index]; }
 		GATE* POGate(unsigned index) { return POlist[index]; }
 		GATE* PPIGate(unsigned index) { return PPIlist[index]; }
 		GATE* PPOGate(unsigned index) { return PPOlist[index]; }
+
+		GATE* Find_Gate_by_name(string name){
+			GATE* gptr;
+			
+			for (int i = 0;i < No_Gate();i++) {
+				gptr = Gate(i);
+				if (gptr->GetName() == name) {
+					return gptr;
+				}
+			}
+			//print no gate found
+			std::cerr << "No gate found with name: " << name << std::endl;
+			return nullptr;
+
+		}
+
+
+		GATE* Find_Gate_by_isc_netid(int isc_netid){
+			GATE* gptr;
+			
+			
+			for (int i = 0;i < No_Gate();i++) {
+				gptr = Gate(i);
+				if (gptr->GetIscNetId() == isc_netid) {
+					return gptr;
+				}
+			}
+			//print no gate found
+			std::cerr << "No gate found with netid: " << std::to_string(isc_netid) << std::endl;
+			return nullptr;
+
+		}
+
 		unsigned No_Gate() { return Netlist.size(); }
 		unsigned No_PI() { return PIlist.size(); }
 		unsigned No_PO() { return POlist.size(); }

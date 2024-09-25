@@ -238,8 +238,8 @@ ATPG_STATUS CIRCUIT::Initialization(GATEPTR gptr, VALUE target, unsigned &total_
 //FALSE: fault can not be propagated to PI
 ATPG_STATUS CIRCUIT::BackwardImply_t(GATEPTR gptr, VALUE value)
 {
-    register unsigned i;
-    register ATPG_STATUS status(FALSE);
+    unsigned i;
+    ATPG_STATUS status(FALSE);
     GATEFUNC fun(gptr->GetFunction());
 
     if (fun == G_PI) { //reach PI

@@ -4,12 +4,16 @@
 #include "circuit.h"
 #include "GetLongOpt.h"
 #include "pattern.h"
+#include "parser_isc.h"
+#include <typeinfo>
 using namespace std;
 
 // All defined in readcircuit.l
 extern char* yytext;
 extern FILE *yyin;
 extern CIRCUIT Circuit;
+extern CIRCUIT isc_Circuit; //yong
+
 extern int yyparse (void);
 extern bool ParseError;
 
@@ -80,6 +84,13 @@ int SetupOption(int argc, char ** argv)
             "set the output pattern file", 0);
     option.enroll("bt", GetLongOpt::OptionalValue,
             "set the backtrack limit", 0);
+
+    // -------------------------------------
+    option.enroll("parse_isc", GetLongOpt::NoValue,
+            "parse the input isc file", 0);
+    option.enroll("file_isc",GetLongOpt::MandatoryValue,
+						"input isc file path", 0);
+
     int optind = option.parse(argc, argv);
     if ( optind < 1 ) { exit(0); }
     if ( option.retrieve("help") ) {
@@ -114,6 +125,23 @@ int main(int argc, char ** argv)
         option.usage();
         return -1;
     }
+
+    //Start parsing ISC
+
+    CIRCUIT* isc_Circuit;
+    if(option.retrieve("parse_isc")){
+      string file_isc = (string) option.retrieve("file_isc");
+      isc_Circuit = parse_isc_main(file_isc);
+    }
+
+
+    CIRCUIT* abc = &Circuit;
+    CIRCUIT* d = isc_Circuit;
+
+    //end of parsing ISC
+
+
+
     cout << "Start parsing input file\n";
     yyparse();
     if (ParseError) {
@@ -127,15 +155,16 @@ int main(int argc, char ** argv)
     Circuit.Check_Levelization();
     Circuit.InitializeQueue();
 
+    
 		// Options operations for Lab1
 		if(option.retrieve("path")){
-			cout << "Circuit file name: " << Circuit.GetName() << endl;
+			cout << "Circuit file name: " << isc_Circuit->GetName() << endl;
 			const char *start_gate = option.retrieve("start");
 			const char *end_gate = option.retrieve("end");
 
 			string src_gate_name(start_gate);
 			string dest_gate_name(end_gate);
-			Circuit.path(src_gate_name, dest_gate_name);
+			isc_Circuit->path(src_gate_name, dest_gate_name);
 		}
 		// ----------------------------
 		// Options operations for lab2
@@ -151,28 +180,28 @@ int main(int argc, char ** argv)
 			pattern_name.append(".input");
 
 			if(option.retrieve("unknown"))	
-				Circuit.genRandomPatternUnknown(pattern_name, number);
+				isc_Circuit->genRandomPatternUnknown(pattern_name, number);
 			else
-				Circuit.genRandomPattern(pattern_name, number);
+				isc_Circuit->genRandomPattern(pattern_name, number);
 			
-			Circuit.openOutputFile(output_name);
-			Circuit.LogicSimVectors();
+			isc_Circuit->openOutputFile(output_name);
+			isc_Circuit->LogicSimVectors();
 		}
 		else if(option.retrieve("mod_logicsim")){
         //logic simulator using CPU instructions directly
-        Circuit.InitPattern(option.retrieve("input"));
-        Circuit.ModLogicSimVectors();
+        isc_Circuit->InitPattern(option.retrieve("input"));
+        isc_Circuit->ModLogicSimVectors();
 		}
 		// ----------------------------
 		else if(option.retrieve("print")){
 			const char *info_type = option.retrieve("info");
 			cout << "Type of Info.: " << info_type << endl;
 			if((string)info_type == "net")
-				Circuit.printNetlist();
+				isc_Circuit->printNetlist();
 			else if((string)info_type == "PO")
-				Circuit.printPOInputList();
+				isc_Circuit->printPOInputList();
 			else if((string)info_type == "gate")
-				Circuit.printGateOutput();
+				isc_Circuit->printGateOutput();
 		}
 		// ---------------------------
 		// Options operations for lab3
@@ -185,127 +214,127 @@ int main(int argc, char ** argv)
 				if (idx != string::npos) { output_name = file_name.substr(0,idx); }
 				output_name.append(".out");
 				cout << "Output name: " << output_name << endl;
-				Circuit.setOutputName(output_name);
+				isc_Circuit->setOutputName(output_name);
 
-        Circuit.InitPattern(option.retrieve("input"));
-				Circuit.openSimulatorFile(file_name);
-        Circuit.genCompiledCodeSimulator();
+        isc_Circuit->InitPattern(option.retrieve("input"));
+				isc_Circuit->openSimulatorFile(file_name);
+        isc_Circuit->genCompiledCodeSimulator();
 		}
 		// ---------------------------
 		// Options operations for lab4
     else if (option.retrieve("check_point")) {
         //single pattern single transition-fault simulation
-        Circuit.GenerateAllCPFaultList();
-        Circuit.GenerateAllFaultList();
-				Circuit.CalculatePercentage();
+        isc_Circuit->GenerateAllCPFaultList();
+        isc_Circuit->GenerateAllFaultList();
+				isc_Circuit->CalculatePercentage();
     }
     else if (option.retrieve("bridging")) {
 				string output_name = (string) option.retrieve("output");
 
-				Circuit.PutGateIntoQueueByLevel();
-        Circuit.GenerateAllBFaultList();
-				Circuit.openOutputFile(output_name);
-				Circuit.OutputAllBFaultList();
+				isc_Circuit->PutGateIntoQueueByLevel();
+        isc_Circuit->GenerateAllBFaultList();
+				isc_Circuit->openOutputFile(output_name);
+				isc_Circuit->OutputAllBFaultList();
     }
 		// ---------------------------
 		// Options operations for lab6
     else if (option.retrieve("check_point_fsim")) {
         //single pattern single transition-fault simulation
-        Circuit.GenerateAllCPFaultListForFsim();
+        isc_Circuit->GenerateAllCPFaultListForFsim();
 				
-        //Circuit.GenerateAllFaultList();
-        Circuit.SortFaninByLevel();
-        Circuit.MarkOutputGate();
+        //isc_Circuit->GenerateAllFaultList();
+        isc_Circuit->SortFaninByLevel();
+        isc_Circuit->MarkOutputGate();
         if (option.retrieve("fsim")) {
             //stuck-at fault simulator
-            Circuit.InitPattern(option.retrieve("input"));
-            Circuit.FaultSimVectors();
+            isc_Circuit->InitPattern(option.retrieve("input"));
+            isc_Circuit->FaultSimVectors();
         }
         else {
             if (option.retrieve("bt")) {
-                Circuit.SetBackTrackLimit(atoi(option.retrieve("bt")));
+                isc_Circuit->SetBackTrackLimit(atoi(option.retrieve("bt")));
             }
             //stuck-at fualt ATPG
-            Circuit.Atpg();
+            isc_Circuit->Atpg();
         }
     }
 		else if (option.retrieve("random_pattern")) {
-        Circuit.GenerateAllFaultList();
-        Circuit.SortFaninByLevel();
-        Circuit.MarkOutputGate();
+        isc_Circuit->GenerateAllFaultList();
+        isc_Circuit->SortFaninByLevel();
+        isc_Circuit->MarkOutputGate();
 				string pattern_name = (string) option.retrieve("output");
 				cout << "pattern name: " << pattern_name << endl;
-				Circuit.openFile(pattern_name);
-				Circuit.genRandomPattern(pattern_name, 1000);
+				isc_Circuit->openFile(pattern_name);
+				isc_Circuit->genRandomPattern(pattern_name, 1000);
 
 				unsigned coverage = 0;
 				int cnt = 0;
 
 				while (coverage <= 90 && cnt < 1000) {
            //stuck-at fault simulator
-           coverage = Circuit.FaultSimRandomPattern();
+           coverage = isc_Circuit->FaultSimRandomPattern();
 						
 					 cout << "Random Pattern #" << ++cnt << " Coverage: " 
 					 			<< coverage << "%\n";
         }
 				if (option.retrieve("bt")) {
-				Circuit.SetBackTrackLimit(atoi(option.retrieve("bt")));
+				isc_Circuit->SetBackTrackLimit(atoi(option.retrieve("bt")));
 				}
 				//stuck-at fualt ATPG after Random Pattern
-				Circuit.AtpgRandomPattern();
+				isc_Circuit->AtpgRandomPattern();
 		}
 		// ---------------------------
 		else if (option.retrieve("logicsim")) {
         //logic simulator
-        Circuit.InitPattern(option.retrieve("input"));
-        Circuit.LogicSimVectors();
+        isc_Circuit->InitPattern(option.retrieve("input"));
+        isc_Circuit->LogicSimVectors();
     }
     else if (option.retrieve("plogicsim")) {
         //parallel logic simulator
-        Circuit.InitPattern(option.retrieve("input"));
-        Circuit.ParallelLogicSimVectors();
+        isc_Circuit->InitPattern(option.retrieve("input"));
+        isc_Circuit->ParallelLogicSimVectors();
     }
     else if (option.retrieve("stfsim")) {
         //single pattern single transition-fault simulation
-        Circuit.MarkOutputGate();
-        Circuit.GenerateAllTFaultList();
-        Circuit.InitPattern(option.retrieve("input"));
-        Circuit.TFaultSimVectors();
+        isc_Circuit->MarkOutputGate();
+        isc_Circuit->GenerateAllTFaultList();
+        isc_Circuit->InitPattern(option.retrieve("input"));
+        isc_Circuit->TFaultSimVectors();
     }
     else if (option.retrieve("transition")) {
-        Circuit.MarkOutputGate();
-        Circuit.GenerateAllTFaultList();
-        Circuit.SortFaninByLevel();
+        isc_Circuit->MarkOutputGate();
+        isc_Circuit->GenerateAllTFaultList();
+        isc_Circuit->SortFaninByLevel();
         if (option.retrieve("bt")) {
-            Circuit.SetBackTrackLimit(atoi(option.retrieve("bt")));
+            isc_Circuit->SetBackTrackLimit(atoi(option.retrieve("bt")));
         }
-        Circuit.TFAtpg();
+        isc_Circuit->TFAtpg();
     }
 		else if (option.retrieve("bridging_fsim")) {
-			Circuit.PutGateIntoQueueByLevel();
-			Circuit.GenerateAllBFaultList();
-      Circuit.SortFaninByLevel();
-      Circuit.MarkOutputGate();
+			isc_Circuit->PutGateIntoQueueByLevel();
+			isc_Circuit->GenerateAllBFaultList();
+      isc_Circuit->SortFaninByLevel();
+      isc_Circuit->MarkOutputGate();
 
 			//stuck-at bridging fault simulator
-			Circuit.InitPattern(option.retrieve("input"));
-			Circuit.BFaultSimVectors();
+			isc_Circuit->InitPattern(option.retrieve("input"));
+			isc_Circuit->BFaultSimVectors();
 		}
     else {
-        Circuit.GenerateAllFaultList();
-        Circuit.SortFaninByLevel();
-        Circuit.MarkOutputGate();
+        isc_Circuit->GenerateAllFaultList();
+        isc_Circuit->SortFaninByLevel();
+        isc_Circuit->MarkOutputGate();
         if (option.retrieve("fsim")) {
             //stuck-at fault simulator
-            Circuit.InitPattern(option.retrieve("input"));
-            Circuit.FaultSimVectors();
+            isc_Circuit->InitPattern(option.retrieve("input"));
+            isc_Circuit->FaultSimVectors();
         }
         else {
             if (option.retrieve("bt")) {
-                Circuit.SetBackTrackLimit(atoi(option.retrieve("bt")));
+                isc_Circuit->SetBackTrackLimit(atoi(option.retrieve("bt")));
             }
             //stuck-at fualt ATPG
-            Circuit.Atpg();
+            isc_Circuit->Atpg();
         }
     }
 

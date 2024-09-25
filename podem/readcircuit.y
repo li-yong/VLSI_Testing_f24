@@ -67,6 +67,7 @@ circuit :
          | circuit error EOLINE
 ;
 
+//INPUT(1)
 input_definition: GINPUT LPAR NAMESTRING RPAR EOLINE{
                        no_pi++;
                        if(!NameTable.is_member($3)){
@@ -83,7 +84,8 @@ input_definition: GINPUT LPAR NAMESTRING RPAR EOLINE{
                        }
                   }
 ;
-        
+
+//OUTPUT(22)
 output_definition: GOUTPUT LPAR NAMESTRING RPAR EOLINE{
                        no_po++;
                        name=string("PO_")+$3;
@@ -113,7 +115,8 @@ output_definition: GOUTPUT LPAR NAMESTRING RPAR EOLINE{
                        gptr->AddInput_list(inlist);
                    }
 ;
-        
+
+     
 gate_definition: output EQUAL gatename LPAR{
                        no_gate++;
                        //for output

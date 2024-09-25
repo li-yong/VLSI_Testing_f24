@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "sstream": "cpp",
+        "bitset": "cpp",
+        "iostream": "cpp",
+        "cstring": "cpp",
+        "streambuf": "cpp",
+        "ostream": "cpp",
+        "typeinfo": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}

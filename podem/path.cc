@@ -29,8 +29,8 @@ void CIRCUIT::path(string src_gate_name, string dest_gate_name)
 		return;
 	}
 
-	//cout << "Source gate: " << src_gate->GetName() << endl;
-	//cout << "Dest gate: " << dest_gate->GetName() << endl;
+	cout << "Source gate: " << src_gate->GetName() << endl;
+	cout << "Dest gate: " << dest_gate->GetName() << endl;
 	path_stack.push_back(src_gate);
 	path_count = 0;
 	findPath();

@@ -23,7 +23,7 @@ void CIRCUIT::PutGateIntoQueueByLevel()
 void CIRCUIT::GenerateAllBFaultList()
 {
     cout << "Generate bridging fault list" << endl;
-    register unsigned i;
+    unsigned i;
     GATEPTR gptr;
     BRIDGING_FAULT *fptr;
 

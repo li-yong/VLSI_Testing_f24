@@ -12,7 +12,7 @@ extern GetLongOpt option;
 void CIRCUIT::GenerateAllFaultList()
 {
     cout << "Generate stuck-at fault list" << endl;
-    register unsigned i, j;
+    unsigned i, j;
     GATEFUNC fun;
     GATEPTR gptr, fanout;
     FAULT *fptr;
@@ -384,7 +384,7 @@ ATPG_STATUS CIRCUIT::Podem(FAULT* fptr, unsigned &total_backtrack_num)
 //FALSE: fault can not be propagated to PI
 ATPG_STATUS CIRCUIT::SetUniqueImpliedValue(FAULT* fptr)
 {
-    register ATPG_STATUS status(FALSE);
+    ATPG_STATUS status(FALSE);
     GATEPTR igptr(fptr->GetInputGate());
     //backward implication fault-free value
     switch (BackwardImply(igptr, NotTable[fptr->GetValue()])) {
@@ -414,8 +414,8 @@ ATPG_STATUS CIRCUIT::SetUniqueImpliedValue(FAULT* fptr)
 //FALSE: fault can not be propagated to PI
 ATPG_STATUS CIRCUIT::BackwardImply(GATEPTR gptr, VALUE value)
 {
-    register unsigned i;
-    register ATPG_STATUS status(FALSE);
+    unsigned i;
+    ATPG_STATUS status(FALSE);
     GATEFUNC fun(gptr->GetFunction());
 
     if (fun == G_PI) { //reach PI
@@ -624,7 +624,7 @@ bool CIRCUIT::CheckTest()
 //search gate from propagate tree to propagate the fault
 GATEPTR CIRCUIT::FindPropagateGate()
 {
-    register unsigned i;
+    unsigned i;
     list<GATEPTR>::iterator gite;
     GATEPTR gptr, fanin;
     for (gite = PropagateTree.begin();gite!=PropagateTree.end();++gite) {

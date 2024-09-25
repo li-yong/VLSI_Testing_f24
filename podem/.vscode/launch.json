@@ -10,8 +10,15 @@
             "request": "launch",
             "program": "${workspaceFolder}/atpg",
             "args": [
-                "-f",
-                "${workspaceFolder}/../circuits/c17.bench"
+                "-parse_isc",
+                "-file_isc",
+                "${workspaceFolder}/../circuits/ISCAS-85_yong/c17.isc",
+                "-path",
+                "-start",
+                "11",
+                "-end",
+                "19",
+                "${workspaceFolder}/../circuits/c17.bench",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -11,7 +11,7 @@ extern GetLongOpt option;
 void CIRCUIT::GenerateAllTFaultList()
 {
     cout << "Generate transition fault list" << endl;
-    register unsigned i, j;
+     unsigned i, j;
     GATEFUNC fun;
     GATEPTR gptr, fanout;
     TFAULT *fptr;
@@ -169,7 +169,7 @@ void PATTERN::ReadNextPattern_t()
 //Assume previous logic values of gates stored at Value
 void CIRCUIT::TFaultSim_t()
 {
-    register unsigned i;
+     unsigned i;
     GATEPTR gptr;
     TFAULT *fptr;
     
@@ -297,7 +297,7 @@ void CIRCUIT::TFaultSim_t()
 //Assume previous logic values of gates stored at Value_t
 void CIRCUIT::TFaultSim()
 {
-    register unsigned i;
+     unsigned i;
     GATEPTR gptr;
     TFAULT *fptr;
     
@@ -424,7 +424,7 @@ void CIRCUIT::TFaultSim()
 //check if the transition fault can be propagated 
 bool CIRCUIT::CheckTFaultyGate(TFAULT* fptr)
 {
-    register unsigned i;
+     unsigned i;
     GATEPTR ogptr(fptr->GetOutputGate());
     VALUE ncv(NCV[ogptr->GetFunction()]);
     GATEPTR fanin, igptr(fptr->GetInputGate());
@@ -439,7 +439,7 @@ bool CIRCUIT::CheckTFaultyGate(TFAULT* fptr)
 //check if the transition fault can be propagated 
 bool CIRCUIT::CheckTFaultyGate_t(TFAULT* fptr)
 {
-    register unsigned i;
+     unsigned i;
     GATEPTR ogptr(fptr->GetOutputGate());
     VALUE ncv(NCV[ogptr->GetFunction()]);
     GATEPTR fanin, igptr(fptr->GetInputGate());
@@ -499,7 +499,7 @@ VALUE CIRCUIT::Evaluate_t(GATEPTR gptr)
 
 void CIRCUIT::PrintTransition_t()
 {
-    register unsigned i;
+     unsigned i;
     GATEPTR gptr;
     for (i = 0;i<No_Gate();++i) { 
 	    gptr=Gate(i);
@@ -513,7 +513,7 @@ void CIRCUIT::PrintTransition_t()
 
 void CIRCUIT::PrintTransition()
 {
-    register unsigned i;
+     unsigned i;
     GATEPTR gptr;
     for (i = 0;i<No_Gate();++i) { 
 	    gptr=Gate(i);
@@ -527,7 +527,7 @@ void CIRCUIT::PrintTransition()
 
 void CIRCUIT::PrintIO_t()
 {
-    register unsigned i;
+     unsigned i;
     for (i = 0;i<No_PI();++i) { cout << PIGate(i)->GetValue_t(); }
     cout << " ";
     for (i = 0;i<No_PO();++i) { cout << POGate(i)->GetValue_t(); }

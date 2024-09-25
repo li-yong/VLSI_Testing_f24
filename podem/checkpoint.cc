@@ -11,7 +11,7 @@ extern GetLongOpt option;
 void CIRCUIT::GenerateAllCPFaultList()
 {
     cout << "Generate checkpoint fault list" << endl;
-    register unsigned i, j;
+    unsigned i, j;
     GATEFUNC fun;
     GATEPTR gptr, fanout;
     FAULT *fptr;
@@ -59,7 +59,7 @@ void CIRCUIT::CalculatePercentage()
 void CIRCUIT::GenerateAllCPFaultListForFsim()
 {
     cout << "Generate checkpoint fault list" << endl;
-    register unsigned i, j;
+    unsigned i, j;
     GATEFUNC fun;
     GATEPTR gptr, fanout;
     FAULT *fptr;

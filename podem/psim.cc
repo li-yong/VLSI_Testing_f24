@@ -45,7 +45,7 @@ void CIRCUIT::ParallelLogicSim()
 //Evaluate parallel value of gptr
 void CIRCUIT::ParallelEvaluate(GATEPTR gptr)
 {
-    register unsigned i;
+     unsigned i;
     bitset<PatternNum> new_value1(gptr->Fanin(0)->GetValue1());
     bitset<PatternNum> new_value2(gptr->Fanin(0)->GetValue2());
 		evaluation_count += gptr->No_Fanin();
@@ -82,7 +82,7 @@ void CIRCUIT::ParallelEvaluate(GATEPTR gptr)
 
 void CIRCUIT::PrintParallelIOs(unsigned idx)
 {
-    register unsigned i;
+     unsigned i;
     for (unsigned j=0; j<idx; j++){
 	    for (i = 0;i<No_PI();++i) { 
 		    if(PIGate(i)->GetWireValue(0, j)==0){ 

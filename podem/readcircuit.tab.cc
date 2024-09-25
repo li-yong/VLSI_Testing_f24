@@ -546,8 +546,8 @@ static const yytype_int8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    54,    54,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    70,    87,   117,   117,   134,   137,   138,   139,
-     140,   141,   142,   145,   192,   205,   205
+      66,    67,    71,    89,   120,   120,   137,   140,   141,   142,
+     143,   144,   145,   148,   195,   208,   208
 };
 #endif
 
@@ -1141,7 +1141,7 @@ yyreduce:
     break;
 
   case 12: /* input_definition: GINPUT LPAR NAMESTRING RPAR EOLINE  */
-#line 70 "readcircuit.y"
+#line 71 "readcircuit.y"
                                                     {
                        no_pi++;
                        if(!NameTable.is_member((yyvsp[-2].str))){
@@ -1161,7 +1161,7 @@ yyreduce:
     break;
 
   case 13: /* output_definition: GOUTPUT LPAR NAMESTRING RPAR EOLINE  */
-#line 87 "readcircuit.y"
+#line 89 "readcircuit.y"
                                                       {
                        no_po++;
                        name=string("PO_")+(yyvsp[-2].str);
@@ -1194,7 +1194,7 @@ yyreduce:
     break;
 
   case 14: /* $@1: %empty  */
-#line 117 "readcircuit.y"
+#line 120 "readcircuit.y"
                                            {
                        no_gate++;
                        //for output
@@ -1213,43 +1213,43 @@ yyreduce:
     break;
 
   case 17: /* gatename: GNOT  */
-#line 137 "readcircuit.y"
+#line 140 "readcircuit.y"
               {(yyval.func)=G_NOT;}
 #line 1219 "readcircuit.tab.c"
     break;
 
   case 18: /* gatename: GAND  */
-#line 138 "readcircuit.y"
+#line 141 "readcircuit.y"
               {(yyval.func)=G_AND;}
 #line 1225 "readcircuit.tab.c"
     break;
 
   case 19: /* gatename: GBUF  */
-#line 139 "readcircuit.y"
+#line 142 "readcircuit.y"
               {(yyval.func)=G_BUF;}
 #line 1231 "readcircuit.tab.c"
     break;
 
   case 20: /* gatename: GOR  */
-#line 140 "readcircuit.y"
+#line 143 "readcircuit.y"
              {(yyval.func)=G_OR;}
 #line 1237 "readcircuit.tab.c"
     break;
 
   case 21: /* gatename: GNAND  */
-#line 141 "readcircuit.y"
+#line 144 "readcircuit.y"
                {(yyval.func)=G_NAND;}
 #line 1243 "readcircuit.tab.c"
     break;
 
   case 22: /* gatename: GNOR  */
-#line 142 "readcircuit.y"
+#line 145 "readcircuit.y"
               {(yyval.func)=G_NOR;}
 #line 1249 "readcircuit.tab.c"
     break;
 
   case 23: /* ff_definition: output EQUAL GDFF LPAR NAMESTRING RPAR EOLINE  */
-#line 145 "readcircuit.y"
+#line 148 "readcircuit.y"
                                                             {
                        no_dff++;
                        //PPI
@@ -1298,7 +1298,7 @@ yyreduce:
     break;
 
   case 24: /* fanin_list: NAMESTRING  */
-#line 192 "readcircuit.y"
+#line 195 "readcircuit.y"
                     {
                        if(!NameTable.is_member((yyvsp[0].str))){
                                inlist=new GATE;
@@ -1316,7 +1316,7 @@ yyreduce:
     break;
 
   case 25: /* $@2: %empty  */
-#line 205 "readcircuit.y"
+#line 208 "readcircuit.y"
                        {
                        if(!NameTable.is_member((yyvsp[0].str))){
                                inlist=new GATE;
@@ -1527,7 +1527,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 220 "readcircuit.y"
+#line 223 "readcircuit.y"
 
 
 int yyerror(char *err)

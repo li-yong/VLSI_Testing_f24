@@ -98,6 +98,8 @@ void CIRCUIT::Check_Levelization()
                 gptr->GetName() << endl;
                 exit( -1);
             }
+        }else if (gptr->GetFunction() == G_FROM){
+            ;//do nothing
         }
         else {
             for (j = 0;j < gptr->No_Fanin();j++) {
@@ -126,6 +128,7 @@ void CIRCUIT::SetMaxLevel()
         }
     }
 }
+
 
 //Setup the Gate ID and Inversion
 //Setup the list of PI PPI PO PPO
