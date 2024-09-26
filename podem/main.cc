@@ -135,8 +135,7 @@ int main(int argc, char ** argv)
     }
 
 
-    CIRCUIT* abc = &Circuit;
-    CIRCUIT* d = isc_Circuit;
+
 
     //end of parsing ISC
 
