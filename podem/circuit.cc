@@ -2,6 +2,10 @@
 // #include <alg.h>
 #include "circuit.h"
 #include "GetLongOpt.h"
+#include <algorithm> // For sort and unique
+#include <vector>    // For std::vector
+#include <set>
+
 using namespace std;
 
 extern GetLongOpt option;
@@ -28,7 +32,7 @@ void CIRCUIT::Levelize_recu(GATE *gptr, int lel = 0)
     if (lel > gptr->GetLevel())
     {
         gptr->SetLevel(lel);
-        // cout << gptr->Get_isc_identifier() << " set to LV " << lel << endl;
+        cout << gptr->Get_isc_identifier() << " set to LV " << lel << endl;
     }
 
     for (int j = 0; j < gptr->No_Fanout(); j++)
@@ -44,7 +48,86 @@ void CIRCUIT::Levelize_recu(GATE *gptr, int lel = 0)
     }
 }
 
+// recuive. from levl0->level1->levenn
 void CIRCUIT::Levelize()
+{
+    list<GATE *> Queue;
+    GATE *gptr;
+    GATE *out;
+    unsigned j = 0;
+
+    for (unsigned i = 0; i < No_PI(); i++)
+    {
+        gptr = PIGate(i);
+        gptr->SetLevel(0);
+        cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
+    }
+    
+
+    // cout << 11 << endl;
+
+    int n = 0;
+    vector<GATE *> v;
+    while (true)
+    {  
+        v = CIRCUIT::GetGateInLevel(n);
+        cout << "get level "<< n << " output gates" << endl;
+        if (v.size()==0){
+            cout << " all gates level set completed." << endl;
+            break;
+        }
+
+        for (int i = 0; i < v.size(); i++)
+        {
+            if ( v[i]->GetFunction()==G_FROM){
+                continue; //dont update the FF output gate lvel from FF.
+            }
+            
+            if ((n + 1) > v[i]->GetLevel())
+            {
+                v[i]->SetLevel(n + 1);
+                cout << v[i]->Get_isc_identifier() << " set to level "<< n+1 << endl;
+            }
+        }
+
+        n = n + 1;
+    }
+    // for (auto it = begin (Netlist); it != end (Netlist); ++it) {
+    //     it.Get_isc_identifier();
+    // }
+}
+
+vector<GATE *> CIRCUIT::GetGateInLevel(int cur_lv)
+{
+    // int cur_lv = 0;
+    vector<GATE *> gates_in_next_lv;
+
+    for (int i = 0; i < Netlist.size(); i++)
+    {
+        string name = Netlist[i]->Get_isc_identifier();
+        int lvl = Netlist[i]->GetLevel();
+
+        if (lvl == cur_lv)
+        {
+            cout << name << "  " << lvl << endl;
+
+            vector<GATE *> Gate_output = Netlist[i]->GetOutput_list();
+
+            gates_in_next_lv.insert(gates_in_next_lv.end(), std::make_move_iterator(Gate_output.begin()),
+                                    std::make_move_iterator(Gate_output.end()));
+        }
+
+        // cout << 1 << endl;
+    }
+    // gates_in_next_lv.erase( std::unique( gates_in_next_lv.begin(), gates_in_next_lv.end() ), gates_in_next_lv.end() );
+
+    set<GATE *> s(gates_in_next_lv.begin(), gates_in_next_lv.end());
+    gates_in_next_lv.assign(s.begin(), s.end());
+    return gates_in_next_lv;
+}
+
+// recuive. from levl0->end, levl0->end. hung.
+void CIRCUIT::Levelize_1()
 {
     list<GATE *> Queue;
     GATE *gptr;
@@ -57,6 +140,80 @@ void CIRCUIT::Levelize()
         // cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
 
         Levelize_recu(gptr, 0);
+    }
+    cout << " all gates level set completed." << endl;
+}
+
+// original
+void CIRCUIT::Levelize_0()
+{
+    list<GATE *> Queue;
+    GATE *gptr;
+    GATE *out;
+    unsigned j = 0;
+    for (unsigned i = 0; i < No_PI(); i++)
+    {
+        gptr = PIGate(i);
+        gptr->SetLevel(0);
+        for (j = 0; j < gptr->No_Fanout(); j++)
+        {
+            out = gptr->Fanout(j);
+            if (out->GetFunction() != G_PPI)
+            {
+                out->IncCount();
+                if (out->GetCount() == out->No_Fanin())
+                {
+                    out->SetLevel(1);
+                    Queue.push_back(out);
+                }
+            }
+        }
+    }
+    for (unsigned i = 0; i < No_PPI(); i++)
+    {
+        gptr = PPIGate(i);
+        gptr->SetLevel(0);
+        for (j = 0; j < gptr->No_Fanout(); j++)
+        {
+            out = gptr->Fanout(j);
+            if (out->GetFunction() != G_PPI)
+            {
+                out->IncCount();
+                if (out->GetCount() ==
+                    out->No_Fanin())
+                {
+                    out->SetLevel(1);
+                    Queue.push_back(out);
+                }
+            }
+        }
+    }
+    int l1, l2;
+    while (!Queue.empty())
+    {
+        gptr = Queue.front();
+        Queue.pop_front();
+        l2 = gptr->GetLevel();
+        for (j = 0; j < gptr->No_Fanout(); j++)
+        {
+            out = gptr->Fanout(j);
+            if (out->GetFunction() != G_PPI)
+            {
+                l1 = out->GetLevel();
+                if (l1 <= l2)
+                    out->SetLevel(l2 + 1);
+                out->IncCount();
+                if (out->GetCount() ==
+                    out->No_Fanin())
+                {
+                    Queue.push_back(out);
+                }
+            }
+        }
+    }
+    for (unsigned i = 0; i < No_Gate(); i++)
+    {
+        Gate(i)->ResetCount();
     }
 }
 

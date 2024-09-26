@@ -23,7 +23,7 @@ class GATE
 		vector<GATE*> Input_list;
 		vector<GATE*> Output_list;
 		bitset<NumFlags> Flag;
-		unsigned Level;
+		int Level;
 		VALUE Value;
 		VALUE Value_t;
 		bool Inversion;
@@ -40,7 +40,7 @@ class GATE
 
 	public:
 		//Initialize GATE
-		GATE(): Function(G_BAD), Level(0), Value(X), Value_t(X), Inversion(false) {
+		GATE(): Function(G_BAD), Level(-1), Value(X), Value_t(X), Inversion(false) {
 			Input_list.reserve(4);
 			Output_list.reserve(4);
 			isc_StuckAtFaults.clear(); // Initialize the vector
@@ -87,8 +87,9 @@ class GATE
 		void SetFunction(GATEFUNC f){ Function = f;}
 		void AddInput_list(GATE* gptr){Input_list.push_back(gptr);}
 		vector<GATE*> &GetInput_list() { return Input_list; }
+		vector<GATE*> &GetOutput_list() { return Output_list; }
 		void AddOutput_list(GATE* gptr){Output_list.push_back(gptr);}
-		void SetLevel(unsigned l){ Level = l;}
+		void SetLevel(signed l){ Level = l;}
 		void SetValue(VALUE v) {Value = v;}
 		void InverseValue() {Value = NotTable[Value];}
 		void SetValue_t(VALUE v) {Value_t = v;}
@@ -109,7 +110,7 @@ class GATE
 		GATE* Fanout(int i) { return Output_list[i];}
 		void ChangeFanin(int i, GATE* g) {Input_list[i] = g;}
 		void ChangeFanout(int i, GATE* g) {Output_list[i] = g;}
-		unsigned GetLevel() { return Level;}
+		signed GetLevel() { return Level;}
 		VALUE GetValue() { return Value;}
 		VALUE GetValue_t() { return Value_t;}
 		void SetInversion(){Inversion = true;}

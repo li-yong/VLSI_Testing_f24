@@ -287,6 +287,13 @@ class CIRCUIT
 		}
 			
 		//defined in circuit.cc
+
+		vector<GATE *> GetGateInLevel(int);
+
+
+		void Levelize_0();
+		void Levelize_1();
+
 		void Levelize();
 		void Levelize_recu(GATE*, int);
 		void FanoutList();

@@ -12,7 +12,7 @@
             "args": [
                 "-parse_isc",
                 "-file_isc",
-                "${workspaceFolder}/../circuits/ISCAS-85_yong/c880.isc",
+                "${workspaceFolder}/../circuits/ISCAS-85_yong/c17.isc",
                 "-path",
                 "-start",
                 "11",
