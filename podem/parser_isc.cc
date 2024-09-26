@@ -189,11 +189,8 @@ void processBuffer(const string &buffer)
     // Read and process the content line by line
     while (getline(stream, line))
     {
-        // Process each line (e.g., print it or parse it)
-        cout << "Processing line: " << line << endl;
-        // cout << "Debug: This is a debug message!" << endl;
+        // cout << "Processing line: " << line << endl;
 
-        // Add your specific line processing logic here (e.g., tokenizing, searching, etc.)
         // Check if the line starts with '*', if so, skip it
         if (!line.empty() && line[0] == '*')
         {

@@ -60,7 +60,7 @@ void CIRCUIT::Levelize()
     {
         gptr = PIGate(i);
         gptr->SetLevel(0);
-        cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
+        // cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
     }
     
 
@@ -71,9 +71,9 @@ void CIRCUIT::Levelize()
     while (true)
     {  
         v = CIRCUIT::GetGateInLevel(n);
-        cout << "get level "<< n << " output gates" << endl;
+        // cout << "get level "<< n << " output gates" << endl;
         if (v.size()==0){
-            cout << " all gates level set completed." << endl;
+            // cout << " all gates level set completed." << endl;
             break;
         }
 
@@ -86,7 +86,7 @@ void CIRCUIT::Levelize()
             if ((n + 1) > v[i]->GetLevel())
             {
                 v[i]->SetLevel(n + 1);
-                cout << v[i]->Get_isc_identifier() << " set to level "<< n+1 << endl;
+                // cout << v[i]->Get_isc_identifier() << " set to level "<< n+1 << endl;
             }
         }
 
@@ -109,7 +109,7 @@ vector<GATE *> CIRCUIT::GetGateInLevel(int cur_lv)
 
         if (lvl == cur_lv)
         {
-            cout << name << "  " << lvl << endl;
+            // cout << name << "  " << lvl << endl;
 
             vector<GATE *> Gate_output = Netlist[i]->GetOutput_list();
 
