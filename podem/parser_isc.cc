@@ -25,7 +25,7 @@ GATE *isc_inlist = NULL;
 Hash<string, GATE *, Str_hash_function> isc_NameTable;
 
 // Function to process lines that have "nand" in the 3rd field
-void proc_nand(const vector<string> &fields, const string &line2)
+void proc_nand(GATE *isc_gptr, const vector<string> &fields, const string &line2)
 {
     // cout << "Processing NAND lines:\n";
 
@@ -41,7 +41,11 @@ void proc_nand(const vector<string> &fields, const string &line2)
 
     vector<string> faults;
 
-    if (fields.size() == 6)
+    if (fields.size() == 5)
+    {
+        faults = {};
+    }
+    else if (fields.size() == 6)
     {
         faults = {fields[5]};
     }
@@ -56,13 +60,12 @@ void proc_nand(const vector<string> &fields, const string &line2)
     }
 
     //<net_id> <identifier> <gate_type> <fanout> <fanin> <faults>
-    isc_gptr = new GATE;
     int net_id = stoi(fields[0]);
     isc_name = fields[1]; // gate name, should be unique
     if (!isc_NameTable.is_member(isc_name))
     {
         isc_gptr->SetName(isc_name);
-        isc_gptr->SetFunction(G_NAND);
+
         isc_gptr->Set_isc_net_id(net_id);
         isc_gptr->Set_isc_identifier(isc_name);
         isc_gptr->Set_isc_StuckAt(faults);
@@ -85,12 +88,16 @@ void proc_nand(const vector<string> &fields, const string &line2)
 }
 
 // Function to process lines that have "input" in the 3rd field
-void proc_input(const vector<string> &fields)
+void proc_input(GATE *isc_gptr, const vector<string> &fields)
 {
     vector<string> inputs{};
     vector<string> faults;
 
-    if (fields.size() == 6)
+    if (fields.size() == 5)
+    {
+        faults = {};
+    }
+    else if (fields.size() == 6)
     {
         faults = {fields[5]};
     }
@@ -105,13 +112,12 @@ void proc_input(const vector<string> &fields)
     }
 
     //<net_id> <identifier> <gate_type> <fanout> <fanin> <faults>
-    isc_gptr = new GATE;
     int net_id = stoi(fields[0]);
     isc_name = fields[1]; // gate name, should be unique
+
     if (!isc_NameTable.is_member(isc_name))
     {
         isc_gptr->SetName(isc_name);
-        isc_gptr->SetFunction(G_PI);
         isc_gptr->Set_isc_net_id(net_id);
         isc_gptr->Set_isc_identifier(isc_name);
         isc_gptr->Set_isc_StuckAt(faults);
@@ -124,17 +130,20 @@ void proc_input(const vector<string> &fields)
     else
     {
         isc_gptr = isc_NameTable.get_value(isc_name);
-        isc_gptr->SetFunction(G_PI);
     }
 }
 
 // Function to process lines that have "from" in the 3rd field
-void proc_fan_from(const vector<string> &fields)
+void proc_fan_from(GATE *isc_gptr, const vector<string> &fields)
 {
     // vector<string> inputs ={fields[3]};
     vector<string> faults;
 
-    if (fields.size() == 5)
+    if (fields.size() == 4)
+    {
+        faults = {};
+    }
+    else if (fields.size() == 5)
     {
         faults = {fields[4]};
     }
@@ -145,7 +154,6 @@ void proc_fan_from(const vector<string> &fields)
     }
 
     //<net_id> <identifier> <gate_type> <fanout> <fanin> <faults>
-    isc_gptr = new GATE;
     int net_id = stoi(fields[0]);
     isc_name = fields[1]; // gate name, should be unique
     if (!isc_NameTable.is_member(isc_name))
@@ -182,7 +190,7 @@ void processBuffer(const string &buffer)
     while (getline(stream, line))
     {
         // Process each line (e.g., print it or parse it)
-        // cout << "Processing line: " << line << endl;
+        cout << "Processing line: " << line << endl;
         // cout << "Debug: This is a debug message!" << endl;
 
         // Add your specific line processing logic here (e.g., tokenizing, searching, etc.)
@@ -209,28 +217,69 @@ void processBuffer(const string &buffer)
             exit(EXIT_FAILURE);
         }
 
-        // Check if there are at least 3 fields and if the 3rd field is "nand"
-        if (fields[2] == "nand")
+        isc_gptr = new GATE;
+
+        // #FO == 0, set primary output. (not output to any gates.)
+        if (fields[3] == "0")
         {
+            isc_gptr->SetFunction(G_PO);
+        }
+
+        // #FI == 0, set primary input. (no input from any gates.)
+        if (fields[4] == "0")
+        {
+            isc_gptr->SetFunction(G_PI);
+        }
+
+        // Check if there are at least 3 fields and if the 3rd field is "nand"
+        string func = fields[2];
+
+        if (func == "nand" | func == "and" | func == "or" | func == "not" | func == "nor" | func == "buff")
+        {
+            if (func == "nand")
+            {
+                isc_gptr->SetFunction(G_NAND);
+            }
+            if (func == "and")
+            {
+                isc_gptr->SetFunction(G_AND);
+            }
+            if (func == "or")
+            {
+                isc_gptr->SetFunction(G_OR);
+            }
+            if (func == "not")
+            {
+                isc_gptr->SetFunction(G_NOT);
+            }
+            if (func == "nor")
+            {
+                isc_gptr->SetFunction(G_NOR);
+            }
+            if (func == "buff")
+            {
+                isc_gptr->SetFunction(G_BUF);
+            }
+
             // Get the next line from the buffer
             string next_line;
             if (getline(stream, next_line))
             {
                 // Pass the current line and next line to proc_nand
-                proc_nand(fields, next_line);
+                proc_nand(isc_gptr, fields, next_line);
             }
         }
 
         // process input
         else if (fields[2] == "inpt")
         {
-            proc_input(fields);
+            proc_input(isc_gptr, fields);
         }
 
         // process input
         else if (fields[2] == "from")
         {
-            proc_fan_from(fields);
+            proc_fan_from(isc_gptr, fields);
         }
 
         else
@@ -433,7 +482,7 @@ CIRCUIT *parse_isc_main(string filename)
     // Pass the string buffer to the processing function
     processBuffer(buffer);
 
-    // update fan from input to real gate.
+    // update fan_from input to real gate.
     update_fan_from_input();
 
     // fill inputlist

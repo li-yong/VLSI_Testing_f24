@@ -25,11 +25,10 @@ void CIRCUIT::Levelize_recu(GATE *gptr, int lel = 0)
 
     string isc_id = gptr->Get_isc_identifier();
 
-
     if (lel > gptr->GetLevel())
     {
         gptr->SetLevel(lel);
-        cout << gptr->Get_isc_identifier() << " set to LV " << lel << endl;
+        // cout << gptr->Get_isc_identifier() << " set to LV " << lel << endl;
     }
 
     for (int j = 0; j < gptr->No_Fanout(); j++)
@@ -55,12 +54,11 @@ void CIRCUIT::Levelize()
     for (unsigned i = 0; i < No_PI(); i++)
     {
         gptr = PIGate(i);
-                cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
+        // cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
 
         Levelize_recu(gptr, 0);
     }
 }
-
 
 void CIRCUIT::Check_Levelization()
 {
