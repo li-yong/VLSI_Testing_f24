@@ -288,6 +288,7 @@ class CIRCUIT
 			
 		//defined in circuit.cc
 		void Levelize();
+		void Levelize_recu(GATE*, int);
 		void FanoutList();
 		void Check_Levelization();
 		void SetMaxLevel();

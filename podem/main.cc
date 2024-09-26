@@ -142,18 +142,18 @@ int main(int argc, char ** argv)
 
 
 
-    cout << "Start parsing input file\n";
-    yyparse();
-    if (ParseError) {
-        cerr << "Please correct error and try Again.\n";
-        return -1;
-    }
-    fclose(yyin);
-    Circuit.FanoutList();
-    Circuit.SetupIO_ID();
-    Circuit.Levelize();
-    Circuit.Check_Levelization();
-    Circuit.InitializeQueue();
+    // cout << "Start parsing input file\n";
+    // yyparse();
+    // if (ParseError) {
+    //     cerr << "Please correct error and try Again.\n";
+    //     return -1;
+    // }
+    // fclose(yyin);
+    // Circuit.FanoutList();
+    // Circuit.SetupIO_ID();
+    // Circuit.Levelize();
+    // Circuit.Check_Levelization();
+    // Circuit.InitializeQueue();
 
     
 		// Options operations for Lab1
