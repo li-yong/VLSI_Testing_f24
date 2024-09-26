@@ -42,17 +42,6 @@ void CIRCUIT::Levelize_recu(GATE *gptr, int lel = 0)
         }
 
         Levelize_recu(out, lel + 1);
-
-        // if (out->GetFunction() != G_PPI)
-        // {
-        //     out->IncCount();
-
-        //     if (out->GetCount() == out->No_Fanin())
-        //     {
-        //         out->SetLevel(1);
-        //         // Queue.push_back(out);
-        //     }
-        // }
     }
 }
 
@@ -69,127 +58,9 @@ void CIRCUIT::Levelize()
                 cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
 
         Levelize_recu(gptr, 0);
-        // gptr->SetLevel(0);
     }
 }
 
-// void CIRCUIT::Levelize_0()
-// {
-
-//     list<GATE *> Queue;
-//     GATE *gptr;
-//     GATE *out;
-//     unsigned j = 0;
-//     for (unsigned i = 0; i < No_PI(); i++)
-//     {
-
-//         gptr = PIGate(i);
-//         gptr->SetLevel(0);
-
-//         // debug
-//         if (gptr->Get_isc_identifier() == "22gat")
-//         {
-//             cout << "pause" << endl;
-//         }
-
-//         for (j = 0; j < gptr->No_Fanout(); j++)
-//         {
-//             out = gptr->Fanout(j);
-
-//             if (out->GetFunction() == G_FROM)
-//             {
-//                 continue;
-//             }
-
-//             if (out->GetFunction() != G_PPI)
-//             {
-//                 out->IncCount();
-//                 if (out->GetCount() == out->No_Fanin())
-//                 {
-//                     out->SetLevel(1);
-//                     Queue.push_back(out);
-//                 }
-//             }
-//         }
-//     }
-
-//     for (unsigned i = 0; i < No_PPI(); i++)
-//     {
-
-//         gptr = PPIGate(i);
-//         gptr->SetLevel(0);
-
-//         // debug
-//         if (gptr->Get_isc_identifier() == "22gat")
-//         {
-//             cout << "pause" << endl;
-//         }
-
-//         for (j = 0; j < gptr->No_Fanout(); j++)
-//         {
-//             out = gptr->Fanout(j);
-
-//             if (out->GetFunction() == G_FROM)
-//             {
-//                 continue;
-//             }
-
-//             if (out->GetFunction() != G_PPI)
-//             {
-//                 out->IncCount();
-//                 if (out->GetCount() ==
-//                     out->No_Fanin())
-//                 {
-//                     out->SetLevel(1);
-//                     Queue.push_back(out);
-//                 }
-//             }
-//         }
-//     }
-
-//     int l1, l2;
-//     while (!Queue.empty())
-//     {
-//         gptr = Queue.front();
-//         Queue.pop_front();
-//         l2 = gptr->GetLevel();
-
-//         cout << out->Get_isc_identifier() << endl;
-
-//         if (out->Get_isc_identifier() == "22gat")
-//         {
-//             cout << "pause 22gat" << endl;
-//         }
-
-//         for (j = 0; j < gptr->No_Fanout(); j++)
-//         {
-//             out = gptr->Fanout(j);
-//             if (out->GetFunction() != G_PPI)
-//             {
-//                 l1 = out->GetLevel();
-
-//                 if (out->Get_isc_identifier() == "16gat")
-//                 {
-//                     cout << "pause" << endl;
-//                 }
-
-//                 if (l1 <= l2)
-//                     cout << out->Get_isc_identifier() << l1 << l2 << endl;
-//                 out->SetLevel(l2 + 1);
-//                 out->IncCount();
-//                 if (out->GetCount() ==
-//                     out->No_Fanin())
-//                 {
-//                     Queue.push_back(out);
-//                 }
-//             }
-//         }
-//     }
-//     for (unsigned i = 0; i < No_Gate(); i++)
-//     {
-//         Gate(i)->ResetCount();
-//     }
-// }
 
 void CIRCUIT::Check_Levelization()
 {
