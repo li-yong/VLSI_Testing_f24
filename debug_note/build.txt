@@ -120,3 +120,27 @@ usage: atpg [options] input_circuit_file
 	-input <$val> (set the input pattern file)
 	-output <$val> (set the output pattern file)
 	-bt [$val] (set the backtrack limit)
+
+
+
+make && ./atpg   -parse_isc -file_isc ../circuits/ISCAS-85_yong/c17.isc   ../circuits/iscas85/c499.bench  
+
+
+confiure.json
+    "configurations": [
+        {
+            "name": "Debug VLSI Parser",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/atpg",
+            "args": [
+                "-parse_isc",
+                "-file_isc",
+                "${workspaceFolder}/../circuits/ISCAS-85_yong/c880.isc",
+                "-path",
+                "-start",
+                "11",
+                "-end",
+                "19",
+                "${workspaceFolder}/../circuits/c17.bench",
+            ],

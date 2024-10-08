@@ -239,37 +239,9 @@ class CIRCUIT
 		// VLSI-Testing Lab1
 		// defined in path.cc
 		void path(string src_name_gate, string dest_gate_name);
-		bool findPath();
-		void printPath();
-		// VLSI-Testing Lab3
-		unsigned int getEvaluationCount() {return evaluation_count;}
-		void printStatResult();
-		void genCompiledCodeSimulator();
-		void ccsParallelLogicSim(bool flag);
-		void ccsParallelEvaluate(GATEPTR gptr, bool flag);
-		void ccsPrintParallelIOs(unsigned idx);
-		void genHeader();
-		void genMainBegin();
-		void genMainEnd();
-		void genEvaBegin();
-		void genEvaEnd();
-		void genPrintIOBegin();
-		void genPrintIOEnd();
-		void genIniPattern();
-		void combineFilesToOutput();
-		void setOutputName(string str) { output_name = str;}
-		// VLSI-Testing Lab4
-		void GenerateAllCPFaultList();
-		void GenerateAllBFaultList();
-		void CalculatePercentage();
-		void PutGateIntoQueueByLevel();
-		void OutputAllBFaultList();
 
-		// VLST-Testing Lab5
-		//defined in bfsim.cc
-		void BFaultSimVectors();
-		void BFaultSim();
-		void BFaultSimEvaluate(GATE* gptr);
+		//defined in fsim.cc
+		void MarkOutputGate();
 
 		// VLST-Testing Lab6
 		void AtpgRandomPattern();
@@ -305,20 +277,8 @@ class CIRCUIT
 		void printPOInputList();
 		void printGateOutput();
 
-		//defined in sim.cc
-		void SetPPIZero(); //Initialize PPI state
 		void InitializeQueue();
-		void ScheduleFanout(GATE*);
-		void SchedulePI();
-		void SchedulePPI();
-		void LogicSimVectors();
-		void LogicSim();
-		void ModLogicSimVectors();
-		void ModLogicSim();
-		void PrintIO();
-		void PrintModIO();
-		VALUE Evaluate(GATEPTR gptr);
-		bitset<2> ModEvaluate(GATEPTR gptr);
+
 
 		//defined in atpg.cc
 		void GenerateAllFaultList();
@@ -339,41 +299,5 @@ class CIRCUIT
 		GATEPTR TestPossible(FAULT* fptr);
 		void TraceDetectedStemFault(GATEPTR gptr, VALUE val);
 
-		//defined in fsim.cc
-		void MarkOutputGate();
-		void MarkPropagateTree(GATEPTR gptr);
-		void FaultSimVectors();
-		void FaultSim();
-		void FaultSimEvaluate(GATE* gptr);
-		bool CheckFaultyGate(FAULT* fptr);
-		void InjectFaultValue(GATEPTR gptr, unsigned idx,VALUE value);
-
-		//defined in psim.cc for parallel logic simulation
-		void ParallelLogicSimVectors();
-		void ParallelLogicSim();
-		void ParallelEvaluate(GATEPTR gptr);
-		void PrintParallelIOs(unsigned idx);
-		void ScheduleAllPIs();
-
-		//defined in stfsim.cc for single pattern single transition-fault simulation
-		void GenerateAllTFaultList();
-		void TFaultSimVectors();
-		void TFaultSim_t();
-		void TFaultSim();
-		bool CheckTFaultyGate(TFAULT* fptr);
-		bool CheckTFaultyGate_t(TFAULT* fptr);
-		VALUE Evaluate_t(GATEPTR gptr);
-		void LogicSim_t();
-		void PrintTransition();
-		void PrintTransition_t();
-		void PrintIO_t();
-
-		//defined in tfatpg.cc for transition fault ATPG
-		void TFAtpg();
-		ATPG_STATUS Initialization(GATEPTR gptr, VALUE target, unsigned &total_backtrack_num);
-		ATPG_STATUS BackwardImply_t(GATEPTR gptr, VALUE value);
-		GATEPTR FindPIAssignment_t(GATEPTR gptr, VALUE value);
-		GATEPTR FindEasiestControl_t(GATEPTR gptr);
-		GATEPTR FindHardestControl_t(GATEPTR gptr);
 };
 #endif

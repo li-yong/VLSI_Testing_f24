@@ -13,11 +13,7 @@
                 "-parse_isc",
                 "-file_isc",
                 "${workspaceFolder}/../circuits/ISCAS-85_yong/c17.isc",
-                "-path",
-                "-start",
-                "11",
-                "-end",
-                "19",
+
                 "${workspaceFolder}/../circuits/c17.bench",
             ],
             "stopAtEntry": false,
