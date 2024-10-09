@@ -149,7 +149,7 @@ def populate_output_gates(gates):
 
 
 
-def print_circuit_output(gates):
+def print_circuit_output(gates, show_gate_output=False):
     for gate in gates:
         # if gate.gate_id == '237gat':
             # print("debug")
@@ -160,7 +160,7 @@ def print_circuit_output(gates):
             # print("TO: "+",".join(gate.input_gates_netid_list) +" -> "+gate.gate_id)
 
         
-        if gate.gate_fanout_cnt>0:
+        if show_gate_output and gate.gate_fanout_cnt>0:
             print("FROM: " +gate.gate_net_id+" TO "+",".join(gate.output_gates_netid_list))
 
 def save_to_json(gates, output_file):
@@ -187,17 +187,18 @@ def save_to_json(gates, output_file):
 # Example usage
 if __name__ == "__main__":
     parser = OptionParser()
+    parser.add_option("--action", type="str", help="Action to perform: [parse_to_json]")
     parser.add_option("--file_isc", type="str", help="Path to the ISC file")
     parser.add_option("--out_json", type="str", help="Path to the output JSON file")
-    parser.add_option("--action", type="str", help="Action to perform: [parse_to_json]")
+    parser.add_option("--show_gate_output", action="store_true", dest="show_gate_output", default=False, help="Print down steam gate. Current gate output feed to which gates.")
     parser.add_option("--debug", action="store_true", dest="debug", default=False, help="Enable debug mode")
 
     (options, args) = parser.parse_args()
     file_isc = options.file_isc
     out_json = options.out_json
-
     action= options.action
     debug = options.debug
+    show_gate_output = options.show_gate_output
 
     if action not in ["parse_to_json"]:
         logging.error(f"Invalid action: {action}")
@@ -228,6 +229,6 @@ if __name__ == "__main__":
 
         # Print the circuit structure
         # print_circuit_structure(gates)
-        print_circuit_output(gates)
+        print_circuit_output(gates,show_gate_output)
 
         save_to_json(gates, out_json)
