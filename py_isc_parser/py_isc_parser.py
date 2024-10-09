@@ -194,6 +194,11 @@ if __name__ == "__main__":
         logging.error("Please provide the path to the ISC file")
         sys.exit(1)
 
+    if action=="parse_to_json" and not out_json:
+        logging.error("Please provide the path to the output Json file")
+        sys.exit(1)
+
+
     #check file exist or not
     if file_isc is not None and not os.path.exists(file_isc):
         logging.error(f"File {file_isc} does not exist")
