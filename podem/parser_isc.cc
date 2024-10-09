@@ -427,6 +427,8 @@ void trvel_netlist()
             //make a po gate
             GATE *po = new GATE();
             po->SetFunction(G_PO);
+            isc_Circuit.AddGate(po);
+
             max_net_id += 1;
             po->Set_isc_net_id(max_net_id);
             g->AddOutput_list(po);
