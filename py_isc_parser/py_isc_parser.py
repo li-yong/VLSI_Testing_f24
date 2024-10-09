@@ -90,8 +90,6 @@ def parse_netlist(content):
                 line_cursor += 1
                 next_line = lines[line_cursor]
                 input_gates_netid_list = next_line.strip().split()
-                
-
             
         # Create a gate object. both `from` or `regular` gate
         gate = Gate(gate_net_id, gate_id, gate_type, gate_fanout_cnt, gate_fanin_cnt, gate_faults, input_gates_netid_list,fanout_branch_from_netid,output_gates_netid_list)
@@ -103,7 +101,6 @@ def parse_netlist(content):
 def find_gate_by_netid(gates, netid):
     for gate in gates:
         if gate.gate_net_id == netid:
-            # return gates.index(gate)
             return gate
     return None
 
@@ -111,8 +108,6 @@ def find_gate_by_netid(gates, netid):
 def find_gate_by_gateid(gates, gate_id):
     for gate in gates:
         if gate.gate_id == gate_id:
-            #return the index of the gate
-            # return gates.index(gate)
             return gate
     return None
 
@@ -121,12 +116,6 @@ def find_gate_by_gateid(gates, gate_id):
 def populate_output_gates(gates):
     for gate in gates:
         parent_gate = None
-        # print(gate)
-       
-        # if gate.gate_type == "from":
-        #     parent_gate = find_gate_by_gateid(gates, gate.fanout_branch_from_gateid)
-        #     parent_gate.output_gates_netid_list.append(gate.gate_net_id)
-        #     print(f"{parent_gate.gate_id} -> Fanout Branch {gate.gate_id}")
 
         
         if gate.gate_fanin_cnt==0:
@@ -135,21 +124,18 @@ def populate_output_gates(gates):
         #loop the input gates netid list
         for input_gate_netid in gate.input_gates_netid_list:
             parent_gate = find_gate_by_netid(gates, input_gate_netid)
-            # parent_gate = gates[parent_gate_index]
+            if parent_gate is None:
+                logging.error(f"Parent gate not found for {input_gate_netid}")
+                continue
 
             if parent_gate.gate_type == "from":
                 parent_gate = find_gate_by_gateid(gates, parent_gate.fanout_branch_from_gateid)
-                # parent_gate = gates[parent_gate_index]
-                # print(f"Wire {gate.gate_id} -> {gate.fanout_branch_from_gateid}")
-
-            # tmp = parent_gate.output_gates_netid_list
-            # tmp.append(gate.gate_net_id)
-            # parent_gate.output_gates_netid_list = tmp
-
+                if parent_gate is None:
+                    logging.error(f"Parent gate not found for {parent_gate.fanout_branch_from_gateid}")
+                    continue
 
             parent_gate.output_gates_netid_list.append(gate.gate_net_id)
 
-            # print(f"updated output gate, {parent_gate.gate_id} -> {gate.gate_id}")
     # print("output gate populated")
     return gates
 
