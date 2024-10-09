@@ -1,7 +1,6 @@
 #ifndef CIRCUIT_H
 #define CIRCUIT_H
 #include "fault.h"
-#include "bridgingFault.h"
 #include "tfault.h"
 #include "pattern.h"
 #include <stdlib.h>
@@ -56,8 +55,7 @@ class CIRCUIT
 		//VLSI-Testing Lab4
 		list<FAULT*> CPFlist; //collapsing fault list
 		list<FAULT*> UCPFlist; //undetected fault list
-		vector<BRIDGING_FAULT*> BFlist; //collapsing fault list
-		vector<BRIDGING_FAULT*> UBFlist; //undetected fault list
+
 
 	public:
 		//Initialize netlist
@@ -239,6 +237,8 @@ class CIRCUIT
 		// VLSI-Testing Lab1
 		// defined in path.cc
 		void path(string src_name_gate, string dest_gate_name);
+		bool findPath();
+		void printPath();
 
 		//defined in fsim.cc
 		void MarkOutputGate();
@@ -276,8 +276,10 @@ class CIRCUIT
 		void printNetlist();
 		void printPOInputList();
 		void printGateOutput();
+		void printGateIdTypeOutput();
 
 		void InitializeQueue();
+		int get_max_netid();
 
 
 		//defined in atpg.cc

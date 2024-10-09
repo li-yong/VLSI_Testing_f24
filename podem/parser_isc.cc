@@ -293,10 +293,10 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
 {
 
     string name = input_gate_of_cur->Get_isc_identifier();
-    // if (name == "16gat") //debug
-    // {
-    //     cout << 1 << endl;
-    // }
+    if (name == "16gat") // debug
+    {
+        cout << 1 << endl;
+    }
 
     if (cur_gate->GetFunction() == G_FROM)
     {
@@ -321,11 +321,13 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
                 cout << "something wrong. FanFrom connected FanFrom. " << endl;
                 exit(-1);
             }
+            cout << "add gate output, FROM " << input_gate_of_cur->Get_isc_identifier() << " TO " << cur_gate->Get_isc_identifier() << endl;
             L2_input_gate->AddOutput_list(cur_gate);
         }
     }
     else if (input_gate_of_cur->GetFunction() != G_PO)
     {
+        cout << "add gate output, FROM " << input_gate_of_cur->Get_isc_identifier() << " TO " << cur_gate->Get_isc_identifier() << endl;
         input_gate_of_cur->AddOutput_list(cur_gate);
     }
     // input_n2 = isc_Circuit.Find_Gate_by_isc_netid(stoi(ipt));
@@ -377,12 +379,38 @@ void update_fan_from_input()
     }
 }
 
+// a function to get the max net id in the isc_Circuit
+int get_max_netid()
+{
+    vector<GATE *> netlist = isc_Circuit.GetNetlist();
+
+    cout << typeid(netlist[0]).name() << endl;
+    int max_net_id = -1;
+
+    for (unsigned i = 0; i < netlist.size(); i++)
+    {
+        GATE *g;
+        g = netlist[i];
+        int t = g->GetIscNetId();
+        if (t > max_net_id)
+        {
+            max_net_id = t;
+        }
+        // cout << "current g:" + name + "   type " << endl;
+    }
+
+    cout << "max net id: " << max_net_id << endl;
+    return max_net_id;
+}
+
 void trvel_netlist()
 {
     // 2nd run to parse input. Becasue in 1st run, input gates may be used **before** reference.
     vector<GATE *> netlist = isc_Circuit.GetNetlist();
 
-    // cout << typeid(netlist[0]).name() << endl;
+    cout << typeid(netlist[0]).name() << endl;
+
+    int max_net_id = get_max_netid();
 
     for (unsigned i = 0; i < netlist.size(); i++)
     {
@@ -390,14 +418,24 @@ void trvel_netlist()
         g = netlist[i];
         string name = g->GetName();
         GATEFUNC fun = g->GetFunction();
+
+        int fo = g->Get_isc_fo_cnt();
+        int fi = g->Get_isc_fi_cnt();
+
+        if (fo==0){
+            cout << "no downstream gate" << endl;
+            //make a po gate
+            GATE *po = new GATE();
+            po->SetFunction(G_PO);
+            max_net_id += 1;
+            po->Set_isc_net_id(max_net_id);
+            g->AddOutput_list(po);
+            
+        }
+
         // cout << "current g:" + name + "   type " << endl;
 
         vector<string> inputlist = g->Get_isc_input_gates();
-
-        if (fun == G_PI)
-        {
-            ; // do nothing
-        }
 
         if (fun == G_FROM)
         {
@@ -409,10 +447,10 @@ void trvel_netlist()
                 GATE *input_gate = isc_Circuit.Find_Gate_by_isc_netid(stoi(ipt));
 
                 // debug
-                // if (input_gate->Get_isc_identifier() == "8fan")
-                // {
-                //     cout << 1 << endl;
-                // }
+                if (input_gate->Get_isc_identifier() == "8fan")
+                {
+                    cout << 1 << endl;
+                }
 
                 update_output_from_input(g, input_gate);
             }
@@ -476,6 +514,11 @@ CIRCUIT *parse_isc_main(string filename)
 
     inputFile.close(); // Close the file after reading
 
+    // extract the filename from the full path filename. eg /home/isc/isc1.txt -> isc1.txt
+    size_t found = filename.find_last_of("/\\");
+    string file_name = filename.substr(found + 1);
+    isc_Circuit.SetName(file_name);
+
     // Pass the string buffer to the processing function
     processBuffer(buffer);
 
@@ -486,7 +529,7 @@ CIRCUIT *parse_isc_main(string filename)
     trvel_netlist();
 
     // isc_Circuit.Name
-    isc_Circuit.FanoutList();
+    // isc_Circuit.FanoutList();
     isc_Circuit.SetupIO_ID();
     isc_Circuit.Levelize();
     isc_Circuit.Check_Levelization();

@@ -62,27 +62,28 @@ void CIRCUIT::Levelize()
         gptr->SetLevel(0);
         // cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
     }
-    
 
     // cout << 11 << endl;
 
     int n = 0;
     vector<GATE *> v;
     while (true)
-    {  
+    {
         v = CIRCUIT::GetGateInLevel(n);
         // cout << "get level "<< n << " output gates" << endl;
-        if (v.size()==0){
+        if (v.size() == 0)
+        {
             // cout << " all gates level set completed." << endl;
             break;
         }
 
         for (int i = 0; i < v.size(); i++)
         {
-            if ( v[i]->GetFunction()==G_FROM){
-                continue; //dont update the FF output gate lvel from FF.
+            if (v[i]->GetFunction() == G_FROM)
+            {
+                continue; // dont update the FF output gate lvel from FF.
             }
-            
+
             if ((n + 1) > v[i]->GetLevel())
             {
                 v[i]->SetLevel(n + 1);
@@ -356,3 +357,92 @@ void CIRCUIT::printGateOutput()
     }
 }
 
+void CIRCUIT::printGateIdTypeOutput()
+{
+    unsigned no_gate_fanout, i;
+    vector<GATE *>::iterator it_net;
+
+    for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
+    {
+        // cout << "Gate: " << (*it_net)->GetName() << endl;
+        GATEFUNC function = (*it_net)->GetFunction();
+        string function_s;
+
+        string isc_id = (*it_net)->Get_isc_identifier();
+        int netid = (*it_net)->Get_isc_net_id();
+        vector<GATE *> outputlist = (*it_net)->GetOutput_list();
+
+        // iterate the outputlist, get the net_id by outputlist[n]->Get_isc_net_id() then join them with space.
+        string po;
+        // iterate the outputlist
+
+        if (function == G_FROM)
+        {
+            continue;
+        }
+
+        if (function == G_PI)
+        {
+            function_s = "PI";
+        }
+        else if (function == G_PO)
+        {
+            function_s = "PO";
+        }
+        else if (function == G_PPI)
+        {
+            function_s = "PPI";
+        }
+
+        else if (function == G_PPO)
+        {
+            function_s = "PPO";
+        }
+
+        else if (function == G_NOT)
+        {
+            function_s = "NOT";
+        }
+
+        else if (function == G_AND)
+        {
+            function_s = "AND";
+        }
+
+        else if (function == G_NAND)
+        {
+            function_s = "NAND";
+        }
+        else if (function == G_OR)
+        {
+            function_s = "OR";
+        }
+        else if (function == G_BUF)
+        {
+            function_s = "BUF";
+        }
+        else if (function == G_NOR)
+        {
+            function_s = "BAD";
+        }
+        else if (function == G_BAD)
+        {
+            function_s = "BAD";
+        }
+        else if (function == G_FROM)
+        {
+            function_s = "FROM";
+        }
+        else if (function == G_DFF)
+        {
+            function_s = "DFF";
+        }
+
+        for (size_t n = 0; n < outputlist.size(); ++n)
+        {
+            // cout << outputlist[n]->Get_isc_net_id() << endl;
+            po += " " + to_string(outputlist[n]->Get_isc_net_id());
+        }
+        cout << netid << "\t" << function_s << "\t" << po << endl;
+    }
+}

@@ -104,6 +104,10 @@ class GATE
 		unsigned GetIscNetId() { return isc_net_id; }
 		unsigned GetStuckAt(unsigned i){ return StuckAt[i];}
 		GATEFUNC GetFunction(){ return Function;}
+
+		int Get_isc_fo_cnt(){return isc_fo_Cnt;}
+		int Get_isc_fi_cnt(){return isc_fi_Cnt;}
+
 		unsigned No_Fanin() { return Input_list.size();}
 		unsigned No_Fanout() { return Output_list.size();}
 		GATE* Fanin(int i) { return Input_list[i];}

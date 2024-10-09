@@ -1,3 +1,4 @@
+
 CXX      = g++
 LINK     = g++
 # Remove -DDEBUG flag for VLST-Testing Lab0
@@ -16,11 +17,11 @@ HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h readcircuit.tab.h patt
 
 # Add source file assignment.c to be compiled
 SOURCES = readcircuit.tab.cc lex.yy.cc circuit.cc main.cc GetLongOpt.cc sim.cc\
-					parser_isc.cc fsim.cc
+					parser_isc.cc fsim.cc path.cc
 
 # Add object file assignment.o to be linked
 OBJECTS = readcircuit.tab.o lex.yy.o circuit.o main.o GetLongOpt.o sim.o \
-					parser_isc.o fsim.o
+					parser_isc.o fsim.o  path.o
 
 TARGET  = atpg
 
@@ -55,28 +56,3 @@ clean:
 	@$(DEL_FILE) $(OBJECTS) $(TARGET)
 	@$(DEL_FILE) readcircuit.tab.cc readcircuit.tab.h lex.yy.cc
 	@$(DEL_DIR)	 output input simulator
-
-c17:
-	./atpg -bridging_fsim -input ../input/c17.input ../circuits/iscas85/c17.bench
-
-c880:
-	./atpg -bridging_fsim -input ../input/c880.input ../circuits/iscas85/c880.bench
-
-c7552:
-	./atpg -bridging_fsim -input ../input/c7552.input ../circuits/iscas85/c7552.bench
-
-s35:
-	rm -f ./input/s35932_com-rp.input
-	./atpg -bt 1000 -random_pattern -output ./input/s35932_com-rp.input ../circuits/iscas89_com/s35932_com.bench
-
-s384:
-	rm -f ./input/s38417_com-rp.input
-	./atpg -bt 1000 -random_pattern -output ./input/s38417_com-rp.input ../circuits/iscas89_com/s38417_com.bench
-
-s385:
-	rm -f ./input/s38584_com-rp.input
-	./atpg -bt 1000 -random_pattern -output ./input/s38584_com-rp.input ../circuits/iscas89_com/s38584_com.bench
-
-b17:
-	rm -f ./input/b17-rp.input
-	./atpg -bt 1000 -random_pattern -output ./input/b17-rp.input ../circuits/b17.bench
