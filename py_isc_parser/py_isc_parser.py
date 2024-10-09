@@ -63,8 +63,11 @@ def parse_netlist(content):
         fanout_branch_from_netid=None
         output_gates_netid_list=[]
 
+        # if gate_id == "1f01":
+            # print("debug")
+
         #Handle from gate (wire)
-        if gate_id.find('fan')>0 and gate_type in ('from'):
+        if gate_type in ('from'):
             if len(groups) < 3:
                 logging.error(f"Invalid line fields for `from`: {line}")
                 continue
@@ -75,7 +78,7 @@ def parse_netlist(content):
 
 
         #Handle regular gate
-        if gate_id.find('gat')>0 and gate_type in ('inpt', 'nand', 'nor', 'not', 'buff', 'and', 'or', 'xor', 'xnor'):
+        if gate_type in ('inpt', 'nand', 'nor', 'not', 'buff', 'and', 'or', 'xor', 'xnor'):
             if len(groups) < 4:
                 logging.error(f"Invalid line fields for gate: {line}")
                 continue
@@ -94,7 +97,8 @@ def parse_netlist(content):
         # Create a gate object. both `from` or `regular` gate
         gate = Gate(gate_net_id, gate_id, gate_type, gate_fanout_cnt, gate_fanin_cnt, gate_faults, input_gates_netid_list,fanout_branch_from_netid,output_gates_netid_list)
         gates.append(gate)
-    
+
+    print("Netlist parsed. Next to process the output gates")
     return gates
 
 # Find a gate by its netid
@@ -115,6 +119,9 @@ def find_gate_by_gateid(gates, gate_id):
 # Print the circuit structure (gates and their connections)
 def populate_output_gates(gates):
     for gate in gates:
+        # if gate.gate_id == '737gat':
+            # print("debug")
+
         parent_gate = None
 
         
@@ -129,9 +136,10 @@ def populate_output_gates(gates):
                 continue
 
             if parent_gate.gate_type == "from":
-                parent_gate = find_gate_by_gateid(gates, parent_gate.fanout_branch_from_gateid)
+                t = parent_gate.fanout_branch_from_gateid
+                parent_gate = find_gate_by_gateid(gates, t)
                 if parent_gate is None:
-                    logging.error(f"Parent gate not found for {parent_gate.fanout_branch_from_gateid}")
+                    logging.error(f"Parent gate not found for {t}")
                     continue
 
             parent_gate.output_gates_netid_list.append(gate.gate_net_id)
@@ -143,10 +151,15 @@ def populate_output_gates(gates):
 
 def print_circuit_output(gates):
     for gate in gates:
+        # if gate.gate_id == '237gat':
+            # print("debug")
+        
         if gate.gate_type == "from":
             continue
         # if gate.gate_fanin_cnt>0:
             # print("TO: "+",".join(gate.input_gates_netid_list) +" -> "+gate.gate_id)
+
+        
         if gate.gate_fanout_cnt>0:
             print("FROM: " +gate.gate_net_id+" TO "+",".join(gate.output_gates_netid_list))
 
