@@ -1,0 +1,228 @@
+[
+    {
+        "line_number": "1",
+        "net_id": "1",
+        "identifier": "1gat",
+        "gate_type": "inpt",
+        "fanout": 1,
+        "fanin": 0,
+        "inputs": [],
+        "output": [
+            "10"
+        ],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "2",
+        "net_id": "2",
+        "identifier": "2gat",
+        "gate_type": "inpt",
+        "fanout": 1,
+        "fanin": 0,
+        "inputs": [],
+        "output": [
+            "16"
+        ],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "3",
+        "net_id": "3",
+        "identifier": "3gat",
+        "gate_type": "inpt",
+        "fanout": 2,
+        "fanin": 0,
+        "inputs": [],
+        "output": [
+            "10",
+            "11"
+        ],
+        "faults": ">sa0,>sa1"
+    },
+    {
+        "line_number": "8",
+        "net_id": "8",
+        "identifier": "8fan",
+        "gate_type": "from",
+        "fanout": 2,
+        "fanin": 0,
+        "inputs": [],
+        "output": [],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "9",
+        "net_id": "9",
+        "identifier": "9fan",
+        "gate_type": "from",
+        "fanout": 2,
+        "fanin": 0,
+        "inputs": [],
+        "output": [],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "6",
+        "net_id": "6",
+        "identifier": "6gat",
+        "gate_type": "inpt",
+        "fanout": 1,
+        "fanin": 0,
+        "inputs": [],
+        "output": [
+            "11"
+        ],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "7",
+        "net_id": "7",
+        "identifier": "7gat",
+        "gate_type": "inpt",
+        "fanout": 1,
+        "fanin": 0,
+        "inputs": [],
+        "output": [
+            "19"
+        ],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "10",
+        "net_id": "10",
+        "identifier": "10gat",
+        "gate_type": "nand",
+        "fanout": 1,
+        "fanin": 2,
+        "inputs": [
+            "1",
+            "8"
+        ],
+        "output": [
+            "22"
+        ],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "11",
+        "net_id": "11",
+        "identifier": "11gat",
+        "gate_type": "nand",
+        "fanout": 2,
+        "fanin": 2,
+        "inputs": [
+            "9",
+            "6"
+        ],
+        "output": [
+            "16",
+            "19"
+        ],
+        "faults": ">sa0,>sa1"
+    },
+    {
+        "line_number": "14",
+        "net_id": "14",
+        "identifier": "14fan",
+        "gate_type": "from",
+        "fanout": 2,
+        "fanin": 2,
+        "inputs": [],
+        "output": [],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "15",
+        "net_id": "15",
+        "identifier": "15fan",
+        "gate_type": "from",
+        "fanout": 2,
+        "fanin": 2,
+        "inputs": [],
+        "output": [],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "16",
+        "net_id": "16",
+        "identifier": "16gat",
+        "gate_type": "nand",
+        "fanout": 2,
+        "fanin": 2,
+        "inputs": [
+            "2",
+            "14"
+        ],
+        "output": [
+            "22",
+            "23"
+        ],
+        "faults": ">sa0,>sa1"
+    },
+    {
+        "line_number": "20",
+        "net_id": "20",
+        "identifier": "20fan",
+        "gate_type": "from",
+        "fanout": 2,
+        "fanin": 2,
+        "inputs": [],
+        "output": [],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "21",
+        "net_id": "21",
+        "identifier": "21fan",
+        "gate_type": "from",
+        "fanout": 2,
+        "fanin": 2,
+        "inputs": [],
+        "output": [],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "19",
+        "net_id": "19",
+        "identifier": "19gat",
+        "gate_type": "nand",
+        "fanout": 1,
+        "fanin": 2,
+        "inputs": [
+            "15",
+            "7"
+        ],
+        "output": [
+            "23"
+        ],
+        "faults": ">sa1"
+    },
+    {
+        "line_number": "22",
+        "net_id": "22",
+        "identifier": "22gat",
+        "gate_type": "nand",
+        "fanout": 0,
+        "fanin": 2,
+        "inputs": [
+            "10",
+            "20"
+        ],
+        "output": [],
+        "faults": ">sa0,>sa1"
+    },
+    {
+        "line_number": "23",
+        "net_id": "23",
+        "identifier": "23gat",
+        "gate_type": "nand",
+        "fanout": 0,
+        "fanin": 2,
+        "inputs": [
+            "21",
+            "19"
+        ],
+        "output": [],
+        "faults": ">sa0,>sa1"
+    }
+]
