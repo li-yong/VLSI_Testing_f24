@@ -13,7 +13,7 @@ $ python py_isc_parser/py_isc_parser.py --action parse_to_json --file_isc ./ISCA
 Netlist parsed. Next to process the output gates
 Circuit Json Output saved to ./c17.json
 
-$ head -15 ./c17.json
+$ less ./c17.json
 [
     {
         "line_number": "1",
@@ -29,6 +29,9 @@ $ head -15 ./c17.json
         "faults": ">sa1"
     },
     {
+        ...
+    }
+]
 ```
 
 More details can be found in py_isc_parser/README.md
@@ -40,8 +43,9 @@ It implemented reqirement #2, #3 and #4 in programing project 1 of 654 VLSI_Test
 
 ### How to run
 The tool developed in Ubuntu, but also have brief build and verification on Windows.
-Linux binary:   cpp_isc_parser.exe
-Windows binary: cpp_isc_parser_win.exe
+Linux binary:   `cpp_isc_parser.exe`
+
+Windows binary: `cpp_isc_parser_win.exe`
 
 ### Build/Installation
 flex and bison are required for build.
