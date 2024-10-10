@@ -39,22 +39,31 @@ C++ Parser read from the ISC file, then parse line by line to populate the circu
 It implemented reqirement #2, #3 and #4 in programing project 1 of 654 VLSI_Testing in Fall 2004.
 
 ### How to run
-you can download the cpp_isc_parser.exe or build it from the source.
+The tool developed in Ubuntu, but also have brief build and verification on Windows.
+Linux binary:   cpp_isc_parser.exe
+Windows binary: cpp_isc_parser_win.exe
 
 ### Build/Installation
 flex and bison are required for build.
 ```
-cd cpp_isc_parser/ &&  make 
+cd cpp_isc_parser &&  make 
 ```
+
+Build on Windows MSYS2 UCRT64 preferred.
 
 
 ### Usage
 To run the tool, use the following command:
 
+Linux:
 ```sh
-./cpp_isc_parser --parse_isc --file_isc <filename>
+./cpp_isc_parser.exe -parse_isc -file_isc <filename>
 ```
 
+Windows:
+```
+cpp_isc_parser_win.exe -parse_isc -file_isc <filename>
+```
 
 ### Cpp Parser Example
 ```bash
