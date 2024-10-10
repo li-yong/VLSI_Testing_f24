@@ -484,6 +484,7 @@ void trvel_netlist()
                 {
                     GATE *L2_input_gate = isc_Circuit.Find_Gate_by_name(input_gate->Get_isc_input_gates()[0]); // suppose FAN From only have **ONE** input defined in the isc.
                     g->AddInput_list(L2_input_gate);
+                    g->AddInput_fan_list(input_gate);
                 }
                 else
                 {

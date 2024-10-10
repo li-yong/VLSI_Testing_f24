@@ -449,7 +449,7 @@ void CIRCUIT::printGateIdTypeOutput()
 
 void CIRCUIT::printSA()
 {
-    unsigned no_gate_fanout, i;
+
     vector<GATE *>::iterator it_net;
 
     set<GATEFUNC> regular_gate_set = {G_NOT, G_AND, G_NAND, G_OR, G_NOR, G_BUF};
@@ -458,6 +458,8 @@ void CIRCUIT::printSA()
     {
         vector<string> input_gate = (*it_net)->Get_isc_input_gates();
         vector<GATE *> inputlist = (*it_net)->GetInput_list();
+        vector<GATE *> input_fan_list = (*it_net)->GetInput_fan_list();
+
         vector<GATE *> outputlist = (*it_net)->GetOutput_list();
         vector<string> SAlist = (*it_net)->Get_isc_StuckAt();
         GATEFUNC function = (*it_net)->GetFunction();
@@ -465,11 +467,9 @@ void CIRCUIT::printSA()
 
         if (netid == 10)
         {
-            cout << 1 << endl;
+            cout << "debug" << endl;
         }
 
-
-        
         if (function == G_FROM)
         {
             continue;
@@ -484,6 +484,28 @@ void CIRCUIT::printSA()
         // init input_gate_id_list to empty list
         input_gate_id_list = {};
 
+        // take care the fan from gate
+        if (input_fan_list.size() > 0)
+        {
+            for (size_t n2 = 0; n2 < input_fan_list.size(); ++n2)
+            {
+                int n = input_fan_list[n2]->Get_isc_net_id();             // 8 fanfrom
+                vector<string> f = input_fan_list[n2]->Get_isc_StuckAt(); // sa1. 8gateflt
+                vector<GATE *> g = input_fan_list[n2]->GetInput_list();   // 8gateinpt, which is 3gat
+
+                for (size_t n3 = 0; n3 < g.size(); ++n3)
+                {
+                    int gn = g[n3]->Get_isc_net_id(); // 3. got 3 gate
+
+                    for (size_t n4 = 0; n4 < f.size(); ++n4)
+                    {
+                        cout << net_id << "\t" << gn << "\t" << f[n4].substr(3) << endl;
+                    }
+                }
+            }
+        }
+
+        // no fan from since here.
         if (fi_cnt == 0)
         {
             input_gate_id_list.push_back("0");
@@ -508,31 +530,6 @@ void CIRCUIT::printSA()
             }
         }
 
-        // handle output list
-        // if (fo_cnt == 0)
-        // {
-        //     output_gate_id_list.push_back("0");
-        // }
-        // else
-        // {
-        //     for (size_t n = 0; n < outputlist.size(); ++n)
-        //     {
-        //         // push 0 to input_gate_id_list
-        //         GATEFUNC ipt_fun = outputlist[n]->GetFunction();
-
-        //         bool found = (regular_gate_set.find(ipt_fun) != regular_gate_set.end());
-
-        //         if (found)
-        //         {
-        //             output_gate_id_list.push_back(to_string(outputlist[n]->Get_isc_net_id()));
-        //         }
-        //         else
-        //         {
-        //             output_gate_id_list.push_back("0");
-        //         }
-        //     }
-        // }
-
         // iterate the outputlist, print each output gate id.
 
         for (size_t n1 = 0; n1 < SAlist.size(); ++n1)
@@ -544,12 +541,6 @@ void CIRCUIT::printSA()
 
             } // iterate the input_gate_id_list
 
-            // for (size_t n = 0; n < output_gate_id_list.size(); ++n)
-            // {
-
-            //     cout << output_gate_id_list[n] << "\t" << net_id << "\t" << SAlist[n1].substr(3) << endl;
-
-            // } // iterate the input_gate_id_list
         } // iterate the SAlist
     }
 }

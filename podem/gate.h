@@ -22,6 +22,7 @@ class GATE
 		GATEFUNC Function;
 		vector<GATE*> Input_list;
 		vector<GATE*> Output_list;
+		vector<GATE*> Input_fan_list; //gate10->gate8(fanfrom)->gate3. Save g3 to g10 Input_fan_list
 		bitset<NumFlags> Flag;
 		int Level;
 		VALUE Value;
@@ -43,6 +44,8 @@ class GATE
 		GATE(): Function(G_BAD), Level(-1), Value(X), Value_t(X), Inversion(false) {
 			Input_list.reserve(4);
 			Output_list.reserve(4);
+			Input_fan_list.reserve(4);
+
 			isc_StuckAtFaults.clear(); // Initialize the vector
 			// StuckAt[0]=0; //sa0 fault. 0 == no fault. 1==sa0. defined from ISCAS input.
 			// StuckAt[1]=0; //sa1 fault. 0 == no fault. 1==sa1
@@ -86,8 +89,14 @@ class GATE
 		void SetID(unsigned id){ ID = id;}
 		void SetFunction(GATEFUNC f){ Function = f;}
 		void AddInput_list(GATE* gptr){Input_list.push_back(gptr);}
+		void AddInput_fan_list(GATE* gptr){Input_fan_list.push_back(gptr);}
+
+		
 		vector<GATE*> &GetInput_list() { return Input_list; }
 		vector<GATE*> &GetOutput_list() { return Output_list; }
+		vector<GATE*> &GetInput_fan_list() { return Input_fan_list; }
+
+
 		void AddOutput_list(GATE* gptr){Output_list.push_back(gptr);}
 		void SetLevel(signed l){ Level = l;}
 		void SetValue(VALUE v) {Value = v;}
