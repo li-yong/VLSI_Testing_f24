@@ -277,6 +277,7 @@ class CIRCUIT
 		void printPOInputList();
 		void printGateOutput();
 		void printGateIdTypeOutput();
+		void printSA();
 
 		void InitializeQueue();
 		int get_max_netid();

@@ -446,3 +446,110 @@ void CIRCUIT::printGateIdTypeOutput()
         cout << netid << "\t" << function_s << "\t" << po << endl;
     }
 }
+
+void CIRCUIT::printSA()
+{
+    unsigned no_gate_fanout, i;
+    vector<GATE *>::iterator it_net;
+
+    set<GATEFUNC> regular_gate_set = {G_NOT, G_AND, G_NAND, G_OR, G_NOR, G_BUF};
+
+    for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
+    {
+        vector<string> input_gate = (*it_net)->Get_isc_input_gates();
+        vector<GATE *> inputlist = (*it_net)->GetInput_list();
+        vector<GATE *> outputlist = (*it_net)->GetOutput_list();
+        vector<string> SAlist = (*it_net)->Get_isc_StuckAt();
+        GATEFUNC function = (*it_net)->GetFunction();
+        int netid = (*it_net)->Get_isc_net_id();
+
+        if (netid == 10)
+        {
+            cout << 1 << endl;
+        }
+
+
+        
+        if (function == G_FROM)
+        {
+            continue;
+        }
+
+        int fi_cnt = (*it_net)->Get_isc_fi_cnt();
+        int fo_cnt = (*it_net)->Get_isc_fo_cnt();
+        string net_id = to_string((*it_net)->Get_isc_net_id());
+        vector<string> input_gate_id_list;
+        vector<string> output_gate_id_list;
+
+        // init input_gate_id_list to empty list
+        input_gate_id_list = {};
+
+        if (fi_cnt == 0)
+        {
+            input_gate_id_list.push_back("0");
+        }
+        else
+        {
+            for (size_t n = 0; n < inputlist.size(); ++n)
+            {
+                // push 0 to input_gate_id_list
+                GATEFUNC ipt_fun = inputlist[n]->GetFunction();
+
+                bool found = (regular_gate_set.find(ipt_fun) != regular_gate_set.end());
+
+                if (found)
+                {
+                    input_gate_id_list.push_back(to_string(inputlist[n]->Get_isc_net_id()));
+                }
+                else
+                {
+                    input_gate_id_list.push_back("0");
+                }
+            }
+        }
+
+        // handle output list
+        // if (fo_cnt == 0)
+        // {
+        //     output_gate_id_list.push_back("0");
+        // }
+        // else
+        // {
+        //     for (size_t n = 0; n < outputlist.size(); ++n)
+        //     {
+        //         // push 0 to input_gate_id_list
+        //         GATEFUNC ipt_fun = outputlist[n]->GetFunction();
+
+        //         bool found = (regular_gate_set.find(ipt_fun) != regular_gate_set.end());
+
+        //         if (found)
+        //         {
+        //             output_gate_id_list.push_back(to_string(outputlist[n]->Get_isc_net_id()));
+        //         }
+        //         else
+        //         {
+        //             output_gate_id_list.push_back("0");
+        //         }
+        //     }
+        // }
+
+        // iterate the outputlist, print each output gate id.
+
+        for (size_t n1 = 0; n1 < SAlist.size(); ++n1)
+        {
+            for (size_t n = 0; n < input_gate_id_list.size(); ++n)
+            {
+
+                cout << net_id << "\t" << input_gate_id_list[n] << "\t" << SAlist[n1].substr(3) << endl;
+
+            } // iterate the input_gate_id_list
+
+            // for (size_t n = 0; n < output_gate_id_list.size(); ++n)
+            // {
+
+            //     cout << output_gate_id_list[n] << "\t" << net_id << "\t" << SAlist[n1].substr(3) << endl;
+
+            // } // iterate the input_gate_id_list
+        } // iterate the SAlist
+    }
+}

@@ -68,7 +68,10 @@ int main(int argc, char **argv)
         // isc_Circuit->printNetlist();
         // isc_Circuit->printPOInputList();
         // isc_Circuit->printGateOutput();
-        isc_Circuit->printGateIdTypeOutput();
+
+
+        // isc_Circuit->printGateIdTypeOutput();
+        isc_Circuit->printSA();
 
 
         time_end = clock();

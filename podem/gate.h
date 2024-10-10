@@ -68,7 +68,7 @@ class GATE
 		void SetName(string n){ Name = n;}
 
 		void Set_isc_StuckAt(const vector<string>& faults){isc_StuckAtFaults = faults;}
-		vector<string> Set_isc_StuckAt(){return isc_StuckAtFaults;}
+		vector<string> Get_isc_StuckAt(){return isc_StuckAtFaults;}
 
 		void Set_isc_net_id(int id){isc_net_id = id;}
 		int  Get_isc_net_id(){return isc_net_id;};
