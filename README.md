@@ -38,12 +38,15 @@ C++ Parser read from the ISC file, then parse line by line to populate the circu
 
 It implemented reqirement #2, #3 and #4 in programing project 1 of 654 VLSI_Testing in Fall 2004.
 
- 
+### How to run
+you can download the cpp_isc_parser.exe or build it from the source.
+
 ### Build/Installation
 flex and bison are required for build.
 ```
 cd cpp_isc_parser/ &&  make 
 ```
+
 
 ### Usage
 To run the tool, use the following command:
@@ -55,7 +58,7 @@ To run the tool, use the following command:
 
 ### Cpp Parser Example
 ```bash
-$ ./cpp_isc_parser/cpp_isc_parser -parse_isc -file_isc ISCAS-85/c17.isc 
+$ ./cpp_isc_parser/cpp_isc_parser.exe -parse_isc -file_isc ISCAS-85/c17.isc 
 Gate_number	Gate_type	Fanout_gates_list
 1	PI	 10
 2	PI	 16

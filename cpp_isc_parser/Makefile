@@ -23,7 +23,7 @@ SOURCES = readcircuit.tab.cc lex.yy.cc circuit.cc main.cc GetLongOpt.cc sim.cc\
 OBJECTS = readcircuit.tab.o lex.yy.o circuit.o main.o GetLongOpt.o sim.o \
 					parser_isc.o fsim.o  path.o
 
-TARGET  = cpp_isc_parser
+TARGET  = cpp_isc_parser.exe
 
 ####### Implicit rules
 
