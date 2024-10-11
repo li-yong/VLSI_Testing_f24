@@ -25,7 +25,7 @@ int SetupOption(int argc, char **argv)
 {
 
     option.enroll("action", GetLongOpt::MandatoryValue,
-                  "Action to perform, available options: \n  \t\parse_isc: parse the input isc file", 0);
+                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file", 0);
 
     option.enroll("file_isc", GetLongOpt::MandatoryValue,
                   "Input isc circuit file path. e.g C17.isc", 0);
