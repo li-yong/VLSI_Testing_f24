@@ -3,6 +3,8 @@
 This project is a VLSI testing tool designed to parse ISC files and populate the circuit netlist. The tool is implemented in C++ and Python, offering various functionalities for circuit analysis and testing.
 
 ## Binaries and Scripts 
+The project is hosted on https://github.com/li-yong/VLSI_Testing_f24
+
 The compiled C++ binaries are located in `cpp_isc_parser/bin/`. Both Linux and Windows versions are provided:
 
 ```
