@@ -293,10 +293,10 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
 {
 
     string name = input_gate_of_cur->Get_isc_identifier();
-    if (name == "10gat") // debug
-    {
-        cout << 1 << endl;
-    }
+    // if (name == "10gat") // debug
+    // {
+    //     cout << 1 << endl;
+    // }
 
     if (cur_gate->GetFunction() == G_FROM)
     {
@@ -324,7 +324,7 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
             // cout << "add gate output, FROM " << input_gate_of_cur->Get_isc_identifier() << " TO " << cur_gate->Get_isc_identifier() << endl;
             L2_input_gate->AddOutput_list(cur_gate);
 
-            cout << "add fan gate output, FROM " << L2_input_gate->Get_isc_identifier() << " TO " << input_gate_of_cur->Get_isc_identifier() << endl; // add fan gate output, FROM 3gat TO 8fan
+            // cout << "add fan gate output, FROM " << L2_input_gate->Get_isc_identifier() << " TO " << input_gate_of_cur->Get_isc_identifier() << endl; // add fan gate output, FROM 3gat TO 8fan
             L2_input_gate->AddOutput_fan_list(input_gate_of_cur);                                                                                     // L2_input_gate: 3gat, input_gate_of_cur: 8fan
         }
     }
@@ -447,10 +447,10 @@ void trvel_netlist()
                 GATE *input_gate = isc_Circuit.Find_Gate_by_isc_netid(stoi(ipt));
 
                 // debug
-                if (input_gate->Get_isc_identifier() == "8fan")
-                {
-                    cout << 1 << endl;
-                }
+                // if (input_gate->Get_isc_identifier() == "8fan")
+                // {
+                //     cout << 1 << endl;
+                // }
 
                 update_output_from_input(g, input_gate);
             }
@@ -468,10 +468,10 @@ void trvel_netlist()
 
                 // // debug
 
-                if (name == "10gat")
-                {
-                    cout << 1 << endl;
-                }
+                // if (name == "10gat")
+                // {
+                //     cout << 1 << endl;
+                // }
 
                 // if (input_gate->Get_isc_identifier() == "10gat")
                 // {

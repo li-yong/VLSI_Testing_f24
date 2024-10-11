@@ -1,11 +1,11 @@
 # VLSI-Testing
 
-This project is a VLSI testing tool designed to parse ISC files, and populate the circuit netlist. The tool is implemented in C++ and Python with various functionalities for circuit analysis and testing.
+This project is a VLSI testing tool designed to parse ISC files and populate the circuit netlist. The tool is implemented in C++ and Python, offering various functionalities for circuit analysis and testing.
 
-The Project contains two implementations:
+The project includes two implementations:
 ## Python Parser
-The Python parser reads the ISC file, populate the netlist and saved to a python file.  
-The Python parse implemented reqirement #1 and part of #2 in programing project 1 of 654 VLSI_Testing in Fall 2004.
+The Python parser reads the ISC file, populates the netlist, and saves it to a Python file.
+The Python parser implements requirement #1 and part of #2 in Programming Project 1 of the 654 VLSI Testing course, Fall 2004
 
 Python Parser Example:
 ```bash
@@ -37,24 +37,24 @@ $ less ./c17.json
 More details can be found in py_isc_parser/README.md
 
 ## C++ Parser 
-C++ Parser read from the ISC file, then parse line by line to populate the circuit network.
+The C++ parser reads from the ISC file and parses it line by line to populate the circuit netlist.
 
-It implemented reqirement #2, #3 and #4 in programing project 1 of 654 VLSI_Testing in Fall 2004.
+It implements requirements #2, #3, and #4 of Programming Project 1 for the 654 VLSI Testing course, Fall 2004.
 
 ### How to run
-The tool developed in Ubuntu, but also have brief build and verification on Windows.
+The tool was developed on Ubuntu but has also been built and verified on Windows.
 
 Linux binary:   `cpp_isc_parser.exe`
 
 Windows binary: `cpp_isc_parser_win.exe`
 
 ### Build/Installation
-flex and bison are required for build.
+`flex` and `bison` are required for the build process.
 ```
 cd cpp_isc_parser &&  make 
 ```
 
-Build on Windows MSYS2 UCRT64 preferred.
+For Windows, building with MSYS2 UCRT64 is preferred.
 
 
 ### Usage
@@ -62,18 +62,20 @@ To run the tool, use the following command:
 
 Linux:
 ```sh
-./cpp_isc_parser.exe -parse_isc -file_isc <filename>
+./cpp_isc_parser.exe -action parse_isc -file_isc  <filename>
 ```
 
 Windows:
 ```
-cpp_isc_parser_win.exe -parse_isc -file_isc <filename>
+cpp_isc_parser_win.exe -action parse_isc -file_isc  <filename>
 ```
 
 ### Cpp Parser Example
 ```bash
-$ ./cpp_isc_parser/cpp_isc_parser.exe -parse_isc -file_isc ISCAS-85/c17.isc 
-Gate_number	Gate_type	Fanout_gates_list
+$ ./cpp_isc_parser/cpp_isc_parser.exe -action parse_isc -file_isc ./ISCAS-85/c17.isc 
+ISC file: ./ISCAS-85/c17.isc
+
+Gate	Type	Fanout
 1	PI	 10
 2	PI	 16
 3	PI	 10 11
@@ -93,23 +95,24 @@ Gate1	Gate2	Fault
 2	0	1
 3	0	0
 3	0	1
+10	3	1
+11	3	1
 6	0	1
 7	0	1
-10	3	1
 10	0	1
-11	3	1
 11	0	0
 11	0	1
 16	11	1
+19	11	1
 16	0	0
 16	0	1
-19	11	1
-19	0	1
 22	16	1
+23	16	1
+19	0	1
 22	0	0
 22	0	1
-23	16	1
 23	0	0
 23	0	1
-Press Enter to continue...
+
+Circuit processing completed. ./ISCAS-85/c17.isc
 ```
