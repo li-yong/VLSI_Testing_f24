@@ -458,21 +458,23 @@ void CIRCUIT::printSA()
         vector<string> input_gate = (*it_net)->Get_isc_input_gates();
         vector<GATE *> inputlist = (*it_net)->GetInput_list();
         vector<GATE *> input_fan_list = (*it_net)->GetInput_fan_list();
+        vector<GATE *> output_fan_list = (*it_net)->GetOutput_fan_list();
 
         vector<GATE *> outputlist = (*it_net)->GetOutput_list();
         vector<string> SAlist = (*it_net)->Get_isc_StuckAt();
         GATEFUNC function = (*it_net)->GetFunction();
         int netid = (*it_net)->Get_isc_net_id();
 
-        // if (netid == 10)
-        // {
-        //     cout << "debug" << endl;
-        // }
+        if (netid == 3)
+        {
+            cout << "debug" << endl;
+        }
 
         if (function == G_FROM)
         {
             continue;
         }
+
 
         int fi_cnt = (*it_net)->Get_isc_fi_cnt();
         int fo_cnt = (*it_net)->Get_isc_fo_cnt();
@@ -480,38 +482,42 @@ void CIRCUIT::printSA()
         vector<string> input_gate_id_list;
         vector<string> output_gate_id_list;
 
+        // no fan from since here.
+        for (size_t n1 = 0; n1 < SAlist.size(); ++n1)
+        {
+            cout << net_id << "\t" << 0 << "\t" << SAlist[n1].substr(3) << endl;
+        } // iterate the SAlist
+
+
         // init input_gate_id_list to empty list
         input_gate_id_list = {};
 
-        // take care the fan from gate
-        if (input_fan_list.size() > 0)
+        // take care the inputfan from gate. If a input gate is fan from gate.
+        for (size_t n2 = 0; n2 < input_fan_list.size(); ++n2)
         {
-            for (size_t n2 = 0; n2 < input_fan_list.size(); ++n2)
+            int n = input_fan_list[n2]->Get_isc_net_id();             // 8 fanfrom
+            vector<string> f = input_fan_list[n2]->Get_isc_StuckAt(); // sa1. 8gateflt
+            vector<GATE *> g = input_fan_list[n2]->GetInput_list();   // 8gateinpt, which is 3gat
+
+            for (size_t n3 = 0; n3 < g.size(); ++n3)
             {
-                int n = input_fan_list[n2]->Get_isc_net_id();             // 8 fanfrom
-                vector<string> f = input_fan_list[n2]->Get_isc_StuckAt(); // sa1. 8gateflt
-                vector<GATE *> g = input_fan_list[n2]->GetInput_list();   // 8gateinpt, which is 3gat
+                int gn = g[n3]->Get_isc_net_id(); // 3. got 3 gate
 
-                for (size_t n3 = 0; n3 < g.size(); ++n3)
+                for (size_t n4 = 0; n4 < f.size(); ++n4)
                 {
-                    int gn = g[n3]->Get_isc_net_id(); // 3. got 3 gate
-
-                    for (size_t n4 = 0; n4 < f.size(); ++n4)
-                    {
-                        cout << net_id << "\t" << gn << "\t" << f[n4].substr(3) << endl;
-                    }
+                    // cout << net_id << "\t" << gn << "\t" << f[n4].substr(3) << endl; //yong debug
                 }
             }
         }
 
-        // no fan from since here.
-
-
-        for (size_t n1 = 0; n1 < SAlist.size(); ++n1)
-        {
-
-            cout << net_id << "\t" << 0 << "\t" << SAlist[n1].substr(3) << endl;
-
-        } // iterate the SAlist
+        // take care the output fanfrom gate. If a output gate is fan from gate.
+        for (size_t n5 = 0; n5 < output_fan_list.size(); ++n5)
+        {   
+            
+            int a = output_fan_list[n5]->GetOutput_list()[0]->Get_isc_net_id(); //10, 10gat
+            int b = netid; // 3, 3fan
+            string c = output_fan_list[n5]->Get_isc_StuckAt()[0].substr(3);
+            cout << a << "\t" << b << "\t" << c << endl;
+        }
     }
 }

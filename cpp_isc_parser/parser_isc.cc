@@ -293,10 +293,10 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
 {
 
     string name = input_gate_of_cur->Get_isc_identifier();
-    // if (name == "16gat") // debug
-    // {
-    //     cout << 1 << endl;
-    // }
+    if (name == "10gat") // debug
+    {
+        cout << 1 << endl;
+    }
 
     if (cur_gate->GetFunction() == G_FROM)
     {
@@ -323,6 +323,9 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
             }
             // cout << "add gate output, FROM " << input_gate_of_cur->Get_isc_identifier() << " TO " << cur_gate->Get_isc_identifier() << endl;
             L2_input_gate->AddOutput_list(cur_gate);
+
+            cout << "add fan gate output, FROM " << L2_input_gate->Get_isc_identifier() << " TO " << input_gate_of_cur->Get_isc_identifier() << endl; // add fan gate output, FROM 3gat TO 8fan
+            L2_input_gate->AddOutput_fan_list(input_gate_of_cur);                                                                                     // L2_input_gate: 3gat, input_gate_of_cur: 8fan
         }
     }
     else if (input_gate_of_cur->GetFunction() != G_PO)
@@ -340,7 +343,6 @@ void update_fan_from_input()
     // cout << "func update_fan_from_input <<<" << endl;
 
     vector<GATE *> netlist = isc_Circuit.GetNetlist();
-
 
     for (unsigned i = 0; i < netlist.size(); i++)
     {
@@ -406,7 +408,6 @@ void trvel_netlist()
     // 2nd run to parse input. Becasue in 1st run, input gates may be used **before** reference.
     vector<GATE *> netlist = isc_Circuit.GetNetlist();
 
-
     int max_net_id = get_max_netid();
 
     for (unsigned i = 0; i < netlist.size(); i++)
@@ -419,9 +420,10 @@ void trvel_netlist()
         int fo = g->Get_isc_fo_cnt();
         int fi = g->Get_isc_fi_cnt();
 
-        if (fo==0){
+        if (fo == 0)
+        {
             // cout << "no downstream gate" << endl;
-            //make a po gate
+            // make a po gate
             GATE *po = new GATE();
             po->SetFunction(G_PO);
             isc_Circuit.AddGate(po);
@@ -429,7 +431,6 @@ void trvel_netlist()
             max_net_id += 1;
             po->Set_isc_net_id(max_net_id);
             g->AddOutput_list(po);
-            
         }
 
         // cout << "current g:" + name + "   type " << endl;
@@ -446,10 +447,10 @@ void trvel_netlist()
                 GATE *input_gate = isc_Circuit.Find_Gate_by_isc_netid(stoi(ipt));
 
                 // debug
-                // if (input_gate->Get_isc_identifier() == "8fan")
-                // {
-                //     cout << 1 << endl;
-                // }
+                if (input_gate->Get_isc_identifier() == "8fan")
+                {
+                    cout << 1 << endl;
+                }
 
                 update_output_from_input(g, input_gate);
             }
@@ -466,6 +467,12 @@ void trvel_netlist()
                 GATE *input_gate = isc_Circuit.Find_Gate_by_isc_netid(stoi(ipt));
 
                 // // debug
+
+                if (name == "10gat")
+                {
+                    cout << 1 << endl;
+                }
+
                 // if (input_gate->Get_isc_identifier() == "10gat")
                 // {
                 //     cout << 1 << endl;
@@ -481,7 +488,8 @@ void trvel_netlist()
                 {
                     GATE *L2_input_gate = isc_Circuit.Find_Gate_by_name(input_gate->Get_isc_input_gates()[0]); // suppose FAN From only have **ONE** input defined in the isc.
                     g->AddInput_list(L2_input_gate);
-                    g->AddInput_fan_list(input_gate);
+                    g->AddInput_fan_list(input_gate); // add 8fan as input of 10gat
+                    input_gate->AddOutput_list(g); // add 10gat as output of 8fan
                 }
                 else
                 {
