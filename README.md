@@ -2,12 +2,25 @@
 
 This project is a VLSI testing tool designed to parse ISC files and populate the circuit netlist. The tool is implemented in C++ and Python, offering various functionalities for circuit analysis and testing.
 
+## Binaries and Scripts 
+The compiled C++ binaries are located in `cpp_isc_parser/bin/`. Both Linux and Windows versions are provided:
+
+```
+cpp_isc_parser.exe        # Linux binary
+cpp_isc_parser_win.exe    # Windows binary
+```
+
+The Python script for parsing ISC files into JSON format can be found in the `py_isc_parser` directory:
+```
+py_isc_parser.py 
+```
+
 The project includes two implementations:
 ## Python Parser
 The Python parser reads the ISC file, populates the netlist, and saves it to a Python file.
 The Python parser implements requirement #1 and part of #2 in Programming Project 1 of the 654 VLSI Testing course, Fall 2004
 
-Python Parser Example:
+### Python Parser Example:
 ```bash
 $ python py_isc_parser/py_isc_parser.py --action parse_to_json --file_isc ./ISCAS-85/c17.isc  --out_json ./c17.json
 Netlist parsed. Next to process the output gates
