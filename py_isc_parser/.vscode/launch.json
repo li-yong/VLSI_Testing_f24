@@ -12,7 +12,7 @@
             "console": "integratedTerminal",
             "args": [
                 "--file_isc",
-                "${workspaceFolder}/../circuits/c17isc.txt",
+                "${workspaceFolder}/../circuits/ISCAS-85/c880.isc",
                 "--action",
                 "parse_to_json",
                 "--out_json",
