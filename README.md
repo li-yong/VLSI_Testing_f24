@@ -49,7 +49,7 @@ $ less ./c17.json
 ]
 ```
 
-More details can be found in py_isc_parser/README.md
+More details can be found in `py_isc_parser/README.md`
 
 ## C++ Parser 
 The C++ parser reads from the ISC file and parses it line by line to populate the circuit netlist.
