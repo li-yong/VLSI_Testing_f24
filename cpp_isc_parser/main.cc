@@ -49,7 +49,7 @@ int SetupOption(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-    // int optind = SetupOption(argc, argv);
+    SetupOption(argc, argv);
 
     // Start parsing ISC
     CIRCUIT *isc_Circuit = new CIRCUIT();
