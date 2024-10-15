@@ -316,7 +316,7 @@ void CIRCUIT::SetupIO_ID()
 // Print out the netlist stored in the Netlist data structure
 void CIRCUIT::printNetlist()
 {
-    char *GATEFUNC_Table[12] = {"G_PI", "G_PO", "G_PPI", "G_PPO", "G_NOT",
+    const char *GATEFUNC_Table[12] = {"G_PI", "G_PO", "G_PPI", "G_PPO", "G_NOT",
                                 "G_AND", "G_NAND", "G_OR", "G_NOR", "G_DFF", "G_BUF", "G_BAD"};
     vector<GATE *>::iterator it_net;
 
