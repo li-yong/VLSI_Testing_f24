@@ -32,8 +32,8 @@ class CIRCUIT
 		list<FAULT*> UFlist; //undetected fault list
 		list<TFAULT*> TFlist; //collapsing fault list
 		list<TFAULT*> UTFlist; //undetected fault list
-		unsigned MaxLevel;
-		unsigned BackTrackLimit; //backtrack limit for Podem
+		int MaxLevel;
+		int BackTrackLimit; //backtrack limit for Podem
 		typedef list<GATE*> ListofGate;
 		typedef list<GATE*>::iterator ListofGateIte;
 		ListofGate* Queue;
@@ -47,10 +47,10 @@ class CIRCUIT
 		string input_name, output_name;
 		ofstream ofs; // for printing logicsim output file
 		//VLSI-Testing Lab3
-		unsigned int evaluation_count;
+		int evaluation_count;
 		double avg_eval_cnt_pattern;
 		double percent_eval_cnt;
-		unsigned pattern_num;
+		int pattern_num;
 		ofstream ofsHeader, ofsMain, ofsEva, ofsPrintIO;
 		//VLSI-Testing Lab4
 		list<FAULT*> CPFlist; //collapsing fault list
@@ -70,8 +70,8 @@ class CIRCUIT
 			evaluation_count = 0;
 			pattern_num = 0;
 		}
-		CIRCUIT(unsigned NO_GATE, unsigned NO_PI = 128, unsigned NO_PO = 512,
-				unsigned NO_PPI = 2048, unsigned NO_PPO = 2048) {
+		CIRCUIT(int NO_GATE, int NO_PI = 128, int NO_PO = 512,
+				int NO_PPI = 2048, int NO_PPO = 2048) {
 			Netlist.reserve(NO_GATE);
 			PIlist.reserve(NO_PI);
 			POlist.reserve(NO_PO);
@@ -83,7 +83,7 @@ class CIRCUIT
 			pattern_num = 0;
 		}
 		~CIRCUIT() {
-			for (unsigned i = 0;i<Netlist.size();++i) { delete Netlist[i]; }
+			for (long unsigned i = 0;i<Netlist.size();++i) { delete Netlist[i]; }
 			list<FAULT*>::iterator fite;
 			for (fite = Flist.begin();fite!=Flist.end();++fite) { delete *fite; }
 			if(ofs.is_open())
@@ -107,14 +107,14 @@ class CIRCUIT
 		void SetNetlist(vector<GATE*> nlst ){Netlist = nlst;}
 
 		int GetMaxLevel(){ return MaxLevel;}
-		void SetBackTrackLimit(unsigned bt) { BackTrackLimit = bt; }
+		void SetBackTrackLimit(int bt) { BackTrackLimit = bt; }
 		// GATE* GetNetlist()( return Netlist; ) //yong
 		//Access the gates by indexes
-		GATE* Gate(unsigned index) { return Netlist[index]; }
-		GATE* PIGate(unsigned index) { return PIlist[index]; }
-		GATE* POGate(unsigned index) { return POlist[index]; }
-		GATE* PPIGate(unsigned index) { return PPIlist[index]; }
-		GATE* PPOGate(unsigned index) { return PPOlist[index]; }
+		GATE* Gate(int index) { return Netlist[index]; }
+		GATE* PIGate(int index) { return PIlist[index]; }
+		GATE* POGate(int index) { return POlist[index]; }
+		GATE* PPIGate(int index) { return PPIlist[index]; }
+		GATE* PPOGate(int index) { return PPOlist[index]; }
 
 		GATE* Find_Gate_by_name(string name){
 			GATE* gptr;
@@ -148,11 +148,11 @@ class CIRCUIT
 
 		}
 
-		unsigned No_Gate() { return Netlist.size(); }
-		unsigned No_PI() { return PIlist.size(); }
-		unsigned No_PO() { return POlist.size(); }
-		unsigned No_PPI() { return PPIlist.size(); }
-		unsigned No_PPO() { return PPOlist.size(); }
+		int No_Gate() { return Netlist.size(); }
+		int No_PI() { return PIlist.size(); }
+		int No_PO() { return POlist.size(); }
+		int No_PPI() { return PPIlist.size(); }
+		int No_PPO() { return PPOlist.size(); }
 
 		void copyPItoPattern(){
 			vector<GATE*>::iterator it; 
@@ -246,7 +246,7 @@ class CIRCUIT
 		// VLST-Testing Lab6
 		void AtpgRandomPattern();
 		void GenerateAllCPFaultListForFsim();
-		unsigned FaultSimRandomPattern();
+		int FaultSimRandomPattern();
 		void closeOfs() { 
 			if(ofs.is_open())
 				ofs.close(); 
@@ -292,7 +292,7 @@ class CIRCUIT
 		bool CheckTest();
 		bool TraceUnknownPath(GATEPTR gptr);
 		bool FaultEvaluate(FAULT* fptr);
-		ATPG_STATUS Podem(FAULT* fptr, unsigned &total_backtrack_num);
+		ATPG_STATUS Podem(FAULT* fptr, int &total_backtrack_num);
 		ATPG_STATUS SetUniqueImpliedValue(FAULT* fptr);
 		ATPG_STATUS BackwardImply(GATEPTR gptr, VALUE value);
 		GATEPTR FindPropagateGate();

@@ -49,10 +49,10 @@ int SetupOption(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-    int optind = SetupOption(argc, argv);
+    // int optind = SetupOption(argc, argv);
 
     // Start parsing ISC
-    CIRCUIT *isc_Circuit;
+    CIRCUIT *isc_Circuit = new CIRCUIT();
 
     string action = (string)option.retrieve("action");
     string file_isc = (string)option.retrieve("file_isc");

@@ -231,7 +231,7 @@ void processBuffer(const string &buffer)
         // Check if there are at least 3 fields and if the 3rd field is "nand"
         string func = fields[2];
 
-        if (func == "nand" | func == "and" | func == "or" | func == "not" | func == "nor" | func == "buff")
+        if (func == "nand" || func == "and" || func == "or" || func == "not" || func == "nor" || func == "buff")
         {
             if (func == "nand")
             {
@@ -308,7 +308,7 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
     {
 
         string n = input_gate_of_cur->Get_isc_identifier();
-        int isc_net_id = input_gate_of_cur->Get_isc_net_id();
+        // int isc_net_id = input_gate_of_cur->Get_isc_net_id();
 
         vector<string> L2_input_list = input_gate_of_cur->Get_isc_input_gates();
         for (size_t i2 = 0; i2 < L2_input_list.size(); ++i2)
@@ -418,7 +418,7 @@ void trvel_netlist()
         GATEFUNC fun = g->GetFunction();
 
         int fo = g->Get_isc_fo_cnt();
-        int fi = g->Get_isc_fi_cnt();
+        // int fi = g->Get_isc_fi_cnt();
 
         if (fo == 0)
         {
@@ -456,7 +456,7 @@ void trvel_netlist()
             }
         }
 
-        if (fun == G_NAND | fun == G_NOT | fun == G_AND | fun == G_NAND | fun == G_OR | fun == G_NOR | fun == G_DFF | fun == G_BUF | fun == G_PO)
+        if (fun == G_NAND || fun == G_NOT || fun == G_AND || fun == G_NAND || fun == G_OR || fun == G_NOR ||fun == G_DFF || fun == G_BUF || fun == G_PO)
         {
 
             for (size_t i = 0; i < inputlist.size(); ++i)

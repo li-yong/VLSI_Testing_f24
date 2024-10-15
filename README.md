@@ -64,7 +64,6 @@ Linux binary:   `cpp_isc_parser.exe`
 Windows binary: `cpp_isc_parser_win.exe`
 
 ### Build/Installation
-`flex` and `bison` are required for the build process.
 ```
 cd cpp_isc_parser &&  make 
 ```

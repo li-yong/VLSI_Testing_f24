@@ -22,18 +22,7 @@ void PATTERN::Initialize(char* InFileName, int no_pi, string TAG)
     }
     string piname;
     while (no_pi_infile < no_pi) {
-        patterninput >> piname;
-        if (piname == TAG) {
-            patterninput >> piname;
-            inlist.push_back(NameToGate(piname));
-            no_pi_infile++;
-        }
-        else {
-            cout << "Error in input pattern file at line "
-                << no_pi_infile << endl;
-            cout << "Maybe insufficient number of input\n";
-            exit( -1);
-        }
+
     }
     return;
 }

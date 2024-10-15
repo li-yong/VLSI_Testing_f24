@@ -2,8 +2,9 @@
 CXX      = g++
 LINK     = g++
 # Remove -DDEBUG flag for VLST-Testing Lab0
-CXXFLAGS = -O2 -Wno-all -g
+# CXXFLAGS = -O2 -Wno-all -g
 # CXXFLAGS = -O2 -Wall -DDEBUG
+CXXFLAGS = -O2 -Wall 
 # CXXFLAGS = -g -DDEBUG_ATPG -Wall #Turn on debugging
 INCPATH  =
 LIBS     = 
@@ -13,14 +14,14 @@ MEMUSG	 = /usr/bin/time -f "Average memory usage: %K \nMaximum memory usage: %M\
 
 ####### Files
 
-HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h readcircuit.tab.h pattern.h hash.h tfault.h
+HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h pattern.h hash.h tfault.h
 
 # Add source file assignment.c to be compiled
-SOURCES = readcircuit.tab.cc lex.yy.cc circuit.cc main.cc GetLongOpt.cc sim.cc\
+SOURCES = circuit.cc main.cc GetLongOpt.cc sim.cc\
 					parser_isc.cc fsim.cc path.cc
 
 # Add object file assignment.o to be linked
-OBJECTS = readcircuit.tab.o lex.yy.o circuit.o main.o GetLongOpt.o sim.o \
+OBJECTS = circuit.o main.o GetLongOpt.o sim.o \
 					parser_isc.o fsim.o  path.o
 
 TARGET  = cpp_isc_parser.exe
@@ -43,15 +44,7 @@ $(TARGET): $(OBJECTS)
 
 $(OBJECTS): $(HEADERS) Makefile
 
-readcircuit.tab.cc: readcircuit.y gate.h circuit.h
-	bison -d -t readcircuit.y
-	mv readcircuit.tab.c readcircuit.tab.cc
 
-lex.yy.cc: readcircuit.l readcircuit.y
-	flex readcircuit.l 
-	mv lex.yy.c lex.yy.cc
-
-.PHONY: clean c17 c880 c7552 s35 s384 s385 b17
 clean:
 	@$(DEL_FILE) $(OBJECTS) $(TARGET)
 	@$(DEL_FILE) readcircuit.tab.cc readcircuit.tab.h lex.yy.cc

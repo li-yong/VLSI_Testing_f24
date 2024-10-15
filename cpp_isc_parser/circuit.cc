@@ -12,7 +12,7 @@ extern GetLongOpt option;
 
 void CIRCUIT::FanoutList()
 {
-    unsigned i = 0, j;
+    int i = 0, j;
     GATE *gptr;
     for (; i < No_Gate(); i++)
     {
@@ -53,10 +53,8 @@ void CIRCUIT::Levelize()
 {
     list<GATE *> Queue;
     GATE *gptr;
-    GATE *out;
-    unsigned j = 0;
 
-    for (unsigned i = 0; i < No_PI(); i++)
+    for (int i = 0; i < No_PI(); i++)
     {
         gptr = PIGate(i);
         gptr->SetLevel(0);
@@ -77,7 +75,7 @@ void CIRCUIT::Levelize()
             break;
         }
 
-        for (int i = 0; i < v.size(); i++)
+        for (long unsigned i = 0; i < v.size(); i++)
         {
             if (v[i]->GetFunction() == G_FROM)
             {
@@ -103,7 +101,7 @@ vector<GATE *> CIRCUIT::GetGateInLevel(int cur_lv)
     // int cur_lv = 0;
     vector<GATE *> gates_in_next_lv;
 
-    for (int i = 0; i < Netlist.size(); i++)
+    for (long unsigned i = 0; i < Netlist.size(); i++)
     {
         string name = Netlist[i]->Get_isc_identifier();
         int lvl = Netlist[i]->GetLevel();
@@ -132,10 +130,10 @@ void CIRCUIT::Levelize_1()
 {
     list<GATE *> Queue;
     GATE *gptr;
-    GATE *out;
-    unsigned j = 0;
+    // GATE *out;
+    // int j = 0;
 
-    for (unsigned i = 0; i < No_PI(); i++)
+    for (int i = 0; i < No_PI(); i++)
     {
         gptr = PIGate(i);
         // cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
@@ -151,8 +149,8 @@ void CIRCUIT::Levelize_0()
     list<GATE *> Queue;
     GATE *gptr;
     GATE *out;
-    unsigned j = 0;
-    for (unsigned i = 0; i < No_PI(); i++)
+    int j = 0;
+    for (int i = 0; i < No_PI(); i++)
     {
         gptr = PIGate(i);
         gptr->SetLevel(0);
@@ -170,7 +168,7 @@ void CIRCUIT::Levelize_0()
             }
         }
     }
-    for (unsigned i = 0; i < No_PPI(); i++)
+    for (int i = 0; i < No_PPI(); i++)
     {
         gptr = PPIGate(i);
         gptr->SetLevel(0);
@@ -212,7 +210,7 @@ void CIRCUIT::Levelize_0()
             }
         }
     }
-    for (unsigned i = 0; i < No_Gate(); i++)
+    for (int i = 0; i < No_Gate(); i++)
     {
         Gate(i)->ResetCount();
     }
@@ -223,7 +221,7 @@ void CIRCUIT::Check_Levelization()
 
     GATE *gptr;
     GATE *in;
-    unsigned i, j;
+    int i, j;
     for (i = 0; i < No_Gate(); i++)
     {
         gptr = Gate(i);
@@ -263,7 +261,7 @@ void CIRCUIT::Check_Levelization()
 
 void CIRCUIT::SetMaxLevel()
 {
-    for (unsigned i = 0; i < No_Gate(); i++)
+    for (int i = 0; i < No_Gate(); i++)
     {
         if (Gate(i)->GetLevel() > MaxLevel)
         {
@@ -276,7 +274,7 @@ void CIRCUIT::SetMaxLevel()
 // Setup the list of PI PPI PO PPO
 void CIRCUIT::SetupIO_ID()
 {
-    unsigned i = 0;
+    int i = 0;
     GATE *gptr;
     vector<GATE *>::iterator Circuit_ite = Netlist.begin();
     for (; Circuit_ite != Netlist.end(); Circuit_ite++, i++)
@@ -331,7 +329,7 @@ void CIRCUIT::printNetlist()
 
 void CIRCUIT::printPOInputList()
 {
-    unsigned no_gate_fanin, i;
+    int no_gate_fanin, i;
     vector<GATE *>::iterator it_po;
 
     for (it_po = POlist.begin(); it_po != POlist.end(); ++it_po)
@@ -345,7 +343,7 @@ void CIRCUIT::printPOInputList()
 
 void CIRCUIT::printGateOutput()
 {
-    unsigned no_gate_fanout, i;
+    int no_gate_fanout, i;
     vector<GATE *>::iterator it_net;
 
     for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
@@ -475,8 +473,8 @@ void CIRCUIT::printSA()
             continue;
         }
 
-        int fi_cnt = (*it_net)->Get_isc_fi_cnt();
-        int fo_cnt = (*it_net)->Get_isc_fo_cnt();
+        // int fi_cnt = (*it_net)->Get_isc_fi_cnt();
+        // int fo_cnt = (*it_net)->Get_isc_fo_cnt();
         string net_id = to_string((*it_net)->Get_isc_net_id());
         vector<string> input_gate_id_list;
         vector<string> output_gate_id_list;
