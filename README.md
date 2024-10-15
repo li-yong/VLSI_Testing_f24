@@ -5,7 +5,7 @@ This project is a VLSI testing tool designed to parse ISC files and populate the
 ## Binaries and Scripts 
 The project is hosted on https://github.com/li-yong/VLSI_Testing_f24
 
-The compiled C++ binaries are located in `cpp_isc_parser/bin/`. Both Linux and Windows versions are provided:
+The compiled C++ binaries are located in directory `cpp_isc_parser`. Both Linux and Windows versions are provided:
 
 ```
 cpp_isc_parser.exe        # Linux binary
