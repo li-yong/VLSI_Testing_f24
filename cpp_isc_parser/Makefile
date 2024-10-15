@@ -17,12 +17,12 @@ MEMUSG	 = /usr/bin/time -f "Average memory usage: %K \nMaximum memory usage: %M\
 HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h pattern.h hash.h tfault.h
 
 # Add source file assignment.c to be compiled
-SOURCES = circuit.cc main.cc GetLongOpt.cc sim.cc\
-					parser_isc.cc fsim.cc path.cc
+SOURCES = circuit.cc main.cc GetLongOpt.cc \
+					parser_isc.ccpath.cc
 
 # Add object file assignment.o to be linked
-OBJECTS = circuit.o main.o GetLongOpt.o sim.o \
-					parser_isc.o fsim.o  path.o
+OBJECTS = circuit.o main.o GetLongOpt.o  \
+					parser_isc.o  path.o
 
 TARGET  = cpp_isc_parser.exe
 

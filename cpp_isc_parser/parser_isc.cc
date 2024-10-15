@@ -541,7 +541,7 @@ CIRCUIT *parse_isc_main(string filename)
     isc_Circuit.SetupIO_ID();
     isc_Circuit.Levelize();
     isc_Circuit.Check_Levelization();
-    isc_Circuit.InitializeQueue();
+    // isc_Circuit.InitializeQueue();
 
     localC = &isc_Circuit;
 
