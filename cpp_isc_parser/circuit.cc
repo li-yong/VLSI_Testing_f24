@@ -414,6 +414,10 @@ void CIRCUIT::printGateIdTypeOutput()
         {
             function_s = "OR";
         }
+        else if (function == G_XOR)
+        {
+            function_s = "XOR";
+        }                
         else if (function == G_BUF)
         {
             function_s = "BUF";
@@ -435,10 +439,10 @@ void CIRCUIT::printGateIdTypeOutput()
             function_s = "DFF";
         }
 
-        for (size_t n = 0; n < outputlist.size(); ++n)
+        for (size_t n = outputlist.size(); n > 0; --n)
         {
             // cout << outputlist[n]->Get_isc_net_id() << endl;
-            po += " " + to_string(outputlist[n]->Get_isc_net_id());
+            po += " " + to_string(outputlist[n-1]->Get_isc_net_id());
         }
         cout << netid << "\t" << function_s << "\t" << po << endl;
     }
