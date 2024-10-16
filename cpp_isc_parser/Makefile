@@ -4,7 +4,7 @@ LINK     = g++
 # Remove -DDEBUG flag for VLST-Testing Lab0
 # CXXFLAGS = -O2 -Wno-all -g
 # CXXFLAGS = -O2 -Wall -DDEBUG
-CXXFLAGS = -O2 -Wall 
+CXXFLAGS = -O2 -Wall -DDEBUG -g
 # CXXFLAGS = -g -DDEBUG_ATPG -Wall #Turn on debugging
 INCPATH  =
 LIBS     = 
