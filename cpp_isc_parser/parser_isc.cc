@@ -115,6 +115,11 @@ void proc_input(GATE *isc_gptr, const vector<string> &fields)
     int net_id = stoi(fields[0]);
     isc_name = fields[1]; // gate name, should be unique
 
+    // if (net_id == 1459){
+    //     cout << net_id << endl;
+    //     cout << "find gate 1459" << endl; //debug
+    // }
+
     if (!isc_NameTable.is_member(isc_name))
     {
         isc_gptr->SetName(isc_name);
@@ -321,7 +326,7 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
         vector<string> L2_input_list = input_gate_of_cur->Get_isc_input_gates();
         for (size_t i2 = 0; i2 < L2_input_list.size(); ++i2)
         {
-            GATE *L2_input_gate = isc_Circuit.Find_Gate_by_isc_netid(stoi(L2_input_list[i2]));
+            GATE *L2_input_gate = isc_Circuit.Find_Gate_by_isc_identifier(L2_input_list[i2]);
             GATEFUNC fc = L2_input_gate->GetFunction();
             // GATE *x = isc_Circuit.Find_Gate_by_isc_netid(isc_net_id);
             if (fc == G_FROM)
@@ -369,7 +374,7 @@ void update_fan_from_input()
             {
                 string ipt = inputlist[i];
 
-                GATE *input_gate = isc_Circuit.Find_Gate_by_name(ipt);
+                GATE *input_gate = isc_Circuit.Find_Gate_by_isc_identifier(ipt);
                 if (input_gate == nullptr)
                 {
                     cerr << " null ptr. A non-existed gate was referered in src. " << endl;
@@ -452,7 +457,8 @@ void trvel_netlist()
             {
                 string ipt = inputlist[i];
 
-                GATE *input_gate = isc_Circuit.Find_Gate_by_isc_netid(stoi(ipt));
+                // GATE *input_gate = isc_Circuit.Find_Gate_by_isc_netid(stoi(ipt));
+                GATE *input_gate = isc_Circuit.Find_Gate_by_isc_identifier(ipt);
 
                 // debug
                 // if (input_gate->Get_isc_identifier() == "8fan")
@@ -494,7 +500,7 @@ void trvel_netlist()
 
                 if (input_gate->GetFunction() == G_FROM)
                 {
-                    GATE *L2_input_gate = isc_Circuit.Find_Gate_by_name(input_gate->Get_isc_input_gates()[0]); // suppose FAN From only have **ONE** input defined in the isc.
+                    GATE *L2_input_gate = isc_Circuit.Find_Gate_by_isc_identifier(input_gate->Get_isc_input_gates()[0]); // suppose FAN From only have **ONE** input defined in the isc.
                     g->AddInput_list(L2_input_gate);
                     g->AddInput_fan_list(input_gate); // add 8fan as input of 10gat
                     input_gate->AddOutput_list(g); // add 10gat as output of 8fan
@@ -515,7 +521,7 @@ void trvel_netlist()
 
 CIRCUIT *parse_isc_main(string filename)
 {
-    CIRCUIT *localC;
+    CIRCUIT *localC=new CIRCUIT();
     // Open the file
     ifstream inputFile(filename);
     if (!inputFile.is_open())
