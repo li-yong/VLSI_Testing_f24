@@ -55,7 +55,7 @@ void proc_nand(GATE *isc_gptr, const vector<string> &fields, const string &line2
     }
     else
     {
-        cerr << "Erron to parse nand gate Stuck_At_Fault" << endl;
+        cerr << "Error to parse nand gate Stuck_At_Fault" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -107,7 +107,7 @@ void proc_input(GATE *isc_gptr, const vector<string> &fields)
     }
     else
     {
-        cerr << "Erron to parse input gate Stuck_At_Fault" << endl;
+        cerr << "Error to parse input gate Stuck_At_Fault" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -147,9 +147,13 @@ void proc_fan_from(GATE *isc_gptr, const vector<string> &fields)
     {
         faults = {fields[4]};
     }
+    else if (fields.size() == 6)
+    {
+        faults = {fields[4],fields[5]};
+    }
     else
     {
-        cerr << "Erron to parse Fan From Stuck_At_Fault" << endl;
+        cerr << "Error to parse Fan From Stuck_At_Fault" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -231,7 +235,7 @@ void processBuffer(const string &buffer)
         // Check if there are at least 3 fields and if the 3rd field is "nand"
         string func = fields[2];
 
-        if (func == "nand" || func == "and" || func == "or" || func == "not" || func == "nor" || func == "buff")
+        if (func == "nand" || func == "and" || func == "or" || func == "xor" || func == "not" || func == "nor" || func == "buff")
         {
             if (func == "nand")
             {
@@ -244,6 +248,10 @@ void processBuffer(const string &buffer)
             if (func == "or")
             {
                 isc_gptr->SetFunction(G_OR);
+            }
+            if (func == "xor")
+            {
+                isc_gptr->SetFunction(G_XOR);
             }
             if (func == "not")
             {
@@ -456,7 +464,7 @@ void trvel_netlist()
             }
         }
 
-        if (fun == G_NAND || fun == G_NOT || fun == G_AND || fun == G_NAND || fun == G_OR || fun == G_NOR ||fun == G_DFF || fun == G_BUF || fun == G_PO)
+        if (fun == G_NAND || fun == G_NOT || fun == G_AND || fun == G_NAND || fun == G_OR || fun == G_XOR || fun == G_NOR ||fun == G_DFF || fun == G_BUF || fun == G_PO)
         {
 
             for (size_t i = 0; i < inputlist.size(); ++i)
