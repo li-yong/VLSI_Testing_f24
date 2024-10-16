@@ -154,7 +154,7 @@ void proc_fan_from(GATE *isc_gptr, const vector<string> &fields)
     }
     else if (fields.size() == 6)
     {
-        faults = {fields[4],fields[5]};
+        faults = {fields[4], fields[5]};
     }
     else
     {
@@ -338,7 +338,7 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
             L2_input_gate->AddOutput_list(cur_gate);
 
             // cout << "add fan gate output, FROM " << L2_input_gate->Get_isc_identifier() << " TO " << input_gate_of_cur->Get_isc_identifier() << endl; // add fan gate output, FROM 3gat TO 8fan
-            L2_input_gate->AddOutput_fan_list(input_gate_of_cur);                                                                                     // L2_input_gate: 3gat, input_gate_of_cur: 8fan
+            L2_input_gate->AddOutput_fan_list(input_gate_of_cur); // L2_input_gate: 3gat, input_gate_of_cur: 8fan
         }
     }
     else if (input_gate_of_cur->GetFunction() != G_PO)
@@ -470,7 +470,7 @@ void trvel_netlist()
             }
         }
 
-        if (fun == G_NAND || fun == G_NOT || fun == G_AND || fun == G_NAND || fun == G_OR || fun == G_XOR || fun == G_NOR ||fun == G_DFF || fun == G_BUF || fun == G_PO)
+        if (fun == G_NAND || fun == G_NOT || fun == G_AND || fun == G_NAND || fun == G_OR || fun == G_XOR || fun == G_NOR || fun == G_DFF || fun == G_BUF || fun == G_PO)
         {
 
             for (size_t i = 0; i < inputlist.size(); ++i)
@@ -503,7 +503,7 @@ void trvel_netlist()
                     GATE *L2_input_gate = isc_Circuit.Find_Gate_by_isc_identifier(input_gate->Get_isc_input_gates()[0]); // suppose FAN From only have **ONE** input defined in the isc.
                     g->AddInput_list(L2_input_gate);
                     g->AddInput_fan_list(input_gate); // add 8fan as input of 10gat
-                    input_gate->AddOutput_list(g); // add 10gat as output of 8fan
+                    input_gate->AddOutput_list(g);    // add 10gat as output of 8fan
                 }
                 else
                 {
@@ -521,7 +521,7 @@ void trvel_netlist()
 
 CIRCUIT *parse_isc_main(string filename)
 {
-    CIRCUIT *localC=new CIRCUIT();
+    CIRCUIT *localC = new CIRCUIT();
     // Open the file
     ifstream inputFile(filename);
     if (!inputFile.is_open())

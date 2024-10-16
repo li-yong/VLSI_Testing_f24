@@ -315,7 +315,7 @@ void CIRCUIT::SetupIO_ID()
 void CIRCUIT::printNetlist()
 {
     const char *GATEFUNC_Table[12] = {"G_PI", "G_PO", "G_PPI", "G_PPO", "G_NOT",
-                                "G_AND", "G_NAND", "G_OR", "G_NOR", "G_DFF", "G_BUF", "G_BAD"};
+                                      "G_AND", "G_NAND", "G_OR", "G_NOR", "G_DFF", "G_BUF", "G_BAD"};
     vector<GATE *>::iterator it_net;
 
     for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
@@ -417,7 +417,7 @@ void CIRCUIT::printGateIdTypeOutput()
         else if (function == G_XOR)
         {
             function_s = "XOR";
-        }                
+        }
         else if (function == G_BUF)
         {
             function_s = "BUF";
@@ -442,7 +442,7 @@ void CIRCUIT::printGateIdTypeOutput()
         for (size_t n = outputlist.size(); n > 0; --n)
         {
             // cout << outputlist[n]->Get_isc_net_id() << endl;
-            po += " " + to_string(outputlist[n-1]->Get_isc_net_id());
+            po += " " + to_string(outputlist[n - 1]->Get_isc_net_id());
         }
         cout << netid << "\t" << function_s << "\t" << po << endl;
     }
