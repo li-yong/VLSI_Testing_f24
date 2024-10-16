@@ -116,20 +116,36 @@ class CIRCUIT
 		GATE* PPIGate(int index) { return PPIlist[index]; }
 		GATE* PPOGate(int index) { return PPOlist[index]; }
 
-		GATE* Find_Gate_by_name(string name){
+		// GATE* Find_Gate_by_name(string name){
+		// 	GATE* gptr;
+			
+		// 	for (int i = 0;i < No_Gate();i++) {
+		// 		gptr = Gate(i);
+		// 		if (gptr->GetName() == name) {
+		// 			return gptr;
+		// 		}
+		// 	}
+		// 	//print no gate found
+		// 	std::cerr << "No gate found with name: " << name << std::endl;
+		// 	return nullptr;
+
+		// }
+
+		GATE* Find_Gate_by_isc_identifier(string isc_identifier){
 			GATE* gptr;
 			
 			for (int i = 0;i < No_Gate();i++) {
 				gptr = Gate(i);
-				if (gptr->GetName() == name) {
+				if (gptr->Get_isc_identifier() == isc_identifier) {
 					return gptr;
 				}
 			}
 			//print no gate found
-			std::cerr << "No gate found with name: " << name << std::endl;
+			std::cerr << "No gate found with isc_identifier: " << isc_identifier << std::endl;
 			return nullptr;
 
 		}
+
 
 
 		GATE* Find_Gate_by_isc_netid(int isc_netid){
@@ -138,6 +154,11 @@ class CIRCUIT
 			
 			for (int i = 0;i < No_Gate();i++) {
 				gptr = Gate(i);
+
+				// if (gptr->GetIscNetId() ==242){
+				// 	cout << "find gate 242" << endl; //debug
+				// }
+
 				if (gptr->GetIscNetId() == isc_netid) {
 					return gptr;
 				}
