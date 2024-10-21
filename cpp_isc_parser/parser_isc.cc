@@ -439,11 +439,18 @@ void trvel_netlist()
             // make a po gate
             GATE *po = new GATE();
             po->SetFunction(G_PO);
-            isc_Circuit.AddGate(po);
+            // po->Set_isc_identifier("PPO_" + name);
+            // po->SetName("PPO_" + name);
+            // po->Set_isc_input_gates({g->Get_isc_identifier()});
+            // po->Set_isc_fo_Cnt(0);
+            // po->Set_isc_fi_Cnt(1);
+            // po->AddInput_list(g); 
+
+            // isc_Circuit.AddGate(po);
 
             max_net_id += 1;
             po->Set_isc_net_id(max_net_id);
-            g->AddOutput_list(po);
+            // g->AddOutput_list(po);
         }
 
         // cout << "current g:" + name + "   type " << endl;

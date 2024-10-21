@@ -4,6 +4,13 @@
 #include "typeemu.h"
 using namespace std;
 
+
+#include <random>
+#include <vector>
+#include <bitset>
+#include <algorithm>
+#include <iostream>
+
 class GATE
 {
 private:
@@ -37,7 +44,7 @@ private:
 	bitset<PatternNum> WireValue[2];
 	bitset<PatternNum> FaultFlag;
 	bitset<PatternNum> isc_bitset_output_expected;
-	bitset<PatternNum>  isc_bitset_output_actual;
+	bitset<PatternNum> isc_bitset_output_actual;
 	// VLSI-Testing Lab1, label for finding paths
 	DFS_STATUS dfs_status;
 	// VLSI-Testing lab2
@@ -75,12 +82,18 @@ public:
 
 	bitset<PatternNum> get_isc_bitset_output_expected() { return isc_bitset_output_expected; }
 	bitset<PatternNum> get_isc_bitset_output_actual() { return isc_bitset_output_actual; }
-	void set_isc_bitset_output_expected(bitset<PatternNum> &value) { isc_bitset_output_expected = value; }
-	void set_isc_bitset_output_actual(bitset<PatternNum> &value) { isc_bitset_output_actual = value; }
 
+	void set_isc_bitset_output_expected(bitset<PatternNum> &value)
+	{
+		cout << isc_identifier << " set_isc_bitset_output_expect " << value.to_string() << endl;
+		isc_bitset_output_expected = value;
+	}
+	void set_isc_bitset_output_actual(bitset<PatternNum> &value)
+	{
 
-
-
+		cout << isc_identifier << " set_isc_bitset_output_actual " << value.to_string() << endl;
+		isc_bitset_output_actual = value;
+	}
 
 	DFS_STATUS getDFSStatus() { return dfs_status; }
 	void SetName(string n) { Name = n; }
@@ -103,8 +116,8 @@ public:
 
 	void SetID(int id) { ID = id; }
 	void SetFunction(GATEFUNC f) { Function = f; }
-	void AddInput_list(GATE *gptr) { 
-
+	void AddInput_list(GATE *gptr)
+	{
 
 		Input_list.push_back(gptr);
 	}
@@ -166,18 +179,34 @@ public:
 		return true;
 	}
 
-
 	// for fault simulation
-	void SetValue1() {
-		 WireValue[0].set(); 
-		 }
-	void SetValue1(bitset<PatternNum> &value) { WireValue[0] = value; }
-	void SetValue1(int idx) { WireValue[0].set(idx); }
+	void SetValue1()
+	{
+		WireValue[0].set();
+	}
+	void SetValue1(bitset<PatternNum> &value) { 
+		WireValue[0] = value; 
+		}
+	void SetValue1(int idx) {
+		 WireValue[0].set(idx);
+		  }
 	void ResetValue1() { WireValue[0].reset(); }
 	void ResetValue1(int idx) { WireValue[0].reset(idx); }
-	void SetValue2(bitset<PatternNum> &value) { WireValue[1] = value; }
-	void SetValue2() { WireValue[1].set(); }
-	void SetValue2(int idx) { WireValue[1].set(idx); }
+	
+	
+	void SetValue2(bitset<PatternNum> &value) { 
+		WireValue[1] = value; }
+
+
+	void SetValue2() {
+		 WireValue[1].set(); 
+		 
+		 }
+	void SetValue2(int idx) { 
+		
+		WireValue[1].set(idx);
+		
+		 }
 	void ResetValue2() { WireValue[1].reset(); }
 	void ResetValue2(int idx) { WireValue[1].reset(idx); }
 	bool GetValue1(int idx) { return WireValue[0][idx]; }

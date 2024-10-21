@@ -103,13 +103,13 @@ int main(int argc, char **argv)
     else if (action == "ppsfp")
     {
         /******************************************
-         * INIT THE 64bit BITSET ON EACH INPUT GATE  
+         * INIT THE 64bit BITSET ON EACH INPUT GATE
         /******************************************/
 
         // isc_Circuit->FanoutList(); //fuck!
 
         // isc_Circuit->SetupIO_ID(); // increase the input gate number. drop it. FUCK!
-
+//  isc_Circuit->print_bitset();
         isc_Circuit->Levelize(); // Ryan overwrited
         // isc_Circuit->Check_Levelization();
         isc_Circuit->InitializeQueue();
@@ -118,26 +118,41 @@ int main(int argc, char **argv)
         isc_Circuit->SortFaninByLevel();
         // isc_Circuit->MarkOutputGate();
 
+        // isc_Circuit->print_bitset();
+        isc_Circuit->init_bitset();
+ isc_Circuit->print_bitset();
         isc_Circuit->init_level0_input_gate();
-        //   isc_Circuit->print_bitset();
-
+        isc_Circuit->print_bitset();
 
         /******************************************
-         * CACLUATE THE ERROR FREE CIRCUIT OUTPUT  
+         * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
         /******************************************/
 
         // calc expect value for  level 1 to level max gates
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
-            isc_Circuit->calc_expected_output_level_1_max(gate_level);
+            isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT");
+            isc_Circuit->calc_output_level_1_max(gate_level,"ACTUAL");
+        }
+
+      
+        isc_Circuit->print_bitset();
+        exit(0);
+
+
+        for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
+        {
+            // isc_Circuit->calc_output_level_1_max(gate_level,"EXPECT");
+            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL");
         }
 
         isc_Circuit->print_bitset();
 
         /******************************************
-         * SIMULTE ERROR   
+         * INJECT SA FAULTS
         /******************************************/
-
+        // iterate the FAULTS in circuits
+        isc_Circuit->iterate_gates_sa_errors();
 
         // isc_Circuit->Levelize_0();
 

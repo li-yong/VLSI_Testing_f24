@@ -320,7 +320,7 @@ public:
 	void printGateOutput();
 	void printGateIdTypeOutput();
 	void printSA();
-	void calc_expected_output_level_1_max(int gate_level);
+	void calc_output_level_1_max(int gate_level, string expect_or_actual);
 	void SetPPIZero(); // Initialize PPI state
 
 	void InitializeQueue();
@@ -338,7 +338,9 @@ public:
 	bitset<2> ModEvaluate(GATEPTR gptr);
 	void  print_bitset();
 	void init_level0_input_gate();
-	void update_fanout_expected_bitset(GATE* gate, bitset<64> bitset);
+	void update_fanout_bitset(GATE* gate, string, bitset<64> bitset);
+	void iterate_gates_sa_errors();
+	void init_bitset();
 
 
 	// defined in atpg.cc
