@@ -102,6 +102,10 @@ int main(int argc, char **argv)
     }
     else if (action == "ppsfp")
     {
+        /******************************************
+         * INIT THE 64bit BITSET ON EACH INPUT GATE  
+        /******************************************/
+
         // isc_Circuit->FanoutList(); //fuck!
 
         // isc_Circuit->SetupIO_ID(); // increase the input gate number. drop it. FUCK!
@@ -114,36 +118,26 @@ int main(int argc, char **argv)
         isc_Circuit->SortFaninByLevel();
         // isc_Circuit->MarkOutputGate();
 
-        string pattern_name = (string)option.retrieve("output");
-        cout << "pattern name: " << pattern_name << endl;
-        isc_Circuit->openFile(pattern_name);
-        isc_Circuit->genRandomPattern(pattern_name, 10);
-
-        // unsigned coverage = 0;
-        // int cnt = 0;
-
-        // while (coverage <= 90 && cnt < 10)
-        // {
-        //     // stuck-at fault simulator
-        //     coverage = isc_Circuit->FaultSimRandomPattern();
-
-        //     cout << "Random Pattern #" << ++cnt << " Coverage: "
-        //          << coverage << "%\n";
-        // }
-
-        // stuck-at fualt ATPG after Random Pattern
-        // isc_Circuit->AtpgRandomPattern();
-
         isc_Circuit->init_level0_input_gate();
+        //   isc_Circuit->print_bitset();
 
-        isc_Circuit->print_bitset();
+
+        /******************************************
+         * CACLUATE THE ERROR FREE CIRCUIT OUTPUT  
+        /******************************************/
 
         // calc expect value for  level 1 to level max gates
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
-         isc_Circuit->calc_expected_output_level_1_max(gate_level);
+            isc_Circuit->calc_expected_output_level_1_max(gate_level);
         }
-     
+
+        isc_Circuit->print_bitset();
+
+        /******************************************
+         * SIMULTE ERROR   
+        /******************************************/
+
 
         // isc_Circuit->Levelize_0();
 
