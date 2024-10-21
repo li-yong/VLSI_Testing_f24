@@ -120,9 +120,9 @@ int main(int argc, char **argv)
 
         // isc_Circuit->print_bitset();
         isc_Circuit->init_bitset();
- isc_Circuit->print_bitset();
+//  isc_Circuit->print_bitset();
         isc_Circuit->init_level0_input_gate();
-        isc_Circuit->print_bitset();
+        // isc_Circuit->print_bitset();
 
         /******************************************
          * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
@@ -137,16 +137,8 @@ int main(int argc, char **argv)
 
       
         isc_Circuit->print_bitset();
-        exit(0);
+        // exit(0);
 
-
-        for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
-        {
-            // isc_Circuit->calc_output_level_1_max(gate_level,"EXPECT");
-            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL");
-        }
-
-        isc_Circuit->print_bitset();
 
         /******************************************
          * INJECT SA FAULTS

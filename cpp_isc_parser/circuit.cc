@@ -664,21 +664,17 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
     {
         cout << v[i]->Get_isc_identifier() << ", level " << v[i]->GetLevel() << endl;
 
-        if (v[i]->Get_isc_identifier() == "11gat")
-        {
-            cout << "debug" << endl;
-        }
-
-        if (gate_level == 4)
-        {
-            cout << "debug" << endl;
-        }
-
-        // GATEFUNC fun = v[i]->GetFunction();
-        // if (fun == G_PO &  expect_or_actual == "EXPECT")
+        // if (v[i]->Get_isc_identifier() == "11gat")
         // {
-        //     v[i]->set_isc_bitset_output_actual());
+        //     cout << "debug" << endl;
         // }
+
+        // if (gate_level == 4)
+        // {
+        //     cout << "debug" << endl;
+        // }
+
+
 
         // get input gates of v[i]
         vector<string> input_gates = v[i]->Get_isc_input_gates();
@@ -701,13 +697,10 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
                 input_gate_value_exp_1 = input_gate->get_isc_bitset_output_expected();
                 input_gate_value_act_1 = input_gate->get_isc_bitset_output_actual();
 
-                cout << "\t input_gate_value_exp_1 " << input_gate_name << input_gate_value_exp_1.to_string() << endl;
-                cout << "\t input_gate_value_act_1 " << input_gate_name << input_gate_value_act_1.to_string() << endl;
+                // cout << "\t input_gate_value_exp_1 " << input_gate_name << input_gate_value_exp_1.to_string() << endl;
+                // cout << "\t input_gate_value_act_1 " << input_gate_name << input_gate_value_act_1.to_string() << endl;
 
-                // if (input_gate_value_exp_1 != input_gate_value_act_1){
-                //     cout << "input gate value not equal" << endl;
-                //     // exit(0);
-                // }
+
 
                 if (expect_or_actual == "EXPECT")
                 {
