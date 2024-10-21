@@ -1,0 +1,53 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug VLSI Parser",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cpp_isc_parser.exe",
+            "args-4": [
+                "-action",
+                "parse_isc",
+                "-file_isc",
+                "${workspaceFolder}/../ISCAS-85/c7552.isc",
+            ],
+            "args": [
+                "-action", "ppsfp",
+                "-output","c17.out",
+                "-file_isc", "${workspaceFolder}/../ISCAS-85/c17.isc",
+            ],
+            "args_2": [
+                "-help",
+            ],
+            "args3": [
+                "-action",
+                "parse_isc",
+                "-file_isc",
+                "${workspaceFolder}/../ISCAS-85/c17.isc",               
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "VLSI make build",
+        }
+
+    ]
+}

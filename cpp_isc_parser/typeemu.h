@@ -20,7 +20,7 @@ const VALUE CV[] = {X, X, X, X, X, S0, S0, S1, S1, X, X, X};
 //Noncontrolling Values
 const VALUE NCV[] = {X, X, X, X, X, S1, S1, S0, S0, X, X, X};
 
-const unsigned PatternNum = 16;
+const unsigned PatternNum = 64; 
 
 const VALUE NotTable[] = {S1, S0, X, B, D, ILLIGAL};
 

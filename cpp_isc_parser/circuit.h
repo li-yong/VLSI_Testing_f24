@@ -37,6 +37,7 @@ private:
 	typedef list<GATE *> ListofGate;
 	typedef list<GATE *>::iterator ListofGateIte;
 	ListofGate *Queue;
+
 	ListofGate GateStack;
 	ListofGate PropagateTree;
 	ListofGateIte QueueIte;
@@ -45,6 +46,7 @@ private:
 	int path_count;
 	string dest_gate_name;
 	string input_name, output_name;
+
 	ofstream ofs; // for printing logicsim output file
 	// VLSI-Testing Lab3
 	int evaluation_count;
@@ -218,7 +220,7 @@ public:
 		if (!ofs.is_open())
 			cout << "Cannot open file: " << file_name << endl;
 		else
-			cout << "Successfully open file: " << file_name << endl;
+			cout << "Successfully open openFile: " << file_name << endl;
 	}
 
 	void openOutputFile(string file_name)
@@ -234,6 +236,8 @@ public:
 		ofs.open(str, ofstream::out | ofstream::trunc);
 		if (!ofs.is_open())
 			cout << "Cannot open file!\n";
+		else
+			cout << "Successfully open openOutputFile: " << file_name << endl;
 	}
 
 	void openSimulatorFile(string file_name)
@@ -268,6 +272,8 @@ public:
 		if (!gptr->GetFlag(SCHEDULED))
 		{
 			gptr->SetFlag(SCHEDULED);
+			cout << Queue << endl;
+			cout << gptr << endl;
 			Queue[gptr->GetLevel()].push_back(gptr);
 		}
 	}
@@ -277,9 +283,6 @@ public:
 	void path(string src_name_gate, string dest_gate_name);
 	bool findPath();
 	void printPath();
-
-	// defined in fsim.cc
-	void MarkOutputGate();
 
 	// VLST-Testing Lab6
 	void AtpgRandomPattern();
@@ -317,9 +320,26 @@ public:
 	void printGateOutput();
 	void printGateIdTypeOutput();
 	void printSA();
+	void calc_expected_output_level_1_max(int gate_level);
+	void SetPPIZero(); // Initialize PPI state
 
 	void InitializeQueue();
-	int get_max_netid();
+	void ScheduleFanout(GATE *);
+	void SchedulePI();
+	void SchedulePPI();
+	void LogicSimVectors();
+	void LogicSim();
+	void ModLogicSimVectors();
+	void ModLogicSim();
+	void PrintIO();
+	void PrintModIO();
+	VALUE Evaluate(GATEPTR gptr);
+	bitset<64> isc_Evaluate(GATEPTR gptr, bitset<64> bits1, bitset<64> bits2);
+	bitset<2> ModEvaluate(GATEPTR gptr);
+	void  print_bitset();
+	void init_level0_input_gate();
+	void update_fanout_expected_bitset(GATE* gate, bitset<64> bitset);
+
 
 	// defined in atpg.cc
 	void GenerateAllFaultList();
@@ -339,5 +359,40 @@ public:
 	GATEPTR FindPIAssignment(GATEPTR gptr, VALUE value);
 	GATEPTR TestPossible(FAULT *fptr);
 	void TraceDetectedStemFault(GATEPTR gptr, VALUE val);
+	// defined in fsim.cc
+	void MarkOutputGate();
+	void MarkPropagateTree(GATEPTR gptr);
+	void FaultSimVectors();
+	void FaultSim();
+	void FaultSimEvaluate(GATE *gptr);
+	bool CheckFaultyGate(FAULT *fptr);
+	void InjectFaultValue(GATEPTR gptr, unsigned idx, VALUE value);
+
+	// defined in psim.cc for parallel logic simulation
+	void ParallelLogicSimVectors();
+	void ParallelLogicSim();
+	void ParallelEvaluate(GATEPTR gptr);
+	void PrintParallelIOs(unsigned idx);
+	void ScheduleAllPIs();
+	// defined in stfsim.cc for single pattern single transition-fault simulation
+	void GenerateAllTFaultList();
+	void TFaultSimVectors();
+	void TFaultSim_t();
+	void TFaultSim();
+	bool CheckTFaultyGate(TFAULT *fptr);
+	bool CheckTFaultyGate_t(TFAULT *fptr);
+	VALUE Evaluate_t(GATEPTR gptr);
+	void LogicSim_t();
+	void PrintTransition();
+	void PrintTransition_t();
+	void PrintIO_t();
+
+	// defined in tfatpg.cc for transition fault ATPG
+	void TFAtpg();
+	ATPG_STATUS Initialization(GATEPTR gptr, VALUE target, unsigned &total_backtrack_num);
+	ATPG_STATUS BackwardImply_t(GATEPTR gptr, VALUE value);
+	GATEPTR FindPIAssignment_t(GATEPTR gptr, VALUE value);
+	GATEPTR FindEasiestControl_t(GATEPTR gptr);
+	GATEPTR FindHardestControl_t(GATEPTR gptr);
 };
 #endif

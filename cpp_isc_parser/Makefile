@@ -4,7 +4,7 @@ LINK     = g++
 # Remove -DDEBUG flag for VLST-Testing Lab0
 # CXXFLAGS = -O2 -Wno-all -g
 # CXXFLAGS = -O2 -Wall -DDEBUG
-CXXFLAGS = -O2 -Wall -DDEBUG -g
+CXXFLAGS = -Wno-all -DDEBUG -g -std=c++11
 # CXXFLAGS = -g -DDEBUG_ATPG -Wall #Turn on debugging
 INCPATH  =
 LIBS     = 
@@ -18,11 +18,15 @@ HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h pattern.h hash.h tfaul
 
 # Add source file assignment.c to be compiled
 SOURCES = circuit.cc main.cc GetLongOpt.cc \
-					parser_isc.ccpath.cc
+					parser_isc.cc path.cc \
+					sim.cc stfsim.cc atpg.cc fsim.cc pattern.cc
+					# readcircuit.tab.cc
 
 # Add object file assignment.o to be linked
 OBJECTS = circuit.o main.o GetLongOpt.o  \
-					parser_isc.o  path.o
+					parser_isc.o  path.o \
+					sim.o stfsim.o atpg.o fsim.o pattern.o
+					# readcircuit.tab.h
 
 TARGET  = cpp_isc_parser.exe
 

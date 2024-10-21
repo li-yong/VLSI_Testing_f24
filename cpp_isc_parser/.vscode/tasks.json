@@ -1,0 +1,23 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "VLSI make build",
+            "command": "make",
+            "args": [
+            
+            ],
+            "group":  {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal":"always"
+            },
+            "problemMatcher": "$gcc",
+            "detail": "Task build by make."
+
+        },
+    ],
+    "version": "2.0.0"
+}

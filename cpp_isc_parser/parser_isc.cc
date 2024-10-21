@@ -306,10 +306,10 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
 {
 
     string name = input_gate_of_cur->Get_isc_identifier();
-    // if (name == "10gat") // debug
-    // {
-    //     cout << 1 << endl;
-    // }
+    if (name == "10gat") // debug
+    {
+        // cout << 1 << endl;
+    }
 
     if (cur_gate->GetFunction() == G_FROM)
     {
@@ -334,7 +334,7 @@ void update_output_from_input(GATE *cur_gate, GATE *input_gate_of_cur)
                 cout << "something wrong. FanFrom connected FanFrom. " << endl;
                 exit(-1);
             }
-            // cout << "add gate output, FROM " << input_gate_of_cur->Get_isc_identifier() << " TO " << cur_gate->Get_isc_identifier() << endl;
+            // cout << "add gate output, FROM " << L2_input_gate->Get_isc_identifier() << " TO " << cur_gate->Get_isc_identifier() << endl;
             L2_input_gate->AddOutput_list(cur_gate);
 
             // cout << "add fan gate output, FROM " << L2_input_gate->Get_isc_identifier() << " TO " << input_gate_of_cur->Get_isc_identifier() << endl; // add fan gate output, FROM 3gat TO 8fan
@@ -552,9 +552,9 @@ CIRCUIT *parse_isc_main(string filename)
 
     // isc_Circuit.Name
     // isc_Circuit.FanoutList();
-    isc_Circuit.SetupIO_ID();
-    isc_Circuit.Levelize();
-    isc_Circuit.Check_Levelization();
+    // isc_Circuit.SetupIO_ID();
+    // isc_Circuit.Levelize();
+    // isc_Circuit.Check_Levelization();
     // isc_Circuit.InitializeQueue();
 
     localC = &isc_Circuit;

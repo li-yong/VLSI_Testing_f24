@@ -5,6 +5,8 @@
 #include <algorithm> // For sort and unique
 #include <vector>    // For std::vector
 #include <set>
+#include <bitset>
+#include <random>
 
 using namespace std;
 
@@ -50,79 +52,98 @@ void CIRCUIT::Levelize_recu(GATE *gptr, int lel = 0)
 
 // recuive. from levl0->level1->levenn
 void CIRCUIT::Levelize()
+
 {
-    list<GATE *> Queue;
-    GATE *gptr;
 
-    for (int i = 0; i < No_PI(); i++)
+    int max_gate_level = 0;
+
+    // init gate level to -1
+    for (unsigned i = 0; i < No_Gate(); i++)
     {
-        gptr = PIGate(i);
-        gptr->SetLevel(0);
-        // cout << gptr->Get_isc_identifier() << " set to level 0" << endl;
+        GATE *g;
+        g = Gate(i);
+        if (g->GetFunction() == G_PI)
+        {
+            g->SetLevel(0);
+        }
+        else
+        {
+            g->SetLevel(-1);
+        }
     }
 
-    // cout << 11 << endl;
-
-    int n = 0;
-    vector<GATE *> v;
-    while (true)
+    // iternate netlist, print the level of the each gate
+    for (unsigned i = 0; i < No_Gate(); i++)
     {
-        v = CIRCUIT::GetGateInLevel(n);
-        // cout << "get level "<< n << " output gates" << endl;
-        if (v.size() == 0)
-        {
-            // cout << " all gates level set completed." << endl;
-            break;
-        }
+        GATE *g;
+        g = Gate(i);
+        string name = g->Get_isc_identifier();
+        GATEFUNC fun = g->GetFunction();
+        int level = g->GetLevel();
+        // cout << "Gate: " << name << " Level: " << level << endl;
 
-        for (long unsigned i = 0; i < v.size(); i++)
+        vector<GATE *> inputlist = g->GetInput_list();
+        vector<GATE *> outputlist = g->GetOutput_list();
+
+        // remove duplicate entries from outputlist
+        std::sort(outputlist.begin(), outputlist.end());
+        auto it = std::unique(outputlist.begin(), outputlist.end());
+        outputlist.erase(it, outputlist.end());
+
+        // vector<GATE *> inputfanlist = g->GetInput_fan_list();
+        // vector<GATE *> outputlfanist = g->GetOutput_fan_list();
+
+        // check output gate level
+        for (size_t i2 = 0; i2 < outputlist.size(); ++i2)
         {
-            if (v[i]->GetFunction() == G_FROM)
+            if (outputlist[i2]->GetFunction() == G_FROM | outputlist[i2]->GetFunction() == G_PO)
             {
-                continue; // dont update the FF output gate lvel from FF.
+                continue;
             }
 
-            if ((n + 1) > v[i]->GetLevel())
+            // cout << name << " output is " << outputlist[i2]->GetName() << endl;
+            // cout << "output gate level is " << outputlist[i2]->GetLevel() << endl;
+
+            if (outputlist[i2]->GetLevel() < level + 1)
             {
-                v[i]->SetLevel(n + 1);
-                // cout << v[i]->Get_isc_identifier() << " set to level "<< n+1 << endl;
+                if (level == 3)
+                {
+                    cout << "debug" << endl;
+                }
+                outputlist[i2]->SetLevel(level + 1);
+                cout << "set " << outputlist[i2]->Get_isc_identifier() << " output level to " << outputlist[i2]->GetLevel() << endl;
+                max_gate_level = max(max_gate_level, outputlist[i2]->GetLevel());
             }
         }
 
-        n = n + 1;
+        // // check input gate level
+        // for (size_t i1 = 0; i1 < inputlist.size(); ++i1)
+        // {
+        //     cout << name << " input is " << inputlist[i1]->GetName() << endl;
+        // }
     }
-    // for (auto it = begin (Netlist); it != end (Netlist); ++it) {
-    //     it.Get_isc_identifier();
-    // }
+    cout << "max level is " << max_gate_level << endl;
+    SetMaxLevel();
 }
 
 vector<GATE *> CIRCUIT::GetGateInLevel(int cur_lv)
 {
     // int cur_lv = 0;
-    vector<GATE *> gates_in_next_lv;
+    vector<GATE *> gates_in_lv;
 
-    for (long unsigned i = 0; i < Netlist.size(); i++)
+    for (long int i = 0; i < Netlist.size(); i++)
     {
         string name = Netlist[i]->Get_isc_identifier();
         int lvl = Netlist[i]->GetLevel();
 
         if (lvl == cur_lv)
         {
-            // cout << name << "  " << lvl << endl;
-
-            vector<GATE *> Gate_output = Netlist[i]->GetOutput_list();
-
-            gates_in_next_lv.insert(gates_in_next_lv.end(), std::make_move_iterator(Gate_output.begin()),
-                                    std::make_move_iterator(Gate_output.end()));
+            cout << name << " gate_in_level " << lvl << endl;
+            gates_in_lv.push_back(Netlist[i]);
         }
-
-        // cout << 1 << endl;
     }
-    // gates_in_next_lv.erase( std::unique( gates_in_next_lv.begin(), gates_in_next_lv.end() ), gates_in_next_lv.end() );
 
-    set<GATE *> s(gates_in_next_lv.begin(), gates_in_next_lv.end());
-    gates_in_next_lv.assign(s.begin(), s.end());
-    return gates_in_next_lv;
+    return gates_in_lv;
 }
 
 // recuive. from levl0->end, levl0->end. hung.
@@ -261,7 +282,7 @@ void CIRCUIT::Check_Levelization()
 
 void CIRCUIT::SetMaxLevel()
 {
-    for (int i = 0; i < No_Gate(); i++)
+    for (unsigned i = 0; i < No_Gate(); i++)
     {
         if (Gate(i)->GetLevel() > MaxLevel)
         {
@@ -522,5 +543,136 @@ void CIRCUIT::printSA()
                 cout << a << "\t" << b << "\t" << c << endl;
             }
         }
+    }
+}
+
+void CIRCUIT::print_bitset()
+{
+    bitset<64> input_gate_value_1, input_gate_value_2, isc_bitset_output_expected;
+
+    vector<GATE *>::iterator it_net;
+
+    set<GATEFUNC> regular_gate_set = {G_NOT, G_AND, G_NAND, G_OR, G_NOR, G_BUF};
+
+    for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
+    {
+        vector<string> input_gate = (*it_net)->Get_isc_input_gates();
+        vector<GATE *> inputlist = (*it_net)->GetInput_list();
+        vector<GATE *> input_fan_list = (*it_net)->GetInput_fan_list();
+        vector<GATE *> output_fan_list = (*it_net)->GetOutput_fan_list();
+
+        vector<GATE *> outputlist = (*it_net)->GetOutput_list();
+        vector<string> SAlist = (*it_net)->Get_isc_StuckAt();
+        GATEFUNC function = (*it_net)->GetFunction();
+        int netid = (*it_net)->Get_isc_net_id();
+        string isc_identifer = (*it_net)->Get_isc_identifier();
+
+        isc_bitset_output_expected = (*it_net)->get_isc_bitset_output_expected();
+
+        {
+
+            cout << "isc_identifer: " << isc_identifer << endl;
+            // for (const auto &bits : )
+            // {
+            cout << "\t expected output: " << isc_bitset_output_expected << endl;
+            // }
+        }
+    }
+}
+
+
+void CIRCUIT::update_fanout_expected_bitset(GATE* gate, bitset<64> bitset)
+{
+    // get v[i]'s output gate list
+    vector<GATE *> outputfanlist = gate->GetOutput_fan_list();
+    for (long unsigned j = 0; j < outputfanlist.size(); j++)
+    {
+        cout << "output gate: " << outputfanlist[j]->Get_isc_identifier() << endl;
+        // get outputlist[j] function
+        GATEFUNC fun = outputfanlist[j]->GetFunction();
+        if (fun != G_FROM)
+        {
+            cout << "something wrong. output gate should be G_FROM" << endl;
+            exit(0);
+        }
+
+        outputfanlist[j]->set_isc_bitset_output_expected(bitset);
+    }
+}
+
+// handle level 0 input gates
+void CIRCUIT::init_level0_input_gate()
+{
+    // Initialize random number generator
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<uint64_t> dis(0, UINT64_MAX);
+
+    // get level 0 gates. Input gate only have one pin.
+    vector<GATE *> v = GetGateInLevel(0);
+    cout << "get level 0 output gates" << endl;
+    for (long unsigned i = 0; i < v.size(); i++)
+    {
+        cout << v[i]->Get_isc_identifier() << "  " << v[i]->GetLevel() << endl;
+        bitset<64> bitset_random = bitset<64>(dis(gen));
+        v[i]->set_isc_bitset_output_expected(bitset_random);
+
+        //handle fanout
+        update_fanout_expected_bitset(v[i], bitset_random);
+    }
+}
+
+// handle level 1->max level gates
+void CIRCUIT::calc_expected_output_level_1_max(int gate_level)
+{
+    vector<GATE *> v = GetGateInLevel(gate_level);
+    cout << "\nget level " << gate_level << " gates" << endl;
+    for (long unsigned i = 0; i < v.size(); i++)
+    {
+        cout << v[i]->Get_isc_identifier() << ", level " << v[i]->GetLevel() << endl;
+
+    if (v[i]->Get_isc_identifier() == "10gat"){
+        cout << "debug" << endl;
+    }
+
+        // get input gates of v[i]
+        vector<string> input_gates = v[i]->Get_isc_input_gates();
+
+        bitset<64> input_gate_value_1, input_gate_value_2;
+
+        for (long unsigned j = 0; j < input_gates.size(); j++)
+        {
+            // cout << "\t input gate: " << input_gates[j] << endl;
+
+            // find gate by net id
+            GATE *input_gate = Find_Gate_by_isc_netid(stoi(input_gates[j]));
+            cout << "\t input gate name: " << input_gate->Get_isc_identifier() << endl;
+
+            // get input gate's value
+            if (j == 0)
+            {
+                input_gate_value_1 = input_gate->get_isc_bitset_output_expected();
+                v[i]->SetValue1(input_gate_value_1);
+            }
+            else if (j == 1)
+            {
+                input_gate_value_2 = input_gate->get_isc_bitset_output_expected();
+                v[i]->SetValue2(input_gate_value_2);
+            }
+            else
+            {
+                cout << "\t something wrong when parsing gate input" << endl;
+                exit(0);
+            }
+
+            cout << "  " << endl;
+        }
+
+        // GATEFUNC fun = v[i]->GetFunction();
+        bitset<64> result = isc_Evaluate(v[i], v[i]->GetValue1(), v[i]->GetValue2());
+
+        update_fanout_expected_bitset(v[i], result);
+
+        cout << "  " << endl;
     }
 }
