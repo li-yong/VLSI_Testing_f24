@@ -4,7 +4,6 @@
 #include "typeemu.h"
 using namespace std;
 
-
 #include <random>
 #include <vector>
 #include <bitset>
@@ -51,6 +50,8 @@ private:
 	bitset<2> mod_value;
 
 public:
+	vector<bitset<64>> InputValues_bitset;
+
 	// Initialize GATE
 	GATE() : Function(G_BAD), Level(-1), Value(X), Value_t(X), Inversion(false)
 	{
@@ -98,13 +99,13 @@ public:
 	DFS_STATUS getDFSStatus() { return dfs_status; }
 	void SetName(string n) { Name = n; }
 
-	void Set_isc_StuckAt(const vector<string> &faults) { 
-		isc_StuckAtFaults = faults; 
-		}
+	void Set_isc_StuckAt(const vector<string> &faults)
+	{
+		isc_StuckAtFaults = faults;
+	}
 	vector<string> Get_isc_StuckAt() { return isc_StuckAtFaults; }
 
 	// void clear_stuck_at_0() { StuckAt[0] = 0; }
-
 
 	void Set_isc_net_id(int id) { isc_net_id = id; }
 	int Get_isc_net_id() { return isc_net_id; };
@@ -189,29 +190,31 @@ public:
 	{
 		WireValue[0].set();
 	}
-	void SetValue1(bitset<PatternNum> &value) { 
-		WireValue[0] = value; 
-		}
-	void SetValue1(int idx) {
-		 WireValue[0].set(idx);
-		  }
+	void SetValue1(bitset<PatternNum> &value)
+	{
+		WireValue[0] = value;
+	}
+	void SetValue1(int idx)
+	{
+		WireValue[0].set(idx);
+	}
 	void ResetValue1() { WireValue[0].reset(); }
 	void ResetValue1(int idx) { WireValue[0].reset(idx); }
-	
-	
-	void SetValue2(bitset<PatternNum> &value) { 
-		WireValue[1] = value; }
 
+	void SetValue2(bitset<PatternNum> &value)
+	{
+		WireValue[1] = value;
+	}
 
-	void SetValue2() {
-		 WireValue[1].set(); 
-		 
-		 }
-	void SetValue2(int idx) { 
-		
+	void SetValue2()
+	{
+		WireValue[1].set();
+	}
+	void SetValue2(int idx)
+	{
+
 		WireValue[1].set(idx);
-		
-		 }
+	}
 	void ResetValue2() { WireValue[1].reset(); }
 	void ResetValue2(int idx) { WireValue[1].reset(idx); }
 	bool GetValue1(int idx) { return WireValue[0][idx]; }

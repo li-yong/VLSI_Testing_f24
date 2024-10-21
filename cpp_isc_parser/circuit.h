@@ -335,15 +335,15 @@ public:
 	void PrintIO();
 	void PrintModIO();
 	VALUE Evaluate(GATEPTR gptr);
-	bitset<64> isc_Evaluate(GATEPTR gptr, bitset<64> bits1, bitset<64> bits2);
+	bitset<64> isc_Evaluate(GATEPTR gptr);
 	bitset<2> ModEvaluate(GATEPTR gptr);
 	void print_bitset();
 	void init_level0_input_gate();
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset);
 	void iterate_gates_sa_errors();
-	void init_bitset(bool v1, bool v2, bool oe, bool oa);
-	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions);
-	void show_diff_pattern(std::map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, bool b_ipt, bool b_opt_exp, bool b_opt_act);
+	void init_bitset(bool v12, bool oe, bool oa);
+	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);
+	void show_diff_pattern(std::map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, string err_out_gate_isc_identifier, bool b_ipt, bool b_opt_exp, bool b_opt_act);
 	void show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool, bool);
 	// defined in atpg.cc
 	void GenerateAllFaultList();
@@ -363,6 +363,7 @@ public:
 	GATEPTR FindPIAssignment(GATEPTR gptr, VALUE value);
 	GATEPTR TestPossible(FAULT *fptr);
 	void TraceDetectedStemFault(GATEPTR gptr, VALUE val);
+	void set_actual_from_expect();
 	// defined in fsim.cc
 	void MarkOutputGate();
 	void MarkPropagateTree(GATEPTR gptr);
@@ -371,6 +372,7 @@ public:
 	void FaultSimEvaluate(GATE *gptr);
 	bool CheckFaultyGate(FAULT *fptr);
 	void InjectFaultValue(GATEPTR gptr, unsigned idx, VALUE value);
+	int get_sa_error_cnt();
 
 	// defined in psim.cc for parallel logic simulation
 	void ParallelLogicSimVectors();

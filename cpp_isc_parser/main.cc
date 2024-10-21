@@ -106,26 +106,14 @@ int main(int argc, char **argv)
          * INIT THE 64bit BITSET ON EACH INPUT GATE
         /******************************************/
 
-        // isc_Circuit->FanoutList(); //fuck!
-
-        // isc_Circuit->SetupIO_ID(); // increase the input gate number. drop it. FUCK!
-//  isc_Circuit->print_bitset();
-        isc_Circuit->Levelize(); // Ryan overwrited
-        // isc_Circuit->Check_Levelization();
-        isc_Circuit->InitializeQueue();
-
-        // isc_Circuit->GenerateAllFaultList(); 
-        // isc_Circuit->SortFaninByLevel();
-        // isc_Circuit->MarkOutputGate();
-
-        // isc_Circuit->print_bitset();
-        isc_Circuit->init_bitset(true,true,true,true); //bool v1, bool v2, bool oe, bool oa
+        isc_Circuit->Levelize();                          
+        isc_Circuit->init_bitset(true, true, true); // bool inputv, bool oe, bool oa
         cout << "Circuit initalizated." << endl;
 
-//  isc_Circuit->print_bitset();
+        //  isc_Circuit->print_bitset();
         isc_Circuit->init_level0_input_gate();
 
-        cout << "Random patterns generated on Input gates, parallel pattern count 64" << endl;
+        cout << "Random patterns generated on Input gates, parallel pattern count 64." << endl;
         // isc_Circuit->print_bitset();
 
         /******************************************
@@ -145,44 +133,12 @@ int main(int argc, char **argv)
 
         cout << "Good circuit output calculated." << endl;
 
-
         /******************************************
          * INJECT SA FAULTS
         /******************************************/
         // iterate the FAULTS in circuits
-        cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern in could catch the fault." << endl;
+        cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault." << endl;
         isc_Circuit->iterate_gates_sa_errors();
-
-        // isc_Circuit->Levelize_0();
-
-        // feed the random vector to the circuit, input gates
-        for (int i = 0; i < isc_Circuit->No_PI(); i++)
-        {
-            // isc_Circuit->PIGate(i)->SetValue(random_vector[i]);
-            // isc_Circuit->PIGate(i)->SetValue(input_patterns[i][0]);
-
-            cout << "debug" << endl;
-        }
-
-        PATTERN pattern;
-        // pattern->Initialize("pattern", isc_Circuit->No_PI(), "PI");
-        // isc_Circuit->copyPItoPattern();
-        // isc_Circuit->Pattern.genRandomPattern(10);
-        // isc_Circuit->Pattern.setPatterninput();
-        // isc_Circuit->Levelize_0();
-        // isc_Circuit->Levelize_1();
-
-        /* Set Pattern*/
-
-        // isc_Circuit->MarkOutputGate();
-        // isc_Circuit->InitializeQueue();
-        // isc_Circuit->PPSFP();
-    }
-    else if (action == "path")
-    {
-        string src_name_gate = "1";
-        string dest_gate_name = "2";
-        isc_Circuit->path(src_name_gate, dest_gate_name);
     }
     else
     {
