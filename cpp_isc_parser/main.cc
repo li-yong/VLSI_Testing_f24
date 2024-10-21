@@ -114,14 +114,18 @@ int main(int argc, char **argv)
         // isc_Circuit->Check_Levelization();
         isc_Circuit->InitializeQueue();
 
-        isc_Circuit->GenerateAllFaultList();
-        isc_Circuit->SortFaninByLevel();
+        // isc_Circuit->GenerateAllFaultList(); 
+        // isc_Circuit->SortFaninByLevel();
         // isc_Circuit->MarkOutputGate();
 
         // isc_Circuit->print_bitset();
-        isc_Circuit->init_bitset();
+        isc_Circuit->init_bitset(true,true,true,true); //bool v1, bool v2, bool oe, bool oa
+        cout << "Circuit initalizated." << endl;
+
 //  isc_Circuit->print_bitset();
         isc_Circuit->init_level0_input_gate();
+
+        cout << "Random patterns generated on Input gates, parallel pattern count 64" << endl;
         // isc_Circuit->print_bitset();
 
         /******************************************
@@ -132,18 +136,21 @@ int main(int argc, char **argv)
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
             isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT");
-            isc_Circuit->calc_output_level_1_max(gate_level,"ACTUAL");
         }
 
-      
-        isc_Circuit->print_bitset();
-        // exit(0);
+        for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
+        {
+            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL");
+        }
+
+        cout << "Good circuit output calculated." << endl;
 
 
         /******************************************
          * INJECT SA FAULTS
         /******************************************/
         // iterate the FAULTS in circuits
+        cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern in could catch the fault." << endl;
         isc_Circuit->iterate_gates_sa_errors();
 
         // isc_Circuit->Levelize_0();

@@ -231,8 +231,8 @@ bitset<64> CIRCUIT::isc_Evaluate(GATEPTR gptr, bitset<64> bits1, bitset<64> bits
 
     // gptr->SetWireValue(result);
     string srest = result.to_string<char, string::traits_type, string::allocator_type>();
-    cout << "fun: " << fun <<" , "<< isc_identifier << endl;
-    cout << "bs1:    " << bs1 << "\nbs2:    " << bs2 << "\nresult: " << result << endl;
+    // cout << isc_identifier << "fun: " << fun << endl;
+    // cout << "bs1:    " << bs1 << "\nbs2:    " << bs2 << "\nresult: " << result << endl;
 
     return result;
 }

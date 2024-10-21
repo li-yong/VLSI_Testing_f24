@@ -10,6 +10,7 @@
 #include <string.h>
 #include <bitset>
 #include <iostream>
+#include <map>
 
 #define xstr(s) ystr(s)
 #define ystr(s) #s
@@ -336,13 +337,14 @@ public:
 	VALUE Evaluate(GATEPTR gptr);
 	bitset<64> isc_Evaluate(GATEPTR gptr, bitset<64> bits1, bitset<64> bits2);
 	bitset<2> ModEvaluate(GATEPTR gptr);
-	void  print_bitset();
+	void print_bitset();
 	void init_level0_input_gate();
-	void update_fanout_bitset(GATE* gate, string, bitset<64> bitset);
+	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset);
 	void iterate_gates_sa_errors();
-	void init_bitset();
-
-
+	void init_bitset(bool v1, bool v2, bool oe, bool oa);
+	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions);
+	void show_diff_pattern(std::map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, bool b_ipt, bool b_opt);
+	void show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool b_opt);
 	// defined in atpg.cc
 	void GenerateAllFaultList();
 	void GenerateCheckPointFaultList();

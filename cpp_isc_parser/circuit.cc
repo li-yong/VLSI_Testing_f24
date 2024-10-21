@@ -3,10 +3,11 @@
 #include "circuit.h"
 #include "GetLongOpt.h"
 #include <algorithm> // For sort and unique
-#include <vector>    // For std::vector
+#include <vector>    // For vector
 #include <set>
 #include <bitset>
 #include <random>
+#include <map>
 
 using namespace std;
 
@@ -86,8 +87,8 @@ void CIRCUIT::Levelize()
         vector<GATE *> outputlist = g->GetOutput_list();
 
         // remove duplicate entries from outputlist
-        std::sort(outputlist.begin(), outputlist.end());
-        auto it = std::unique(outputlist.begin(), outputlist.end());
+        sort(outputlist.begin(), outputlist.end());
+        auto it = unique(outputlist.begin(), outputlist.end());
         outputlist.erase(it, outputlist.end());
 
         // vector<GATE *> inputfanlist = g->GetInput_fan_list();
@@ -112,7 +113,7 @@ void CIRCUIT::Levelize()
                     cout << "debug" << endl;
                 }
                 outputlist[i2]->SetLevel(level + 1);
-                cout << "set " << outputlist[i2]->Get_isc_identifier() << " output level to " << outputlist[i2]->GetLevel() << endl;
+                // cout << "set " << outputlist[i2]->Get_isc_identifier() << " output level to " << outputlist[i2]->GetLevel() << endl;
                 max_gate_level = max(max_gate_level, outputlist[i2]->GetLevel());
             }
         }
@@ -123,7 +124,7 @@ void CIRCUIT::Levelize()
         //     cout << name << " input is " << inputlist[i1]->GetName() << endl;
         // }
     }
-    cout << "max level is " << max_gate_level << endl;
+    // cout << "max level is " << max_gate_level << endl;
     SetMaxLevel();
 }
 
@@ -139,7 +140,7 @@ vector<GATE *> CIRCUIT::GetGateInLevel(int cur_lv)
 
         if (lvl == cur_lv)
         {
-            cout << name << " gate_in_level " << lvl << endl;
+            // cout << name << " gate_in_level " << lvl << endl;
             gates_in_lv.push_back(Netlist[i]);
         }
     }
@@ -547,19 +548,33 @@ void CIRCUIT::printSA()
     }
 }
 
-void CIRCUIT::init_bitset()
+void CIRCUIT::init_bitset(bool v1, bool v2, bool oe, bool oa)
 {
     vector<GATE *>::iterator it_net;
-    std::bitset<64> bitset_all_zero;
+    bitset<64> bitset_all_zero;
 
     for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
     {
 
-        (*it_net)->set_isc_bitset_output_expected(bitset_all_zero);
-        (*it_net)->set_isc_bitset_output_actual(bitset_all_zero);
+        if (v1)
+        {
+            (*it_net)->SetValue1(bitset_all_zero);
+        }
 
-        (*it_net)->SetValue1(bitset_all_zero);
-        (*it_net)->SetValue2(bitset_all_zero);
+        if (v2)
+        {
+            (*it_net)->SetValue2(bitset_all_zero);
+        }
+
+        if (oe)
+        {
+            (*it_net)->set_isc_bitset_output_expected(bitset_all_zero);
+        }
+
+        if (oa)
+        {
+            (*it_net)->set_isc_bitset_output_actual(bitset_all_zero);
+        }
     }
 }
 
@@ -608,7 +623,7 @@ void CIRCUIT::update_fanout_bitset(GATE *gate, string expect_or_actual, bitset<6
     vector<GATE *> outputfanlist = gate->GetOutput_fan_list();
     for (long unsigned j = 0; j < outputfanlist.size(); j++)
     {
-        cout << "output gate: " << outputfanlist[j]->Get_isc_identifier() << endl;
+        // cout << "output gate: " << outputfanlist[j]->Get_isc_identifier() << endl;
         // get outputlist[j] function
         GATEFUNC fun = outputfanlist[j]->GetFunction();
         if (fun != G_FROM)
@@ -639,10 +654,11 @@ void CIRCUIT::init_level0_input_gate()
 
     // get level 0 gates. Input gate only have one pin.
     vector<GATE *> v = GetGateInLevel(0);
-    cout << "get level 0 output gates" << endl;
+
+    // cout << "get level 0 output gates" << endl;
     for (long unsigned i = 0; i < v.size(); i++)
     {
-        cout << v[i]->Get_isc_identifier() << "  " << v[i]->GetLevel() << endl;
+        // cout << v[i]->Get_isc_identifier() << "  " << v[i]->GetLevel() << endl;
         bitset<64> bitset_random = bitset<64>(dis(gen));
         string bitString = bitset_random.to_string();
 
@@ -659,10 +675,11 @@ void CIRCUIT::init_level0_input_gate()
 void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
 {
     vector<GATE *> v = GetGateInLevel(gate_level);
-    cout << "\nget level " << gate_level << " gates" << endl;
+    // cout << "\nget level " << gate_level << " gates" << endl;
+
     for (long unsigned i = 0; i < v.size(); i++)
     {
-        cout << v[i]->Get_isc_identifier() << ", level " << v[i]->GetLevel() << endl;
+        // cout << v[i]->Get_isc_identifier() << ", level " << v[i]->GetLevel() << endl;
 
         // if (v[i]->Get_isc_identifier() == "11gat")
         // {
@@ -673,8 +690,6 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
         // {
         //     cout << "debug" << endl;
         // }
-
-
 
         // get input gates of v[i]
         vector<string> input_gates = v[i]->Get_isc_input_gates();
@@ -689,7 +704,8 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
             // find gate by net id
             GATE *input_gate = Find_Gate_by_isc_netid(stoi(input_gates[j]));
             string input_gate_name = input_gate->Get_isc_identifier();
-            cout << "\t input gate name: " << input_gate_name << endl;
+
+            // cout << "\t input gate name: " << input_gate_name << endl;
 
             // get input gate's value
             if (j == 0)
@@ -697,10 +713,10 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
                 input_gate_value_exp_1 = input_gate->get_isc_bitset_output_expected();
                 input_gate_value_act_1 = input_gate->get_isc_bitset_output_actual();
 
-                // cout << "\t input_gate_value_exp_1 " << input_gate_name << input_gate_value_exp_1.to_string() << endl;
-                // cout << "\t input_gate_value_act_1 " << input_gate_name << input_gate_value_act_1.to_string() << endl;
-
-
+                if (expect_or_actual == "ACTUAL" & input_gate_value_exp_1 != input_gate_value_act_1)
+                {
+                    // cout << "\t Debug, input gate ACTUAL is NOT EXPECTED! Something has wrong before current gate." << endl;
+                }
 
                 if (expect_or_actual == "EXPECT")
                 {
@@ -717,10 +733,9 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
                 input_gate_value_exp_2 = input_gate->get_isc_bitset_output_expected();
                 input_gate_value_act_2 = input_gate->get_isc_bitset_output_actual();
 
-                if (input_gate_value_exp_2 != input_gate_value_act_2)
+                if (expect_or_actual == "ACTUAL" & input_gate_value_exp_2 != input_gate_value_act_2)
                 {
-                    cout << "input gate value not equal" << endl;
-                    // exit(0);
+                    // cout << "\t Debug, input gate ACTUAL is NOT EXPECTED! Something has wrong before current gate" << endl;
                 }
 
                 if (expect_or_actual == "EXPECT")
@@ -738,7 +753,7 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
                 exit(0);
             }
 
-            cout << "  " << endl;
+            // cout << "  " << endl;
         }
 
         //
@@ -754,9 +769,8 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
         }
 
         update_fanout_bitset(v[i], expect_or_actual, result);
-        cout << result.to_string() << endl;
 
-        cout << "  " << endl;
+        // cout << "  " << endl;
     }
 }
 
@@ -772,12 +786,13 @@ void CIRCUIT::iterate_gates_sa_errors()
         string name = g->Get_isc_identifier();
         GATEFUNC fun = g->GetFunction();
 
-        std::bitset<64> bitset_all_zero;
-        std::bitset<64> bitset_all_one;
+        bitset<64> bitset_all_zero;
+        bitset<64> bitset_all_one;
         bitset_all_one.set();
 
         // iterate the SAlist
         vector<string> SAlist = g->Get_isc_StuckAt();
+
         for (size_t n = 0; n < SAlist.size(); ++n)
         {
             cout << name << " " << SAlist[n] << endl;
@@ -799,7 +814,7 @@ void CIRCUIT::iterate_gates_sa_errors()
                 calc_output_level_1_max(gate_level, "ACTUAL");
             }
 
-            print_bitset();
+            // print_bitset();
 
             // Iterate the PO GATES
 
@@ -816,12 +831,145 @@ void CIRCUIT::iterate_gates_sa_errors()
 
                 cout << "\nPO: " << g->Get_isc_identifier() << endl;
                 cout << "expected output: " << g->get_isc_bitset_output_expected() << endl;
-                cout << "actual output: " << g->get_isc_bitset_output_actual() << endl;
-                if (g->get_isc_bitset_output_expected() != g->get_isc_bitset_output_actual())
+                cout << "actual   output: " << g->get_isc_bitset_output_actual() << endl;
+
+                if (g->get_isc_bitset_output_expected() != g->get_isc_bitset_output_actual() & g->Get_isc_fo_cnt() == 0)
                 {
                     cout << "PO: " << g->Get_isc_identifier() << " is failing" << endl;
+
+                    vector<string> salist = g->Get_isc_StuckAt();
+
+                    salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
+                    g->Set_isc_StuckAt(salist);
+
+                    cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist" << endl;
+
+                    vector<int> differing_positions;
+                    for (int i = 0; i < 64; i++)
+                    {
+                        if (g->get_isc_bitset_output_expected()[i] != g->get_isc_bitset_output_actual()[i])
+                        {
+                            differing_positions.push_back(i);
+                        }
+                    }
+
+                    gather_input_output_pattern_and_show_ptn_at_diff_postion(differing_positions);
                 }
             }
         }
     }
+}
+
+void CIRCUIT::gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions)
+{
+
+    // Assuming dict_bitset is defined as follows:
+    map<string, bitset<64>> dict_str_bs;
+    // key: gate_isc_identifier
+    map<string, map<string, bitset<64>>> dict_gate;
+
+    // iterate gates in circuits
+    vector<GATE *> netlist = GetNetlist();
+    for (unsigned i = 0; i < netlist.size(); i++)
+    {
+        GATE *g;
+        g = netlist[i];
+        string isc_identifier = g->Get_isc_identifier();
+        GATEFUNC fun = g->GetFunction();
+
+        bitset<64> bitset_exp, bitset_act;
+
+        bitset_exp = g->get_isc_bitset_output_expected();
+        bitset_act = g->get_isc_bitset_output_actual();
+
+        string bitString_exp = bitset_exp.to_string();
+        string bitString_act = bitset_act.to_string();
+        cout << bitString_act << endl;
+
+        dict_gate[isc_identifier]["bs_op_exp"] = bitset_exp;
+        dict_gate[isc_identifier]["bs_op_act"] = bitset_act;
+        dict_gate[isc_identifier]["bs_value1"] = g->GetValue1();
+        dict_gate[isc_identifier]["bs_value2"] = g->GetValue2();
+
+        // cout << "debug, parsed gate bitsets (op_exp, op_act, v1, v2). " << isc_identifier<< endl;
+    }
+
+    show_diff_pattern(dict_gate, differing_positions, true, false); //print input patterns
+
+    cout << "debug" << endl;
+}
+
+void CIRCUIT::show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool b_opt)
+{
+    string h = "";
+    if (b_ipt)
+    {
+        h = "Input Patterns:\n";
+    }
+    else if (b_opt)
+    {
+        h = "Output Patterns:\n";
+    }
+
+    // iternate the dict_gate
+    for (auto const &gate : dict_gate)
+    {
+
+        GATE *g = Find_Gate_by_isc_identifier(gate.first);
+        string gate_isc_identifier = g->Get_isc_identifier();
+        string gate_net_id = to_string(g->Get_isc_net_id());
+
+        if (g->Get_isc_fi_cnt() == 0 & b_ipt)
+        {
+            h += gate_net_id + "_" + gate_isc_identifier + ",";
+        }
+
+        if (g->Get_isc_fo_cnt() == 0 & b_opt)
+        {
+            h += gate_net_id + "_" + gate_isc_identifier + ",";
+        }
+    }
+    cout << h << endl;
+}
+
+void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, bool b_ipt, bool b_opt)
+{
+
+    show_ptn_header(dict_gate, true, false);
+
+    // cout << "Bits differ at the following positions:" << endl;
+    for (int pos : differing_positions)
+    {
+        // cout << pos << " ";
+
+        // iternate the dict_gate
+        for (auto const &gate : dict_gate)
+        {
+
+            bitset<64> bs_op_exp = gate.second.at("bs_op_exp");
+            bitset<64> bs_op_act = gate.second.at("bs_op_act");
+            bitset<64> bs_value1 = gate.second.at("bs_value1");
+            bitset<64> bs_value2 = gate.second.at("bs_value2");
+
+            GATE *g = Find_Gate_by_isc_identifier(gate.first);
+            string gate_isc_identifier = g->Get_isc_identifier();
+            string gate_net_id = to_string(g->Get_isc_net_id());
+            GATEFUNC gate_function = g->GetFunction();
+
+            if (g->Get_isc_fi_cnt() == 0 & gate_function == G_PI & b_ipt)
+            {
+
+                cout << gate_net_id << "_" << gate_isc_identifier << "_" << bs_value1[pos] << ",";
+            }
+          
+
+            if (g->Get_isc_fo_cnt() == 0 & b_opt)
+            {
+                cout << gate_net_id << "_" << gate_isc_identifier << "_" << bs_op_exp[pos] << ",";
+            }
+
+            // cout << gate_name << " " << bitset_exp[pos] << " " << bitset_act[pos] << " " << bitset_v1[pos] << " " << bitset_v2[pos] << endl;
+        }
+    }
+    cout << endl;
 }

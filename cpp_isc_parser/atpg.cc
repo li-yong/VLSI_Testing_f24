@@ -17,8 +17,8 @@ void CIRCUIT::GenerateAllFaultList()
     GATEPTR gptr, fanout;
     FAULT *fptr;
     for (i = 0;i<No_Gate();++i) {
-        gptr = Netlist[i]; fun = gptr->GetFunction();
-        if (fun == G_PO) { continue; } //skip PO
+        gptr = Netlist[i]; 
+        fun = gptr->GetFunction();
         //add stem stuck-at 0 fault to Flist
         fptr = new FAULT(gptr, gptr, S0);
         Flist.push_front(fptr);

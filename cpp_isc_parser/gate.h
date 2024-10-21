@@ -85,21 +85,26 @@ public:
 
 	void set_isc_bitset_output_expected(bitset<PatternNum> &value)
 	{
-		cout << isc_identifier << " set_isc_bitset_output_expect " << value.to_string() << endl;
+		// cout << isc_identifier << " set_isc_bitset_output_expect " << value.to_string() << endl;
 		isc_bitset_output_expected = value;
 	}
 	void set_isc_bitset_output_actual(bitset<PatternNum> &value)
 	{
 
-		cout << isc_identifier << " set_isc_bitset_output_actual " << value.to_string() << endl;
+		// cout << isc_identifier << " set_isc_bitset_output_actual " << value.to_string() << endl;
 		isc_bitset_output_actual = value;
 	}
 
 	DFS_STATUS getDFSStatus() { return dfs_status; }
 	void SetName(string n) { Name = n; }
 
-	void Set_isc_StuckAt(const vector<string> &faults) { isc_StuckAtFaults = faults; }
+	void Set_isc_StuckAt(const vector<string> &faults) { 
+		isc_StuckAtFaults = faults; 
+		}
 	vector<string> Get_isc_StuckAt() { return isc_StuckAtFaults; }
+
+	// void clear_stuck_at_0() { StuckAt[0] = 0; }
+
 
 	void Set_isc_net_id(int id) { isc_net_id = id; }
 	int Get_isc_net_id() { return isc_net_id; };
