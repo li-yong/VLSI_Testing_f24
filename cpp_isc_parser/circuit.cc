@@ -850,6 +850,7 @@ void CIRCUIT::iterate_gates_sa_errors()
                         if (g->get_isc_bitset_output_expected()[i] != g->get_isc_bitset_output_actual()[i])
                         {
                             differing_positions.push_back(i);
+                            break; // only need to find one position. YONG DEBUG
                         }
                     }
 
@@ -894,21 +895,35 @@ void CIRCUIT::gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<in
         // cout << "debug, parsed gate bitsets (op_exp, op_act, v1, v2). " << isc_identifier<< endl;
     }
 
-    show_diff_pattern(dict_gate, differing_positions, true, false); //print input patterns
+    // print input patterns
+    show_ptn_header(dict_gate, true, false,false);
+    show_diff_pattern(dict_gate, differing_positions, true, false, false);
+
+    // print output patterns expected
+    show_ptn_header(dict_gate, false, true,false);
+    show_diff_pattern(dict_gate, differing_positions, false, true,false);
+
+    // print output patterns actual
+    show_ptn_header(dict_gate, false, false, true);
+    show_diff_pattern(dict_gate, differing_positions, false, false,true);
 
     cout << "debug" << endl;
 }
 
-void CIRCUIT::show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool b_opt)
+void CIRCUIT::show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool b_opt_exp, bool b_opt_act)
 {
     string h = "";
     if (b_ipt)
     {
-        h = "Input Patterns:\n";
+        h = "Input Pattern:\n";
     }
-    else if (b_opt)
+    else if (b_opt_exp)
     {
-        h = "Output Patterns:\n";
+        h = "Output Pattern Expected:\n";
+    }
+    else if (b_opt_act)
+    {
+        h = "Output Pattern Actual:\n";
     }
 
     // iternate the dict_gate
@@ -924,7 +939,11 @@ void CIRCUIT::show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bo
             h += gate_net_id + "_" + gate_isc_identifier + ",";
         }
 
-        if (g->Get_isc_fo_cnt() == 0 & b_opt)
+        if (g->Get_isc_fo_cnt() == 0 & b_opt_exp)
+        {
+            h += gate_net_id + "_" + gate_isc_identifier + ",";
+        }
+        if (g->Get_isc_fo_cnt() == 0 & b_opt_act)
         {
             h += gate_net_id + "_" + gate_isc_identifier + ",";
         }
@@ -932,10 +951,24 @@ void CIRCUIT::show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bo
     cout << h << endl;
 }
 
-void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, bool b_ipt, bool b_opt)
+void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, bool b_ipt, bool b_opt_exp, bool b_opt_act)
 {
 
-    show_ptn_header(dict_gate, true, false);
+
+    string h = "";
+    if (b_ipt)
+    {
+        h = "";
+    }
+    else if (b_opt_exp)
+    {
+        h = "";
+    }
+    else if (b_opt_act)
+    {
+        h = "";
+    }
+
 
     // cout << "Bits differ at the following positions:" << endl;
     for (int pos : differing_positions)
@@ -961,12 +994,17 @@ void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, 
 
                 cout << gate_net_id << "_" << gate_isc_identifier << "_" << bs_value1[pos] << ",";
             }
-          
 
-            if (g->Get_isc_fo_cnt() == 0 & b_opt)
+            if (g->Get_isc_fo_cnt() == 0 & b_opt_exp)
             {
                 cout << gate_net_id << "_" << gate_isc_identifier << "_" << bs_op_exp[pos] << ",";
             }
+                
+            if (g->Get_isc_fo_cnt() == 0 & b_opt_act)
+            {
+                cout << gate_net_id << "_" << gate_isc_identifier << "_" << bs_op_act[pos] << ",";
+            }
+
 
             // cout << gate_name << " " << bitset_exp[pos] << " " << bitset_act[pos] << " " << bitset_v1[pos] << " " << bitset_v2[pos] << endl;
         }

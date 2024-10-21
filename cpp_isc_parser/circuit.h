@@ -343,8 +343,8 @@ public:
 	void iterate_gates_sa_errors();
 	void init_bitset(bool v1, bool v2, bool oe, bool oa);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions);
-	void show_diff_pattern(std::map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, bool b_ipt, bool b_opt);
-	void show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool b_opt);
+	void show_diff_pattern(std::map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, bool b_ipt, bool b_opt_exp, bool b_opt_act);
+	void show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool, bool);
 	// defined in atpg.cc
 	void GenerateAllFaultList();
 	void GenerateCheckPointFaultList();
