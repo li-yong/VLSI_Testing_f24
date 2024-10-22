@@ -18,14 +18,16 @@ HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h pattern.h hash.h tfaul
 
 # Add source file assignment.c to be compiled
 SOURCES = circuit.cc main.cc GetLongOpt.cc \
-					parser_isc.cc path.cc \
-					sim.cc stfsim.cc atpg.cc fsim.cc pattern.cc
+					parser_isc.cc sim.cc
+					# path.cc \
+					# sim.cc stfsim.cc atpg.cc fsim.cc pattern.cc
 					# readcircuit.tab.cc
 
 # Add object file assignment.o to be linked
 OBJECTS = circuit.o main.o GetLongOpt.o  \
-					parser_isc.o  path.o \
-					sim.o stfsim.o atpg.o fsim.o pattern.o
+					parser_isc.o sim.o 
+					# path.o \
+					# stfsim.o atpg.o fsim.o pattern.o
 					# readcircuit.tab.h
 
 TARGET  = cpp_isc_parser.exe
