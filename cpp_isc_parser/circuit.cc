@@ -568,7 +568,6 @@ void CIRCUIT::init_bitset(bool inputv, bool oe, bool oa)
             (*it_net)->InputValues_bitset = bs;
         }
 
-
         if (oe)
         {
             (*it_net)->set_isc_bitset_output_expected(bitset_all_zero);
@@ -701,15 +700,13 @@ void CIRCUIT::calc_output_level_1_max(int gate_level, string expect_or_actual)
         // get input gates of v[i]
         vector<string> input_gates = v[i]->Get_isc_input_gates();
 
-        bitset<64>  input_gate_value_exp;
+        bitset<64> input_gate_value_exp;
         bitset<64> input_gate_value_act;
 
         v[i]->InputValues_bitset = {};
 
         for (long unsigned j = 0; j < input_gates.size(); j++)
         {
-            
-        
 
             // find gate by net id
             GATE *input_gate = Find_Gate_by_isc_netid(stoi(input_gates[j]));
@@ -763,7 +760,6 @@ int CIRCUIT::get_sa_error_cnt()
     return sa_err_cnt;
 }
 
-
 void CIRCUIT::set_actual_from_expect()
 {
     vector<GATE *> netlist = GetNetlist();
@@ -775,12 +771,8 @@ void CIRCUIT::set_actual_from_expect()
         string error_gate_isc_ident = g->Get_isc_identifier();
         bitset<64> bitset_output_expected = g->get_isc_bitset_output_expected();
         g->set_isc_bitset_output_actual(bitset_output_expected);
-
     }
 }
-
-
-
 
 ////iterate the gates in circuits
 void CIRCUIT::iterate_gates_sa_errors()
@@ -790,7 +782,7 @@ void CIRCUIT::iterate_gates_sa_errors()
     for (unsigned i = 0; i < netlist.size(); i++)
     {
 
-        GATE *g;
+        GATE *g; // gate under test
         g = netlist[i];
         string error_gate_isc_ident = g->Get_isc_identifier();
         GATEFUNC fun = g->GetFunction();
@@ -871,15 +863,13 @@ void CIRCUIT::iterate_gates_sa_errors()
 
                     // cout << "PO: " << g->Get_isc_identifier() << " is failing" << endl;
 
-                    vector<string> salist = g->Get_isc_StuckAt();
-
                     // remove the stuck at fault from the fault list.
+                    cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
+                    vector<string> salist = g->Get_isc_StuckAt();
                     salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
                     g->Set_isc_StuckAt(salist);
 
-                    cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
-                    cout << error_gate_isc_ident << " " << stuck_error << " detected by " << differing_positions.size() << " Input Patterns, " << ", print details of the first test pattern: " << endl;
-
+                    cout << error_gate_isc_ident << " " << stuck_error << " detected by " << differing_positions.size() << " Input Patterns, " << ". Details of the first Input/Output pattern:" << endl;
                     gather_input_output_pattern_and_show_ptn_at_diff_postion({differing_positions[0]}, g1->Get_isc_identifier());
 
                     break;
@@ -1018,7 +1008,7 @@ void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, 
             string gate_net_id = to_string(g->Get_isc_net_id());
             GATEFUNC gate_function = g->GetFunction();
 
-            if (g->Get_isc_fi_cnt() == 0 & b_ipt &  gate_function == G_PI )
+            if (g->Get_isc_fi_cnt() == 0 & b_ipt & gate_function == G_PI)
             {
 
                 // cout << gate_net_id << "_" << gate_isc_identifier << "_" << bs_value1[pos] << ",";
