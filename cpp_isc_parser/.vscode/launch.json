@@ -15,19 +15,22 @@
                 "-file_isc",
                 "${workspaceFolder}/../ISCAS-85/c7552.isc",
             ],
-            "args": [
+            "args_0": [
                 "-action", "ppsfp",
-                "-output","c17.out",
-                "-file_isc", "${workspaceFolder}/../ISCAS-85/c17.isc",
+                  "-file_isc", "${workspaceFolder}/yong.isc",
+            ],
+            "args_4": [
+                "-action", "ppsfp",
+                  "-file_isc", "${workspaceFolder}/../ISCAS-85/c17.isc",
             ],
             "args_2": [
                 "-help",
             ],
-            "args3": [
+            "args": [
                 "-action",
-                "parse_isc",
+                "ppsfp",
                 "-file_isc",
-                "${workspaceFolder}/../ISCAS-85/c17.isc",               
+                "${workspaceFolder}/../ISCAS-85/c499.isc",               
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

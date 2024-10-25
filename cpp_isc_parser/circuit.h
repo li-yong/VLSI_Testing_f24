@@ -113,6 +113,7 @@ public:
 	void SetName(string n) { Name = n; }
 	string GetName() { return Name; }
 
+
 	vector<GATE *> GetNetlist() { return Netlist; }
 	void SetNetlist(vector<GATE *> nlst) { Netlist = nlst; }
 
@@ -340,7 +341,7 @@ public:
 	void print_bitset();
 	void init_level0_input_gate();
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset);
-	void iterate_gates_sa_errors();
+	int iterate_gates_sa_errors(int detected_sa_error);
 	void init_bitset(bool v12, bool oe, bool oa);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);
 	void show_diff_pattern(std::map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, string err_out_gate_isc_identifier, bool b_ipt, bool b_opt_exp, bool b_opt_act);
@@ -400,5 +401,6 @@ public:
 	GATEPTR FindPIAssignment_t(GATEPTR gptr, VALUE value);
 	GATEPTR FindEasiestControl_t(GATEPTR gptr);
 	GATEPTR FindHardestControl_t(GATEPTR gptr);
+	
 };
 #endif

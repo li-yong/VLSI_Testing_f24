@@ -206,7 +206,7 @@ bitset<64> CIRCUIT::isc_Evaluate(GATEPTR gptr)
     }
 
 
-    if (fun_name == G_OR | fun_name == G_BUF)
+    if (fun_name == G_NOT | fun_name == G_BUF)
     {
         if (bss.size() > 1)
         {

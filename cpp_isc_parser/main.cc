@@ -30,7 +30,7 @@ int SetupOption(int argc, char **argv)
 {
 
     option.enroll("action", GetLongOpt::MandatoryValue,
-                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file", 0);
+                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file\n\t\t ppsfp: perform parallel pattern single fault simulation on the circuit\n\t\t", 0);
 
     option.enroll("file_isc", GetLongOpt::MandatoryValue,
                   "Input isc circuit file path. e.g C17.isc", 0);
@@ -57,13 +57,25 @@ int SetupOption(int argc, char **argv)
     return optind;
 }
 
+bool read_input(const string &prompt)
+{
+    string input;
+    cout << prompt;      // Display the prompt to the user
+    getline(cin, input); // Read the user's input
+
+    // Convert input to lowercase for case-insensitive comparison
+    transform(input.begin(), input.end(), input.begin(), ::tolower);
+
+    // Return true if input is "yes" or "y", otherwise false
+    return (input == "yes" || input == "y");
+}
+
 int main(int argc, char **argv)
 {
     SetupOption(argc, argv);
 
     // Start parsing ISC
     CIRCUIT *isc_Circuit = new CIRCUIT();
-    string pattern_name = (string)option.retrieve("output");
 
     string action = (string)option.retrieve("action");
     string file_isc = (string)option.retrieve("file_isc");
@@ -75,6 +87,7 @@ int main(int argc, char **argv)
 
     if (action == "parse_isc")
     {
+        string pattern_name = (string)option.retrieve("output");
 
         /////////////////////////////////
         //
@@ -106,7 +119,7 @@ int main(int argc, char **argv)
          * INIT THE 64bit BITSET ON EACH INPUT GATE
         /******************************************/
 
-        isc_Circuit->Levelize();                          
+        isc_Circuit->Levelize();
         isc_Circuit->init_bitset(true, true, true); // bool inputv, bool oe, bool oa
         cout << "Circuit initalizated." << endl;
 
@@ -119,6 +132,8 @@ int main(int argc, char **argv)
         /******************************************
          * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
         /******************************************/
+        int total_sa_error = isc_Circuit->get_sa_error_cnt();
+        int detected_sa_error = 0;
 
         // calc expect value for  level 1 to level max gates
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
@@ -133,12 +148,28 @@ int main(int argc, char **argv)
 
         cout << "Good circuit output calculated." << endl;
 
+        // if (read_input("Show the list? 'yes' or 'no': "))
+        // {
+        //     isc_Circuit->printGateIdTypeOutput();
+        // }
+
+        // if (read_input("Show patterns on Gates? 'yes' or 'no': "))
+        // {
+        // string a = isc_Circuit->GetFunctionString(G_PI);
+        isc_Circuit->print_bitset();
+        // }
+
+        // isc_Circuit->printNetlist();
+
         /******************************************
          * INJECT SA FAULTS
         /******************************************/
         // iterate the FAULTS in circuits
         cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault." << endl;
-        isc_Circuit->iterate_gates_sa_errors();
+        detected_sa_error +=  isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+        double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
+
+        cout << "Total SA errors: " << total_sa_error << ", detected "    << detected_sa_error << ". detect ratio " << err_detected_ratio << endl;
     }
     else
     {

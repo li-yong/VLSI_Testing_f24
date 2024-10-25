@@ -251,6 +251,44 @@ public:
 		}
 	}
 
+	string GetFunctionString()
+	{
+
+		GATEFUNC gateFunc = GetFunction();
+
+		cout << "gateFunc: " << gateFunc << endl;
+		if (gateFunc == G_PI)
+			return "G_PI";
+		else if (gateFunc == G_PO)
+			return "G_PO";
+		else if (gateFunc == G_PPI)
+			return "G_PPI";
+		else if (gateFunc == G_PPO)
+			return "G_PPO";
+		else if (gateFunc == G_NOT)
+			return "G_NOT";
+		else if (gateFunc == G_AND)
+			return "G_AND";
+		else if (gateFunc == G_NAND)
+			return "G_NAND";
+		else if (gateFunc == G_OR)
+			return "G_OR";
+		else if (gateFunc == G_XOR)
+			return "G_XOR";
+		else if (gateFunc == G_NOR)
+			return "G_NOR";
+		else if (gateFunc == G_DFF)
+			return "G_DFF";
+		else if (gateFunc == G_BUF)
+			return "G_BUF";
+		else if (gateFunc == G_BAD)
+			return "G_BAD";
+		else if (gateFunc == G_FROM)
+			return "G_FROM";
+		else
+			return "G_UNKNOWN";
+	}
+
 	void SetWireValue(int i) { WireValue[i].set(); }
 	void SetWireValue(int i, bitset<PatternNum> &value) { WireValue[i] = value; }
 	void SetWireValue(int i, int idx) { WireValue[i].set(idx); }
