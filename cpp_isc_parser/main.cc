@@ -148,16 +148,17 @@ int main(int argc, char **argv)
 
         cout << "Good circuit output calculated." << endl;
 
-        // if (read_input("Show the list? 'yes' or 'no': "))
-        // {
-        //     isc_Circuit->printGateIdTypeOutput();
-        // }
-
-        // if (read_input("Show patterns on Gates? 'yes' or 'no': "))
-        // {
+        if (read_input("Show patterns on Gates? 'yes' or 'no': "))
+        {
         // string a = isc_Circuit->GetFunctionString(G_PI);
         isc_Circuit->print_bitset();
-        // }
+        }
+
+       if (!read_input("Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': "))
+        {
+        cout << "Exiting." << endl;
+        exit(0);
+        }
 
         // isc_Circuit->printNetlist();
 

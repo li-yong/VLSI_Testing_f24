@@ -256,7 +256,7 @@ public:
 
 		GATEFUNC gateFunc = GetFunction();
 
-		cout << "gateFunc: " << gateFunc << endl;
+		// cout << "gateFunc: " << gateFunc << endl;
 		if (gateFunc == G_PI)
 			return "G_PI";
 		else if (gateFunc == G_PO)
