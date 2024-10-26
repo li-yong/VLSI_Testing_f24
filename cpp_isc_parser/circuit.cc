@@ -51,7 +51,7 @@ void CIRCUIT::Levelize_recu(GATE *gptr, int lel = 0)
     }
 }
 
-// recuive. from levl0->level1->levenn
+// recurcive. from levl0->level1->levenn
 void CIRCUIT::Levelize()
 
 {
@@ -1051,3 +1051,6 @@ void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, 
 
     cout << h << endl;
 }
+
+
+
