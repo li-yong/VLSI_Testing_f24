@@ -727,8 +727,6 @@ bitset<64> CIRCUIT::isc_Evaluate(GATEPTR gptr)
 }
 
  
-
- 
 void CIRCUIT::print_bitset()
 {
     bitset<64> input_gate_value_1, input_gate_value_2, isc_bitset_output_expected, isc_bitset_output_actual;
