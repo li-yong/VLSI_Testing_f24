@@ -605,6 +605,23 @@ void CIRCUIT::init_bitset(bool inputv, bool oe, bool oa)
     }
 }
 
+void CIRCUIT::show_controlability()
+{
+    vector<GATE *>::iterator it_net;
+
+    for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
+    {
+        GATEFUNC function = (*it_net)->GetFunction();
+        string function_s = (*it_net)->GetFunctionString();
+        int netid = (*it_net)->Get_isc_net_id();
+        string isc_identifer = (*it_net)->Get_isc_identifier();
+
+        cout << netid << "  " << isc_identifer << ", CC0 " <<  (*it_net)->cc0 << ", CC1 " << (*it_net)->cc1 << endl;
+        //
+
+    }
+}
+
 void CIRCUIT::print_bitset()
 {
     bitset<64> input_gate_value_1, input_gate_value_2, isc_bitset_output_expected, isc_bitset_output_actual;

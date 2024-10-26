@@ -404,6 +404,7 @@ public:
 	GATEPTR FindEasiestControl_t(GATEPTR gptr);
 	GATEPTR FindHardestControl_t(GATEPTR gptr);
 	void ipt_r();
+	void show_controlability();
 	//
 
 	// handle level 0 input gates
@@ -575,6 +576,14 @@ public:
 	GATE::Result isc_findPath(string gate_isc_identifier, string target_value)
 	{
 
+		// if (gate_isc_identifier == "1gat")
+		// {
+		// 	if (target_value == "1")
+		// 	{
+		// 		cout << "debug" << endl;
+		// 	}
+		// 	// cout << "debug" << endl;
+		// }
 		// cout << "\tbt: target. " << gate_isc_identifier << " to be " << target_value << endl;
 		GATE *g = Find_Gate_by_isc_identifier(gate_isc_identifier);
 		GATEFUNC fun = g->GetFunction();
@@ -588,6 +597,8 @@ public:
 
 			g->v_path.push_back(gate_isc_identifier + "_" + target_value);
 			g->v_path_found = true;
+			g->implicant_value = target_value;
+
 			result.resolved = true;
 			result.gate.push_back(g);
 			result.reason = "PI";
@@ -630,8 +641,8 @@ public:
 			result = g->G_XOR_bt(stoi(target_value));
 		}
 
-		if (result.resolved & result.gate.size()>0) 
-		{	
+		if (result.resolved & result.gate.size() > 0)
+		{
 			string tmp_g = result.gate[0]->Get_isc_identifier();
 			string tmp_v = to_string(result.target_value);
 
@@ -648,7 +659,7 @@ public:
 		}
 		else
 		{
-			cout << "\t Backtrace failed, no pattern for this error." << endl;
+ 			// cout << "\tBacktrace failed, no pattern for this error." << endl;
 		}
 
 		return result;

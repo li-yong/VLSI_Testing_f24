@@ -469,7 +469,7 @@ public:
 
 			rst.reason = "input value set to justify target to 0";
 
-			cout << "target at 0" << endl;
+			// cout << "target at 0" << endl;
 			return rst;
 		}
 		else if (target == 1)

@@ -176,20 +176,33 @@ int main(int argc, char **argv)
     else if (action == "PODEM")
     {
 
-        cout << "levelize the gates in circuit" << endl;
+        cout << "\nLevelize the gates in circuit" << endl;
         isc_Circuit->Levelize();
 
-        cout << "calculating gates controlability" << endl;
+        cout << "\nCalculating gates controlability" << endl;
         isc_Circuit->calc_gate_controlabilty();
 
-        cout << "initalizing gates for backtracing. Set gate input to x";
+        if (read_input("\nShow Controllability CC0, CC1 ? 'yes' or 'no': "))
+        {
+            isc_Circuit->show_controlability();
+        }
+
+
+        cout << "\nInitalizing gates for backtracing. Set gate input to x"<< endl;
         isc_Circuit->podem_bt_candidates_init();
         // isc_Circuit->Atpg();
-        
+
         int sa_error_cnt = isc_Circuit->get_sa_error_cnt();
 
         // iterate the SAlist
-        cout << "Iterating all SA errors in circuit, then backtrace input pattern to justify the SA error" << endl;
+         if (!read_input("\nRun PODEM ATPG? 'yes' or 'no': "))
+        {
+            cout << "\nExiting." << endl;
+            exit(0);
+        }
+
+
+        cout << "\nIterating all SA errors in circuit, then backtrace input pattern to justify the SA error" << endl;
         vector<GATE *> netlist = isc_Circuit->GetNetlist();
 
         for (unsigned i = 0; i < netlist.size(); i++)
@@ -222,7 +235,7 @@ int main(int argc, char **argv)
 
                 // find a path by backtracing.
                 // string gate_isc_identifier = "23gat";
-                cout << "\n=="<< SAlist[n]<<"@"<<gate_isc_identifier << ". Backtrace to find PI gate pattern to justify gate " << gate_isc_identifier << " to value " << target_value << endl;
+                cout << "\n==" << SAlist[n] << "@" << gate_isc_identifier << ". Backtracing to find PI gate pattern to justify gate " << gate_isc_identifier << " to value " << target_value << endl;
                 GATE::Result result = isc_Circuit->isc_findPath(gate_isc_identifier, target_value);
                 if (result.resolved)
                 {
@@ -230,6 +243,8 @@ int main(int argc, char **argv)
                     cout << "\t" << input_gate_value << endl;
                 }
 
+                cout << "\nPress ENTER to continue..., ctrl+c to exit" << std::endl;
+                cin.get();
                 // cout << "print path" << endl;
 
                 // iterate the isc_circuit netlist
