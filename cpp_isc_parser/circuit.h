@@ -2,7 +2,6 @@
 #define CIRCUIT_H
 #include "fault.h"
 #include "tfault.h"
-#include "pattern.h"
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -24,7 +23,7 @@ class CIRCUIT
 {
 private:
 	string Name;
-	PATTERN Pattern;
+	// PATTERN Pattern;
 	vector<GATE *> Netlist;
 	vector<GATE *> PIlist; // store the gate indexes of PI
 	vector<GATE *> POlist;
@@ -187,34 +186,7 @@ public:
 	int No_PPI() { return PPIlist.size(); }
 	int No_PPO() { return PPOlist.size(); }
 
-	void copyPItoPattern()
-	{
-		vector<GATE *>::iterator it;
-		for (it = PIlist.begin(); it != PIlist.end(); it++)
-		{
-			Pattern.addInList(*it);
-		}
-	}
-	void genRandomPattern(string pattern_name, int number)
-	{
-		Pattern.setPatternName(pattern_name);
-		copyPItoPattern();
-		Pattern.genRandomPattern(number);
-		Pattern.setPatterninput();
-	}
-	void genRandomPatternUnknown(string pattern_name, int number)
-	{
-		Pattern.setPatternName(pattern_name);
-		copyPItoPattern();
-		Pattern.genRandomPatternUnknown(number);
-		Pattern.setPatterninput();
-	}
-
-	void InitPattern(const char *pattern)
-	{
-		Pattern.Initialize(const_cast<char *>(pattern), PIlist.size(), "PI");
-	}
-
+	
 	void openFile(string file_name)
 	{
 		cout << "in function openFile" << endl;
@@ -288,24 +260,7 @@ public:
 	bool findPath();
 	void printPath();
 
-	// VLST-Testing Lab6
-	void AtpgRandomPattern();
-	void GenerateAllCPFaultListForFsim();
-	int FaultSimRandomPattern();
-	void closeOfs()
-	{
-		if (ofs.is_open())
-			ofs.close();
-		Pattern.closeOfs();
-	}
-	void genRandomPatternOnly(string pattern_name, int number)
-	{
-		copyPItoPattern();
-		Pattern.genRandomPatternOnly(number);
-		Pattern.setPatterninput();
-	}
 
-	// defined in circuit.cc
 
 	vector<GATE *> GetGateInLevel(int);
 

@@ -14,20 +14,20 @@ MEMUSG	 = /usr/bin/time -f "Average memory usage: %K \nMaximum memory usage: %M\
 
 ####### Files
 
-HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h pattern.h hash.h tfault.h
+HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h  hash.h tfault.h
 
 # Add source file assignment.c to be compiled
 SOURCES = circuit.cc main.cc GetLongOpt.cc \
-					parser_isc.cc sim.cc
-					# atpg.cc fsim.cc 
+					parser_isc.cc 
+					# atpg.cc fsim.cc  sim.cc
 					# path.cc \
 					# sim.cc stfsim.cc atpg.cc fsim.cc pattern.cc
 					# readcircuit.tab.cc
 
 # Add object file assignment.o to be linked
 OBJECTS = circuit.o main.o GetLongOpt.o  \
-					parser_isc.o sim.o  
-					# atpg.o fsim.o 
+					parser_isc.o 
+					# atpg.o fsim.o sim.o  
 					# path.o \
 					# stfsim.o atpg.o fsim.o pattern.o
 					# readcircuit.tab.h

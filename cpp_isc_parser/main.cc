@@ -3,7 +3,6 @@
 #include <string>
 #include "circuit.h"
 #include "GetLongOpt.h"
-#include "pattern.h"
 #include "parser_isc.h"
 #include <typeinfo>
 #include <random>

@@ -622,6 +622,113 @@ void CIRCUIT::show_controlability()
     }
 }
 
+
+
+// evaluate the output value of gate
+bitset<64> CIRCUIT::isc_Evaluate(GATEPTR gptr)
+{
+    GATEFUNC fun_name = gptr->GetFunction();
+    string isc_identifier = gptr->Get_isc_identifier();
+    vector<bitset<64>> bss = gptr->InputValues_bitset;
+
+    if (bss.size() == 0)
+    {
+        cout << "gate: " << isc_identifier << " has no input values. Should be here." << endl;
+        exit(0);
+    }
+
+
+   if (bss.size() >= 3)
+    {
+        // cout << "gate: " << isc_identifier << " input size > 2." << endl;
+        // exit(0);
+    }
+
+
+    if (fun_name == G_NOT | fun_name == G_BUF)
+    {
+        if (bss.size() > 1)
+        {
+            cout << "gate: " << isc_identifier << "G_NOT, G_BUF has more than 1 input values. Should be here." << endl;
+            exit(0);
+        }
+    }
+
+    // update output gate value
+
+    // string bs1 = bits1.to_string<char, string::traits_type, string::allocator_type>();
+    // string bs2 = bits2.to_string<char, string::traits_type, string::allocator_type>();
+
+    bitset<64> result;
+
+    switch (fun_name)
+    {
+    case G_AND:
+        result = bss[0];
+        for (int i = 1; i < bss.size(); i++)
+        {
+            result &= bss[i];
+        }
+        break;
+    case G_NAND:
+        result = bss[0];
+        // cout <<"bss0 "<< bss[0].to_string() << endl;
+        for (int i = 1; i < bss.size(); i++)
+        {
+            result &= bss[i];
+            // cout <<"bss"<<i<<" "<< bss[i].to_string() << endl;
+        }
+        result = ~result;
+        // cout <<"resu"<<" "<< result.to_string() << endl;
+        break;
+    case G_OR:
+        result = bss[0];
+        for (int i = 1; i < bss.size(); i++)
+        {
+            result |= bss[i];
+        }
+        break;
+    case G_NOR:
+        result = bss[0];
+        for (int i = 1; i < bss.size(); i++)
+        {
+            result |= bss[i];
+        }
+        result = ~result;
+        break;
+
+    case G_XOR:
+        result = bss[0];
+        for (int i = 1; i < bss.size(); i++)
+        {
+            result ^= bss[i];
+        }
+
+        break;
+
+    case G_NOT:
+        result = ~bss[0];
+        break;
+
+    case G_BUF:
+        result = bss[0];
+        break;
+
+    default:
+        break;
+    }
+
+    // gptr->SetWireValue(result);
+    // string srest = result.to_string<char, string::traits_type, string::allocator_type>();
+    // cout << isc_identifier << "fun: " << fun << endl;
+    // cout << "bs1:    " << bs1 << "\nbs2:    " << bs2 << "\nresult: " << result << endl;
+
+    return result;
+}
+
+ 
+
+ 
 void CIRCUIT::print_bitset()
 {
     bitset<64> input_gate_value_1, input_gate_value_2, isc_bitset_output_expected, isc_bitset_output_actual;
