@@ -150,14 +150,14 @@ int main(int argc, char **argv)
 
         if (read_input("Show patterns on Gates? 'yes' or 'no': "))
         {
-        // string a = isc_Circuit->GetFunctionString(G_PI);
-        isc_Circuit->print_bitset();
+            // string a = isc_Circuit->GetFunctionString(G_PI);
+            isc_Circuit->print_bitset();
         }
 
-       if (!read_input("Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': "))
+        if (!read_input("Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': "))
         {
-        cout << "Exiting." << endl;
-        exit(0);
+            cout << "Exiting." << endl;
+            exit(0);
         }
 
         // isc_Circuit->printNetlist();
@@ -167,11 +167,37 @@ int main(int argc, char **argv)
         /******************************************/
         // iterate the FAULTS in circuits
         cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault." << endl;
-        detected_sa_error +=  isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+        detected_sa_error += isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
         double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
 
-        cout << "Total SA errors: " << total_sa_error << ", detected "    << detected_sa_error << ". detect ratio " << err_detected_ratio << endl;
+        cout << "Total SA errors: " << total_sa_error << ", detected " << detected_sa_error << ". detect ratio " << err_detected_ratio << endl;
     }
+    else if (action == "PODEM")
+    {
+
+        isc_Circuit->Levelize();
+        isc_Circuit->calc_gate_controlabilty();
+        isc_Circuit->podem_bt_candidates_init();
+
+        //find a path by backtracing.
+        string gate_isc_identifier = "11gat";
+        string target_value = "1";
+
+        if (isc_Circuit->isc_findPath(gate_isc_identifier, target_value))
+        {
+            cout << "Path found." << endl;
+            isc_Circuit->isc_printPath();
+        }
+        else
+        {
+            cout << "No path found." << endl;
+        }
+
+        
+        cout << "PODEM" << endl;
+
+    }
+    
     else
     {
         cout << "Invalid action provided. Exiting." << endl;

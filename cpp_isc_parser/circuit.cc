@@ -789,6 +789,19 @@ void CIRCUIT::set_actual_from_expect()
     }
 }
 
+void CIRCUIT::podem_bt_candidates_init()
+{
+    vector<GATE *> netlist = GetNetlist();
+
+    for (unsigned i = 0; i < netlist.size(); i++)
+    {
+        GATE *g;
+        g = netlist[i];
+        string error_gate_isc_ident = g->Get_isc_identifier();
+        g->bt_candidates = g->Input_list;
+    }
+}
+
 ////iterate the gates in circuits
 int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
 {

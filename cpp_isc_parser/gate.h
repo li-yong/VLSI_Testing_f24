@@ -26,10 +26,6 @@ private:
 
 	int ID;
 	GATEFUNC Function;
-	vector<GATE *> Input_list;
-	vector<GATE *> Output_list;
-	vector<GATE *> Input_fan_list;	// gate10->gate8(fanfrom)->gate3. Save g3 to g10 Input_fan_list
-	vector<GATE *> Output_fan_list; // gate3->gate8->gate10. Save g8 to g3 Output_fan_list
 
 	bitset<NumFlags> Flag;
 	int Level;
@@ -50,7 +46,18 @@ private:
 	bitset<2> mod_value;
 
 public:
+	vector<GATE *> Input_list;
+	vector<GATE *> Output_list;
+	vector<GATE *> Input_fan_list;	// gate10->gate8(fanfrom)->gate3. Save g3 to g10 Input_fan_list
+	vector<GATE *> Output_fan_list; // gate3->gate8->gate10. Save g8 to g3 Output_fan_list
+
 	vector<bitset<64>> InputValues_bitset;
+	int cc0;						  // Combiantional Controllability 0. ON GATE OUTPUT, so only 1 elelement.
+	int cc1;						  // Combiantional Controllability 1
+	int co;							  // Combinational Observability
+	vector<GATE *> bt_candidates;	  // stack. e.g 3 inputs OR gate, objective to set to 1. Either input can be set to 1, but need to ensurre no conflict with other gates.
+	string target_value = "x_tgt";	  // specified or calculated target value
+	string implicant_value = "x_imp"; // calculated implicated value
 
 	// Initialize GATE
 	GATE() : Function(G_BAD), Level(-1), Value(X), Value_t(X), Inversion(false)
@@ -346,6 +353,90 @@ public:
 			}
 		}
 	}
-};
+
+	struct Result
+	{
+		bool resolved;
+		string reason;
+		GATE *gate;
+		int target_value;
+	};
+
+	Result G_NAND_bt(int target)
+	{
+
+		bool resolved = false;
+		auto var = this->Name;
+		Result rst = {};
+		// rst.resolved = false;
+		rst.reason = "unknown";
+		GATEFUNC fun = this->GetFunction();
+
+		if (this->GetFunction() == G_PI)
+		{
+			rst.resolved = true;
+			rst.reason = "bt reach PI gate.";
+			rst.gate = this;
+			rst.target_value = target;
+			return rst;
+		}
+
+		if ((target == 0) & (fun == G_NAND))
+		{
+			// requires all inputs are 1
+			for (GATE *bt_can_gate : this->bt_candidates)
+			{
+				if (bt_can_gate->implicant_value == "0") // someone need it be 0 while we need it be 1.
+				{
+					cout << "conflict, not possible set NAND gate to 0, because one input is 0" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "1";
+				rst.gate = bt_can_gate;
+				rst.target_value = 1;
+				std::cout << "set NAND gate input to 1" << " ";
+			}
+
+			rst.resolved = true;
+
+			rst.reason = "input value set to justify target to 0";
+
+			cout << "target at 0" << endl;
+			return rst;
+		}
+		else if (target == 1)
+		{
+			// Requires any input is 0
+			// iterate input gates
+			// vector<GATE *> input_gates = GetInput_list();
+
+			for (GATE *bt_can_gate : bt_candidates)
+			{
+				std::cout << bt_can_gate << " ";
+
+				if (bt_can_gate->implicant_value == "1")
+				{
+					cout << "conflict on this input, please check other inputs" << endl;
+					bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+					continue;
+				}
+				else
+				{ // implicant_value is x or 0
+					bt_can_gate->implicant_value = "0";
+					rst.resolved = true;
+					rst.gate = bt_can_gate;
+					rst.target_value = 0;
+					break;
+				}
+			}
+
+			return rst;
+		}
+	}
+
+}; // end of the public class
 
 #endif

@@ -27,6 +27,12 @@
                 "-help",
             ],
             "args": [
+                "-action", 
+                "PODEM",
+                "-file_isc",
+                "${workspaceFolder}/ISCAS-85/c17.isc", 
+            ],
+            "args_8": [
                 "-action",
                 "ppsfp",
                 "-file_isc",
