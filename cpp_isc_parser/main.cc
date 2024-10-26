@@ -11,6 +11,7 @@
 #include <bitset>
 #include <algorithm>
 
+
 using namespace std;
 
 // All defined in readcircuit.l
@@ -178,6 +179,7 @@ int main(int argc, char **argv)
         isc_Circuit->Levelize();
         isc_Circuit->calc_gate_controlabilty();
         isc_Circuit->podem_bt_candidates_init();
+        isc_Circuit->Atpg();
 
         //find a path by backtracing.
         string gate_isc_identifier = "11gat";

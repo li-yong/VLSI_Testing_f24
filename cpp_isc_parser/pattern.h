@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include "gate.h"
 
-#define xstr(s) ystr(s) 
-#define ystr(s) #s     
+// #define xstr(s) str(s) 
+// #define str(s) #s     
 #define INDIR input
 
 using namespace std;

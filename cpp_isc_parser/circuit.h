@@ -180,7 +180,7 @@ public:
 		std::cerr << "No gate found with netid: " << std::to_string(isc_netid) << std::endl;
 		return nullptr;
 	}
-
+    void InjectFaultValue(GATEPTR gptr, int  idx,VALUE value);
 	int No_Gate() { return Netlist.size(); }
 	int No_PI() { return PIlist.size(); }
 	int No_PO() { return POlist.size(); }
@@ -397,6 +397,7 @@ public:
 	void PrintTransition();
 	void PrintTransition_t();
 	void PrintIO_t();
+
 
 	// defined in tfatpg.cc for transition fault ATPG
 	void TFAtpg();

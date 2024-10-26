@@ -802,6 +802,7 @@ void CIRCUIT::podem_bt_candidates_init()
     }
 }
 
+
 ////iterate the gates in circuits
 int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
 {

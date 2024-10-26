@@ -9,6 +9,7 @@ using namespace std;
 #include <bitset>
 #include <algorithm>
 #include <iostream>
+#include <map>
 
 class GATE
 {
@@ -362,6 +363,43 @@ public:
 		int target_value;
 	};
 
+	// you need check this->btcandidates is not empty before calling this function.
+	map<string, GATE *> get_bt_can_cc_map()
+	{
+		// get the most complicated controllability input gate
+		map<string, GATE *> input_gate_cc_map;
+
+		input_gate_cc_map["max_cc0"] = this->bt_candidates[0];
+		input_gate_cc_map["max_cc1"] = this->bt_candidates[0];
+		input_gate_cc_map["min_cc0"] = this->bt_candidates[0];
+		input_gate_cc_map["min_cc1"] = this->bt_candidates[0];
+
+		for (GATE *bt_can_gate : this->bt_candidates)
+		{
+
+			if (bt_can_gate->cc0 > input_gate_cc_map["max_cc0"]->cc0)
+			{
+				input_gate_cc_map["max_cc0"] = bt_can_gate;
+			}
+
+			if (bt_can_gate->cc1 > input_gate_cc_map["max_cc1"]->cc1)
+			{
+				input_gate_cc_map["max_cc1"] = bt_can_gate;
+			}
+
+			if (bt_can_gate->cc0 < input_gate_cc_map["min_cc0"]->cc0)
+			{
+				input_gate_cc_map["min_ccc0"] = bt_can_gate;
+			}
+
+			if (bt_can_gate->cc1 < input_gate_cc_map["min_cc1"]->cc1)
+			{
+				input_gate_cc_map["min_cc1"] = bt_can_gate;
+			}
+		}
+		return input_gate_cc_map;
+	}
+
 	Result G_NAND_bt(int target)
 	{
 
@@ -371,6 +409,15 @@ public:
 		// rst.resolved = false;
 		rst.reason = "unknown";
 		GATEFUNC fun = this->GetFunction();
+
+		if (this->bt_candidates.size() == 0)
+		{
+			rst.resolved = false;
+			rst.reason = "no bt candidate input gate";
+			return rst;
+		}
+
+		map<string, GATE *> input_gate_cc_map = get_bt_can_cc_map();
 
 		if (this->GetFunction() == G_PI)
 		{
@@ -384,8 +431,14 @@ public:
 		if ((target == 0) & (fun == G_NAND))
 		{
 			// requires all inputs are 1
+
+			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+
 			for (GATE *bt_can_gate : this->bt_candidates)
 			{
+				// remove the gate from the candidate list. means we have tried this gate.
+				bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
 				if (bt_can_gate->implicant_value == "0") // someone need it be 0 while we need it be 1.
 				{
 					cout << "conflict, not possible set NAND gate to 0, because one input is 0" << endl;
@@ -417,10 +470,13 @@ public:
 			{
 				std::cout << bt_can_gate << " ";
 
+				// remove the gate from the candidate list. means we have tried this gate.
+				bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
 				if (bt_can_gate->implicant_value == "1")
 				{
 					cout << "conflict on this input, please check other inputs" << endl;
-					bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
 					continue;
 				}
 				else
