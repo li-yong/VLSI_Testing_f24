@@ -180,7 +180,7 @@ public:
 		std::cerr << "No gate found with netid: " << std::to_string(isc_netid) << std::endl;
 		return nullptr;
 	}
-    void InjectFaultValue(GATEPTR gptr, int  idx,VALUE value);
+	void InjectFaultValue(GATEPTR gptr, int idx, VALUE value);
 	int No_Gate() { return Netlist.size(); }
 	int No_PI() { return PIlist.size(); }
 	int No_PO() { return POlist.size(); }
@@ -224,10 +224,8 @@ public:
 		else
 			cout << "Successfully open openFile: " << file_name << endl;
 	}
-	
-	
-	void podem_bt_candidates_init();
 
+	void podem_bt_candidates_init();
 
 	void openOutputFile(string file_name)
 	{
@@ -398,7 +396,6 @@ public:
 	void PrintTransition_t();
 	void PrintIO_t();
 
-
 	// defined in tfatpg.cc for transition fault ATPG
 	void TFAtpg();
 	ATPG_STATUS Initialization(GATEPTR gptr, VALUE target, unsigned &total_backtrack_num);
@@ -406,6 +403,7 @@ public:
 	GATEPTR FindPIAssignment_t(GATEPTR gptr, VALUE value);
 	GATEPTR FindEasiestControl_t(GATEPTR gptr);
 	GATEPTR FindHardestControl_t(GATEPTR gptr);
+	void ipt_r();
 	//
 
 	// handle level 0 input gates
@@ -552,10 +550,10 @@ public:
 			}
 
 			outputfanlist[j]->cc0 = cc0;
-			cout << "push cc0 " << cc0 << " to FAN gate input leg " << outputfanlist[j]->Get_isc_identifier() << endl;
+			// cout << "push cc0 " << cc0 << " to FAN gate input leg " << outputfanlist[j]->Get_isc_identifier() << endl;
 
 			outputfanlist[j]->cc1 = cc1;
-			cout << "push cc1 " << cc1 << " to FAN gate input leg " << outputfanlist[j]->Get_isc_identifier() << endl;
+			// cout << "push cc1 " << cc1 << " to FAN gate input leg " << outputfanlist[j]->Get_isc_identifier() << endl;
 		}
 	}
 
@@ -574,26 +572,89 @@ public:
 	}
 
 	// give a gate and a value, return the shortest PI input pattern to generate the value
-	bool isc_findPath(string gate_isc_identifier, string target_value)
+	GATE::Result isc_findPath(string gate_isc_identifier, string target_value)
 	{
 
+		// cout << "\tbt: target. " << gate_isc_identifier << " to be " << target_value << endl;
 		GATE *g = Find_Gate_by_isc_identifier(gate_isc_identifier);
 		GATEFUNC fun = g->GetFunction();
+		GATE::Result result;
+
+		g->target_value = target_value;
+
 		if (fun == G_PI)
 		{
-			cout << "gate is PI, no backtrace required." << endl;
-			return true;
+			// cout << "gate is PI, no backtrace required." << endl;
+
+			g->v_path.push_back(gate_isc_identifier + "_" + target_value);
+			g->v_path_found = true;
+			result.resolved = true;
+			result.gate.push_back(g);
+			result.reason = "PI";
+			result.target_value = stoi(target_value);
+			return result; // pi return
 		}
 		else if (fun == G_NAND)
 		{
-			cout << "gate is NAND, backtrace required." << endl;
-			auto result = g->G_NAND_bt(stoi(target_value));
-			cout << "find path" << endl;
+			// cout << "gate is NAND, backtrace required." << endl;
+			result = g->G_NAND_bt(stoi(target_value));
+		}
+		else if (fun == G_AND)
+		{
+			// cout << "gate is AND, backtrace required." << endl;
+			result = g->G_AND_bt(stoi(target_value));
+		}
+		else if (fun == G_OR)
+		{
+			// cout << "gate is OR, backtrace required." << endl;
+			result = g->G_OR_bt(stoi(target_value));
+		}
+		else if (fun == G_NOR)
+		{
+			// cout << "gate is NOR, backtrace required." << endl;
+			result = g->G_NOR_bt(stoi(target_value));
+		}
+		else if (fun == G_NOT)
+		{
+			// cout << "gate is G_NOT, backtrace required." << endl;
+			result = g->G_NOT_bt(stoi(target_value));
+		}
+		else if (fun == G_BUF)
+		{
+			// cout << "gate is G_BUF, backtrace required." << endl;
+			result = g->G_BUF_bt(stoi(target_value));
+		}
+		else if (fun == G_XOR)
+		{
+			// cout << "gate is XOR, backtrace required." << endl;
+			result = g->G_XOR_bt(stoi(target_value));
 		}
 
-		cout << "find path" << endl;
-		return true;
+		if (result.resolved & result.gate.size()>0) 
+		{	
+			string tmp_g = result.gate[0]->Get_isc_identifier();
+			string tmp_v = to_string(result.target_value);
+
+			// cout << "\tbt, need " << tmp_g << " to be " << tmp_v << endl;
+			result = isc_findPath(tmp_g, tmp_v);
+
+			if (result.resolved)
+			{
+				// result.gate->v_path;
+				// g->v_path.push_back(tmp_g+"_"+tmp_v);
+				g->v_path_found = true;
+				g->v_path.insert(g->v_path.end(), result.gate[0]->v_path.begin(), result.gate[0]->v_path.end());
+			}
+		}
+		else
+		{
+			cout << "\t Backtrace failed, no pattern for this error." << endl;
+		}
+
+		return result;
 	}
+
+	string bt_get_input_value();
 
 	void isc_printPath()
 	{

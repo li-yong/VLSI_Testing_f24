@@ -11,8 +11,12 @@ using namespace std;
 #include <iostream>
 #include <map>
 
+
+
 class GATE
 {
+
+
 private:
 	string Name;
 
@@ -57,8 +61,11 @@ public:
 	int cc1;						  // Combiantional Controllability 1
 	int co;							  // Combinational Observability
 	vector<GATE *> bt_candidates;	  // stack. e.g 3 inputs OR gate, objective to set to 1. Either input can be set to 1, but need to ensurre no conflict with other gates.
-	string target_value = "x_tgt";	  // specified or calculated target value
-	string implicant_value = "x_imp"; // calculated implicated value
+	bool bt_candidate_must_meet_all = false; // if true, all bt_candidates must be justified.  eg. OR gate require output 0. all inputs must justified to 0.
+	string target_value = "x";	  // specified or calculated target value
+	string implicant_value = "x"; // calculated implicated value
+	vector<string> v_path;			  // input patter to get target value (0 or 1) on this gate output. {gate1_0, gate2_0, gate3_1}
+	bool v_path_found = false;
 
 	// Initialize GATE
 	GATE() : Function(G_BAD), Level(-1), Value(X), Value_t(X), Inversion(false)
@@ -359,7 +366,7 @@ public:
 	{
 		bool resolved;
 		string reason;
-		GATE *gate;
+		vector <GATE*> gate;
 		int target_value;
 	};
 
@@ -423,7 +430,7 @@ public:
 		{
 			rst.resolved = true;
 			rst.reason = "bt reach PI gate.";
-			rst.gate = this;
+			rst.gate.push_back(this);
 			rst.target_value = target;
 			return rst;
 		}
@@ -431,26 +438,31 @@ public:
 		if ((target == 0) & (fun == G_NAND))
 		{
 			// requires all inputs are 1
+			this->bt_candidate_must_meet_all = true;
 
 			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
 
 			for (GATE *bt_can_gate : this->bt_candidates)
 			{
 				// remove the gate from the candidate list. means we have tried this gate.
-				bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+				// bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
 
 				if (bt_can_gate->implicant_value == "0") // someone need it be 0 while we need it be 1.
 				{
-					cout << "conflict, not possible set NAND gate to 0, because one input is 0" << endl;
+					cout << "\tconflict, not possible set NAND gate to 0, because one input is 0" << endl;
 					rst.reason = "conflict";
 					rst.resolved = false;
 					return rst;
 				}
 
 				bt_can_gate->implicant_value = "1";
-				rst.gate = bt_can_gate;
+				rst.gate.push_back(bt_can_gate);
 				rst.target_value = 1;
-				std::cout << "set NAND gate input to 1" << " ";
+
+
+				// GATE::Result result = isc_Circuit->isc_findPath(bt_can_gate->Get_isc_identifier(), "1");
+
+				// std::cout << "set NAND gate input to 1" << " ";
 			}
 
 			rst.resolved = true;
@@ -468,14 +480,14 @@ public:
 
 			for (GATE *bt_can_gate : bt_candidates)
 			{
-				std::cout << bt_can_gate << " ";
+				// std::cout << bt_can_gate << " ";
 
 				// remove the gate from the candidate list. means we have tried this gate.
 				bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
 
 				if (bt_can_gate->implicant_value == "1")
 				{
-					cout << "conflict on this input, please check other inputs" << endl;
+					cout << "\tconflict on NAND gate input, please check other inputs" << endl;
 
 					continue;
 				}
@@ -483,7 +495,8 @@ public:
 				{ // implicant_value is x or 0
 					bt_can_gate->implicant_value = "0";
 					rst.resolved = true;
-					rst.gate = bt_can_gate;
+					rst.reason = "found candidate"; 
+					rst.gate.push_back(bt_can_gate);
 					rst.target_value = 0;
 					break;
 				}
@@ -492,6 +505,598 @@ public:
 			return rst;
 		}
 	}
+
+
+	Result G_AND_bt(int target)
+	{
+
+		bool resolved = false;
+		auto var = this->Name;
+		Result rst = {};
+		// rst.resolved = false;
+		rst.reason = "unknown";
+		GATEFUNC fun = this->GetFunction();
+
+		if (this->bt_candidates.size() == 0)
+		{
+			rst.resolved = false;
+			rst.reason = "no bt candidate input gate";
+			return rst;
+		}
+
+		map<string, GATE *> input_gate_cc_map = get_bt_can_cc_map();
+
+		if (this->GetFunction() == G_PI)
+		{
+			rst.resolved = true;
+			rst.reason = "bt reach PI gate.";
+			rst.gate.push_back(this);
+			rst.target_value = target;
+			return rst;
+		}
+
+		if (target == 1)
+		{
+			// requires all inputs are 1
+			this->bt_candidate_must_meet_all = true;
+
+			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+
+			for (GATE *bt_can_gate : this->bt_candidates)
+			{
+				// remove the gate from the candidate list. means we have tried this gate.
+				// bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "0") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set AND gate to 1, because one input has been 0" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "1";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 1;
+
+
+				// GATE::Result result = isc_Circuit->isc_findPath(bt_can_gate->Get_isc_identifier(), "1");
+
+				// std::cout << "set AND gate input to 1" << " ";
+			}
+
+			rst.resolved = true;
+
+			rst.reason = "input value set to justify target to 1";
+
+			return rst;
+		}
+		else if (target == 0)
+		{
+			// Requires any input is 0
+			// iterate input gates
+			// vector<GATE *> input_gates = GetInput_list();
+
+			for (GATE *bt_can_gate : bt_candidates)
+			{
+				// std::cout << bt_can_gate << " ";
+
+				// remove the gate from the candidate list. means we have tried this gate.
+				bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "1")
+				{
+					cout << "\tconflict on AND gate input, please check other inputs" << endl;
+
+					continue;
+				}
+				else
+				{ // implicant_value is x or 0
+					bt_can_gate->implicant_value = "0";
+					rst.resolved = true;
+					rst.reason = "found candidate"; 
+					rst.gate.push_back(bt_can_gate);
+					rst.target_value = 0;
+					break;
+				}
+			}
+
+			return rst;
+		}
+	}
+
+
+
+
+	Result G_NOR_bt(int target)
+	{
+
+		bool resolved = false;
+		auto var = this->Name;
+		Result rst = {};
+		// rst.resolved = false;
+		rst.reason = "unknown";
+		GATEFUNC fun = this->GetFunction();
+
+		if (this->bt_candidates.size() == 0)
+		{
+			rst.resolved = false;
+			rst.reason = "no bt candidate input gate";
+			return rst;
+		}
+
+		map<string, GATE *> input_gate_cc_map = get_bt_can_cc_map();
+
+		if (this->GetFunction() == G_PI)
+		{
+			rst.resolved = true;
+			rst.reason = "bt reach PI gate.";
+			rst.gate.push_back(this);
+			rst.target_value = target;
+			return rst;
+		}
+
+		if (target == 1)
+		{
+			// requires all inputs are 0
+			this->bt_candidate_must_meet_all = true;
+
+			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+
+			for (GATE *bt_can_gate : this->bt_candidates)
+			{
+				// remove the gate from the candidate list. means we have tried this gate.
+				// bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "1") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set NOR gate to 1, because one input has been 1" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "0";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 0;
+
+			}
+
+			rst.resolved = true;
+
+			rst.reason = "input value set to justify target to 0";
+
+			return rst;
+		}
+		else if (target == 0)
+		{
+			// Requires any input is 1
+			// iterate input gates
+			// vector<GATE *> input_gates = GetInput_list();
+
+			for (GATE *bt_can_gate : bt_candidates)
+			{
+				// std::cout << bt_can_gate << " ";
+
+				// remove the gate from the candidate list. means we have tried this gate.
+				bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "0")
+				{
+					cout << "\tconflict on NOR gate input, please check other inputs" << endl;
+
+					continue;
+				}
+				else
+				{ // implicant_value is x or 0
+					bt_can_gate->implicant_value = "1";
+					rst.resolved = true;
+					rst.reason = "found candidate"; 
+					rst.gate.push_back(bt_can_gate);
+					rst.target_value = 1;
+					break;
+				}
+			}
+
+			return rst;
+		}
+	}
+
+
+
+	Result G_OR_bt(int target)
+	{
+
+		bool resolved = false;
+		auto var = this->Name;
+		Result rst = {};
+		// rst.resolved = false;
+		rst.reason = "unknown";
+		GATEFUNC fun = this->GetFunction();
+
+		if (this->bt_candidates.size() == 0)
+		{
+			rst.resolved = false;
+			rst.reason = "no bt candidate input gate";
+			return rst;
+		}
+
+		map<string, GATE *> input_gate_cc_map = get_bt_can_cc_map();
+
+		if (this->GetFunction() == G_PI)
+		{
+			rst.resolved = true;
+			rst.reason = "bt reach PI gate.";
+			rst.gate.push_back(this);
+			rst.target_value = target;
+			return rst;
+		}
+
+		if (target == 0)
+		{
+			// requires all inputs are 0
+			this->bt_candidate_must_meet_all = true;
+
+			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+
+			for (GATE *bt_can_gate : this->bt_candidates)
+			{
+				// remove the gate from the candidate list. means we have tried this gate.
+				// bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "1") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set OR gate to 0, because one input has been 1" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "0";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 0;
+
+			}
+
+			rst.resolved = true;
+
+			rst.reason = "input value set to justify target to 0";
+
+			return rst;
+		}
+		else if (target == 1)
+		{
+			// Requires any input is 1
+			// iterate input gates
+			// vector<GATE *> input_gates = GetInput_list();
+
+			for (GATE *bt_can_gate : bt_candidates)
+			{
+				// std::cout << bt_can_gate << " ";
+
+				// remove the gate from the candidate list. means we have tried this gate.
+				bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "0")
+				{
+					cout << "\tconflict on OR gate input, please check other inputs" << endl;
+
+					continue;
+				}
+				else
+				{ // implicant_value is x or 0
+					bt_can_gate->implicant_value = "1";
+					rst.resolved = true;
+					rst.reason = "found candidate"; 
+					rst.gate.push_back(bt_can_gate);
+					rst.target_value = 1;
+					break;
+				}
+			}
+
+			return rst;
+		}
+	}
+
+
+
+	Result G_NOT_bt(int target)
+	{
+
+		bool resolved = false;
+		auto var = this->Name;
+		Result rst = {};
+		// rst.resolved = false;
+		rst.reason = "unknown";
+		GATEFUNC fun = this->GetFunction();
+
+		if (this->bt_candidates.size() == 0)
+		{
+			rst.resolved = false;
+			rst.reason = "no bt candidate input gate";
+			return rst;
+		}
+
+		map<string, GATE *> input_gate_cc_map = get_bt_can_cc_map();
+
+		if (this->GetFunction() == G_PI)
+		{
+			rst.resolved = true;
+			rst.reason = "bt reach PI gate.";
+			rst.gate.push_back(this);
+			rst.target_value = target;
+			return rst;
+		}
+
+		if (target == 0)
+		{
+			// requires all inputs are 0
+			this->bt_candidate_must_meet_all = true;
+
+			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+
+			for (GATE *bt_can_gate : this->bt_candidates)
+			{
+				// remove the gate from the candidate list. means we have tried this gate.
+				// bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "0") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set NOT gate to 0, because one input has been 0" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "1";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 1;
+
+			}
+
+			rst.resolved = true;
+
+			rst.reason = "input value set to justify target to 1";
+
+			return rst;
+		}
+		else if (target == 1)
+		{
+			// Requires any input is 1
+			// iterate input gates
+			// vector<GATE *> input_gates = GetInput_list();
+
+			for (GATE *bt_can_gate : bt_candidates)
+			{
+
+				if (bt_can_gate->implicant_value == "1") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set NOT gate to 1, because one input has been 1" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "0";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 1;
+
+			}
+
+			return rst;
+		}
+	}
+
+
+	Result G_BUF_bt(int target)
+	{
+
+		bool resolved = false;
+		auto var = this->Name;
+		Result rst = {};
+		// rst.resolved = false;
+		rst.reason = "unknown";
+		GATEFUNC fun = this->GetFunction();
+
+		if (this->bt_candidates.size() == 0)
+		{
+			rst.resolved = false;
+			rst.reason = "no bt candidate input gate";
+			return rst;
+		}
+
+		map<string, GATE *> input_gate_cc_map = get_bt_can_cc_map();
+
+		if (this->GetFunction() == G_PI)
+		{
+			rst.resolved = true;
+			rst.reason = "bt reach PI gate.";
+			rst.gate.push_back(this);
+			rst.target_value = target;
+			return rst;
+		}
+
+		if (target == 0)
+		{
+			// requires all inputs are 0
+			this->bt_candidate_must_meet_all = true;
+
+			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+
+			for (GATE *bt_can_gate : this->bt_candidates)
+			{
+				// remove the gate from the candidate list. means we have tried this gate.
+				// bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "1") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set BUF gate to 0, because one input has been 1" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "0";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 1;
+
+			}
+
+			rst.resolved = true;
+
+			rst.reason = "input value set to justify target to 0";
+
+			return rst;
+		}
+		else if (target == 1)
+		{
+			// Requires any input is 1
+			// iterate input gates
+			// vector<GATE *> input_gates = GetInput_list();
+
+			for (GATE *bt_can_gate : bt_candidates)
+			{
+
+				if (bt_can_gate->implicant_value == "0") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set NOT gate to 1, because one input has been 0" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "1";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 1;
+
+			}
+
+			return rst;
+		}
+	}
+
+
+	Result G_XOR_bt(int target)
+	{
+
+		bool resolved = false;
+		auto var = this->Name;
+		Result rst = {};
+		// rst.resolved = false;
+		rst.reason = "unknown";
+		GATEFUNC fun = this->GetFunction();
+
+		if (this->bt_candidates.size() == 0)
+		{
+			rst.resolved = false;
+			rst.reason = "no bt candidate input gate";
+			return rst;
+		}
+
+		map<string, GATE *> input_gate_cc_map = get_bt_can_cc_map();
+
+		if (this->GetFunction() == G_PI)
+		{
+			rst.resolved = true;
+			rst.reason = "bt reach PI gate.";
+			rst.gate.push_back(this);
+			rst.target_value = target;
+			return rst;
+		}
+
+		if (target == 0)
+		{
+			// requires all inputs are 0
+			this->bt_candidate_must_meet_all = true;
+
+			GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+
+			for (GATE *bt_can_gate : this->bt_candidates)
+			{
+				// remove the gate from the candidate list. means we have tried this gate.
+				// bt_candidates.erase(std::remove(bt_candidates.begin(), bt_candidates.end(), bt_can_gate), bt_candidates.end());
+
+				if (bt_can_gate->implicant_value == "1") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set XOR gate to 0, because one input has been 1" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "0";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 1;
+
+			}
+
+			rst.resolved = true;
+
+			rst.reason = "input value set to justify target to 0";
+
+			return rst;
+		}
+		else if (target == 1)
+		{
+			// Requires any input is 1
+			// iterate input gates
+			// vector<GATE *> input_gates = GetInput_list();
+
+			for (GATE *bt_can_gate : bt_candidates)
+			{
+
+				if (bt_can_gate->implicant_value == "0") // someone need it be 0 while we need it be 1.
+				{
+					cout << "\tconflict, not possible set XOR gate to 1, because one input has been 0" << endl;
+					rst.reason = "conflict";
+					rst.resolved = false;
+					return rst;
+				}
+
+				bt_can_gate->implicant_value = "1";
+				rst.gate.push_back(bt_can_gate);
+				rst.target_value = 1;
+
+			}
+
+			return rst;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }; // end of the public class
 

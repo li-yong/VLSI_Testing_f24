@@ -7,10 +7,10 @@
 #include "parser_isc.h"
 #include <typeinfo>
 #include <random>
+
 #include <vector>
 #include <bitset>
 #include <algorithm>
-
 
 using namespace std;
 
@@ -176,30 +176,70 @@ int main(int argc, char **argv)
     else if (action == "PODEM")
     {
 
+        cout << "levelize the gates in circuit" << endl;
         isc_Circuit->Levelize();
+
+        cout << "calculating gates controlability" << endl;
         isc_Circuit->calc_gate_controlabilty();
+
+        cout << "initalizing gates for backtracing. Set gate input to x";
         isc_Circuit->podem_bt_candidates_init();
-        isc_Circuit->Atpg();
-
-        //find a path by backtracing.
-        string gate_isc_identifier = "11gat";
-        string target_value = "1";
-
-        if (isc_Circuit->isc_findPath(gate_isc_identifier, target_value))
-        {
-            cout << "Path found." << endl;
-            isc_Circuit->isc_printPath();
-        }
-        else
-        {
-            cout << "No path found." << endl;
-        }
-
+        // isc_Circuit->Atpg();
         
-        cout << "PODEM" << endl;
+        int sa_error_cnt = isc_Circuit->get_sa_error_cnt();
 
-    }
-    
+        // iterate the SAlist
+        cout << "Iterating all SA errors in circuit, then backtrace input pattern to justify the SA error" << endl;
+        vector<GATE *> netlist = isc_Circuit->GetNetlist();
+
+        for (unsigned i = 0; i < netlist.size(); i++)
+        {
+
+            GATE *g; // gate under test
+            g = netlist[i];
+            string gate_isc_identifier = g->Get_isc_identifier();
+
+            GATEFUNC fun = g->GetFunction();
+            string stuck_error;
+
+            vector<string> SAlist = g->Get_isc_StuckAt();
+
+            for (size_t n = 0; n < SAlist.size(); ++n)
+            {
+
+                string target_value = "0";
+
+                // cout << error_gate_isc_ident << " " << SAlist[n] << endl;
+
+                if (SAlist[n] == ">sa0")
+                {
+                    target_value = "1"; // if stuck at 0, then normal value should be 1
+                }
+                else if (SAlist[n] == ">sa1")
+                {
+                    target_value = "0";
+                }
+
+                // find a path by backtracing.
+                // string gate_isc_identifier = "23gat";
+                cout << "\n=="<< SAlist[n]<<"@"<<gate_isc_identifier << ". Backtrace to find PI gate pattern to justify gate " << gate_isc_identifier << " to value " << target_value << endl;
+                GATE::Result result = isc_Circuit->isc_findPath(gate_isc_identifier, target_value);
+                if (result.resolved)
+                {
+                    string input_gate_value = isc_Circuit->bt_get_input_value();
+                    cout << "\t" << input_gate_value << endl;
+                }
+
+                // cout << "print path" << endl;
+
+                // iterate the isc_circuit netlist
+
+                // cout << "PODEM" << endl;
+            }
+        } // for loop, salist.
+
+    } // for loop, netlist.
+
     else
     {
         cout << "Invalid action provided. Exiting." << endl;

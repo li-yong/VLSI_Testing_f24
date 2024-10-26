@@ -30,7 +30,7 @@
                 "-action", 
                 "PODEM",
                 "-file_isc",
-                "${workspaceFolder}/ISCAS-85/c17.isc", 
+                "${workspaceFolder}/ISCAS-85/c432.isc", 
             ],
             "args_8": [
                 "-action",

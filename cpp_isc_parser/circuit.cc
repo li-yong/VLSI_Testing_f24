@@ -9,6 +9,8 @@
 #include <random>
 #include <map>
 
+#include <ctime>
+
 using namespace std;
 
 extern GetLongOpt option;
@@ -237,6 +239,29 @@ void CIRCUIT::Levelize_0()
     {
         Gate(i)->ResetCount();
     }
+}
+
+string CIRCUIT::bt_get_input_value()
+{
+    vector<GATE *> netlist = GetNetlist();
+    string input_gate_value_s = "";
+    ipt_r();
+
+    for (unsigned i = 0; i < netlist.size(); i++)
+    {
+        GATE *g;
+        g = netlist[i];
+        string name = g->Get_isc_identifier();
+        GATEFUNC fun = g->GetFunction();
+
+        if (fun == G_PI)
+        {
+            // cout << "PI: " << name << endl;
+
+            input_gate_value_s += name + "_" + g->implicant_value + "|";
+        }
+    }
+    return input_gate_value_s;
 }
 
 void CIRCUIT::Check_Levelization()
@@ -792,6 +817,7 @@ void CIRCUIT::set_actual_from_expect()
 void CIRCUIT::podem_bt_candidates_init()
 {
     vector<GATE *> netlist = GetNetlist();
+    std::vector<std::string> options = {"1", "0", "x"};
 
     for (unsigned i = 0; i < netlist.size(); i++)
     {
@@ -802,12 +828,31 @@ void CIRCUIT::podem_bt_candidates_init()
     }
 }
 
+void CIRCUIT::ipt_r()
+{
+    vector<GATE *> netlist = GetNetlist();
+    std::vector<std::string> options = {"1", "0", "x"};
+
+    for (unsigned i = 0; i < netlist.size(); i++)
+    {
+        GATE *g;
+        g = netlist[i];
+        std::srand(std::time(0));
+        if (g->GetFunction() == G_PI)
+        {
+            if (g->implicant_value == "x")
+            {
+
+                g->implicant_value = options[rand() % options.size()];
+            }
+        }
+    }
+}
 
 ////iterate the gates in circuits
 int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
 {
     vector<GATE *> netlist = GetNetlist();
-    
 
     for (unsigned i = 0; i < netlist.size(); i++)
     {
@@ -1065,6 +1110,3 @@ void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, 
 
     cout << h << endl;
 }
-
-
-
