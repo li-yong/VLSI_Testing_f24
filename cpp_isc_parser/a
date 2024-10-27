@@ -1,0 +1,406 @@
+g++ -c -O2 -Wall -DDEBUG  -o circuit.o circuit.cc
+In file included from fault.h:3,
+                 from circuit.h:3,
+                 from circuit.cc:3:
+gate.h: In member function ‘GATE::Result GATE::G_NAND_bt(int)’:
+gate.h:443:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  443 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:413:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  413 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h: In member function ‘GATE::Result GATE::G_AND_bt(int)’:
+gate.h:543:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  543 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:513:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  513 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:518:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  518 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_NOR_bt(int)’:
+gate.h:644:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  644 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:614:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  614 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:619:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  619 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_OR_bt(int)’:
+gate.h:740:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  740 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:710:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  710 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:715:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  715 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_NOT_bt(int)’:
+gate.h:836:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  836 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:806:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  806 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:811:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  811 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_BUF_bt(int)’:
+gate.h:924:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  924 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:894:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  894 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:899:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  899 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_XOR_bt(int)’:
+gate.h:1012:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+ 1012 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:982:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  982 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:987:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  987 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+circuit.h: In member function ‘void CIRCUIT::init_levelN_input_gate_ctl(int)’:
+circuit.h:392:29: warning: unused variable ‘max_cc0’ [-Wunused-variable]
+  392 |                         int max_cc0 = *max_element(input_cc0.begin(), input_cc0.end());
+      |                             ^~~~~~~
+circuit.h:393:29: warning: unused variable ‘max_cc1’ [-Wunused-variable]
+  393 |                         int max_cc1 = *max_element(input_cc1.begin(), input_cc1.end());
+      |                             ^~~~~~~
+circuit.h:365:21: warning: unused variable ‘max_level’ [-Wunused-variable]
+  365 |                 int max_level = GetMaxLevel();
+      |                     ^~~~~~~~~
+circuit.h: In member function ‘GATE::Result CIRCUIT::isc_findPath(std::string, std::string)’:
+circuit.h:563:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+  563 |                 if (result.resolved & result.gate.size() > 0)
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~
+circuit.h: In member function ‘void CIRCUIT::set_gate(GATE*, int)’:
+circuit.h:600:32: warning: operation on ‘target’ may be undefined [-Wsequence-point]
+  600 |                         target = 0 ? target == 1 : target = 1;
+      |                         ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+circuit.h:600:32: warning: operation on ‘target’ may be undefined [-Wsequence-point]
+circuit.cc: In member function ‘void CIRCUIT::Levelize()’:
+circuit.cc:64:28: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+   64 |     for (unsigned i = 0; i < No_Gate(); i++)
+      |                          ~~^~~~~~~~~~~
+circuit.cc:79:28: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+   79 |     for (unsigned i = 0; i < No_Gate(); i++)
+      |                          ~~^~~~~~~~~~~
+circuit.cc:102:47: warning: suggest parentheses around comparison in operand of ‘|’ [-Wparentheses]
+  102 |             if (outputlist[i2]->GetFunction() == G_FROM | outputlist[i2]->GetFunction() == G_PO)
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+circuit.cc:84:18: warning: unused variable ‘fun’ [-Wunused-variable]
+   84 |         GATEFUNC fun = g->GetFunction();
+      |                  ^~~
+circuit.cc: In member function ‘std::vector<GATE*> CIRCUIT::GetGateInLevel(int)’:
+circuit.cc:138:28: warning: comparison of integer expressions of different signedness: ‘long int’ and ‘std::vector<GATE*>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  138 |     for (long int i = 0; i < Netlist.size(); i++)
+      |                          ~~^~~~~~~~~~~~~~~~
+circuit.cc: In member function ‘void CIRCUIT::SetMaxLevel()’:
+circuit.cc:312:28: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+  312 |     for (unsigned i = 0; i < No_Gate(); i++)
+      |                          ~~^~~~~~~~~~~
+circuit.cc: In member function ‘void CIRCUIT::show_controlability()’:
+circuit.cc:614:18: warning: unused variable ‘function’ [-Wunused-variable]
+  614 |         GATEFUNC function = (*it_net)->GetFunction();
+      |                  ^~~~~~~~
+circuit.cc: In member function ‘std::bitset<64> CIRCUIT::isc_Evaluate(GATEPTR)’:
+circuit.cc:648:18: warning: suggest parentheses around comparison in operand of ‘|’ [-Wparentheses]
+  648 |     if (fun_name == G_NOT | fun_name == G_BUF)
+      |         ~~~~~~~~~^~~~~~~~
+circuit.cc:668:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::bitset<64> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  668 |         for (int i = 1; i < bss.size(); i++)
+      |                         ~~^~~~~~~~~~~~
+circuit.cc:676:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::bitset<64> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  676 |         for (int i = 1; i < bss.size(); i++)
+      |                         ~~^~~~~~~~~~~~
+circuit.cc:686:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::bitset<64> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  686 |         for (int i = 1; i < bss.size(); i++)
+      |                         ~~^~~~~~~~~~~~
+circuit.cc:693:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::bitset<64> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  693 |         for (int i = 1; i < bss.size(); i++)
+      |                         ~~^~~~~~~~~~~~
+circuit.cc:702:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::bitset<64> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  702 |         for (int i = 1; i < bss.size(); i++)
+      |                         ~~^~~~~~~~~~~~
+circuit.cc: In member function ‘void CIRCUIT::print_bitset()’:
+circuit.cc:747:13: warning: unused variable ‘netid’ [-Wunused-variable]
+  747 |         int netid = (*it_net)->Get_isc_net_id();
+      |             ^~~~~
+circuit.cc: In member function ‘int CIRCUIT::iterate_gates_sa_errors(int)’:
+circuit.cc:1040:25: warning: suggest parentheses around comparison in operand of ‘|’ [-Wparentheses]
+ 1040 |                 if (foc > 0 | g1->GetFunction() == G_FROM)
+      |                     ~~~~^~~
+circuit.cc:1049:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1049 |                 if (g1->get_isc_bitset_output_expected() != g1->get_isc_bitset_output_actual() & g1->Get_isc_fo_cnt() == 0)
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+circuit.cc:985:18: warning: unused variable ‘fun’ [-Wunused-variable]
+  985 |         GATEFUNC fun = g->GetFunction();
+      |                  ^~~
+circuit.cc: In member function ‘void CIRCUIT::gather_input_output_pattern_and_show_ptn_at_diff_postion(std::vector<int>, std::string)’:
+circuit.cc:1098:18: warning: unused variable ‘fun’ [-Wunused-variable]
+ 1098 |         GATEFUNC fun = g->GetFunction();
+      |                  ^~~
+circuit.cc: In member function ‘void CIRCUIT::show_ptn_header(std::map<std::__cxx11::basic_string<char>, std::map<std::__cxx11::basic_string<char>, std::bitset<64> > >, bool, bool, bool)’:
+circuit.cc:1154:33: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1154 |         if (g->Get_isc_fi_cnt() == 0 & b_ipt)
+      |             ~~~~~~~~~~~~~~~~~~~~^~~~
+circuit.cc:1160:33: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1160 |         if (g->Get_isc_fo_cnt() == 0 & b_opt_exp)
+      |             ~~~~~~~~~~~~~~~~~~~~^~~~
+circuit.cc:1165:33: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1165 |         if (g->Get_isc_fo_cnt() == 0 & b_opt_act)
+      |             ~~~~~~~~~~~~~~~~~~~~^~~~
+circuit.cc: In member function ‘void CIRCUIT::show_diff_pattern(std::map<std::__cxx11::basic_string<char>, std::map<std::__cxx11::basic_string<char>, std::bitset<64> > >, std::vector<int>, std::string, bool, bool, bool)’:
+circuit.cc:1210:37: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1210 |             if (g->Get_isc_fi_cnt() == 0 & b_ipt & gate_function == G_PI)
+      |                 ~~~~~~~~~~~~~~~~~~~~^~~~
+circuit.cc:1210:66: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1210 |             if (g->Get_isc_fi_cnt() == 0 & b_ipt & gate_function == G_PI)
+      |                                                    ~~~~~~~~~~~~~~^~~~~~~
+circuit.cc:1217:37: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1217 |             if (g->Get_isc_fo_cnt() == 0 & b_opt_exp & gate_isc_identifier == err_out_gate_isc_identifier)
+      |                 ~~~~~~~~~~~~~~~~~~~~^~~~
+circuit.cc:1217:76: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1217 |             if (g->Get_isc_fo_cnt() == 0 & b_opt_exp & gate_isc_identifier == err_out_gate_isc_identifier)
+      |                                                        ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+circuit.cc:1223:37: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1223 |             if (g->Get_isc_fo_cnt() == 0 & b_opt_act & gate_isc_identifier == err_out_gate_isc_identifier)
+      |                 ~~~~~~~~~~~~~~~~~~~~^~~~
+circuit.cc:1223:76: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+ 1223 |             if (g->Get_isc_fo_cnt() == 0 & b_opt_act & gate_isc_identifier == err_out_gate_isc_identifier)
+      |                                                        ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+g++ -c -O2 -Wall -DDEBUG  -o main.o main.cc
+main.cc:120:9: warning: "/*" within comment [-Wcomment]
+  120 |         /******************************************/
+      |          
+main.cc:134:9: warning: "/*" within comment [-Wcomment]
+  134 |         /******************************************/
+      |          
+main.cc:167:9: warning: "/*" within comment [-Wcomment]
+  167 |         /******************************************/
+      |          
+In file included from fault.h:3,
+                 from circuit.h:3,
+                 from main.cc:4:
+gate.h: In member function ‘GATE::Result GATE::G_NAND_bt(int)’:
+gate.h:443:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  443 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:413:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  413 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h: In member function ‘GATE::Result GATE::G_AND_bt(int)’:
+gate.h:543:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  543 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:513:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  513 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:518:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  518 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_NOR_bt(int)’:
+gate.h:644:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  644 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:614:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  614 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:619:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  619 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_OR_bt(int)’:
+gate.h:740:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  740 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:710:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  710 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:715:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  715 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_NOT_bt(int)’:
+gate.h:836:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  836 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:806:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  806 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:811:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  811 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_BUF_bt(int)’:
+gate.h:924:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  924 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:894:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  894 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:899:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  899 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_XOR_bt(int)’:
+gate.h:1012:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+ 1012 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:982:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  982 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:987:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  987 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+circuit.h: In member function ‘void CIRCUIT::init_levelN_input_gate_ctl(int)’:
+circuit.h:392:29: warning: unused variable ‘max_cc0’ [-Wunused-variable]
+  392 |                         int max_cc0 = *max_element(input_cc0.begin(), input_cc0.end());
+      |                             ^~~~~~~
+circuit.h:393:29: warning: unused variable ‘max_cc1’ [-Wunused-variable]
+  393 |                         int max_cc1 = *max_element(input_cc1.begin(), input_cc1.end());
+      |                             ^~~~~~~
+circuit.h:365:21: warning: unused variable ‘max_level’ [-Wunused-variable]
+  365 |                 int max_level = GetMaxLevel();
+      |                     ^~~~~~~~~
+circuit.h: In member function ‘GATE::Result CIRCUIT::isc_findPath(std::string, std::string)’:
+circuit.h:563:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+  563 |                 if (result.resolved & result.gate.size() > 0)
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~
+circuit.h: In member function ‘void CIRCUIT::set_gate(GATE*, int)’:
+circuit.h:600:32: warning: operation on ‘target’ may be undefined [-Wsequence-point]
+  600 |                         target = 0 ? target == 1 : target = 1;
+      |                         ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+circuit.h:600:32: warning: operation on ‘target’ may be undefined [-Wsequence-point]
+main.cc: In function ‘int main(int, char**)’:
+main.cc:214:22: warning: unused variable ‘fun’ [-Wunused-variable]
+  214 |             GATEFUNC fun = g->GetFunction();
+      |                      ^~~
+main.cc:194:13: warning: unused variable ‘sa_error_cnt’ [-Wunused-variable]
+  194 |         int sa_error_cnt = isc_Circuit->get_sa_error_cnt();
+      |             ^~~~~~~~~~~~
+gate.h: In member function ‘GATE::Result GATE::G_NAND_bt(int)’:
+gate.h:507:9: warning: control reaches end of non-void function [-Wreturn-type]
+  507 |         }
+      |         ^
+gate.h: In member function ‘GATE::Result GATE::G_AND_bt(int)’:
+gate.h:606:9: warning: control reaches end of non-void function [-Wreturn-type]
+  606 |         }
+      |         ^
+gate.h: In member function ‘GATE::Result GATE::G_OR_bt(int)’:
+gate.h:799:9: warning: control reaches end of non-void function [-Wreturn-type]
+  799 |         }
+      |         ^
+gate.h: In member function ‘GATE::Result GATE::G_NOR_bt(int)’:
+gate.h:703:9: warning: control reaches end of non-void function [-Wreturn-type]
+  703 |         }
+      |         ^
+gate.h: In member function ‘GATE::Result GATE::G_NOT_bt(int)’:
+gate.h:888:9: warning: control reaches end of non-void function [-Wreturn-type]
+  888 |         }
+      |         ^
+gate.h: In member function ‘GATE::Result GATE::G_BUF_bt(int)’:
+gate.h:976:9: warning: control reaches end of non-void function [-Wreturn-type]
+  976 |         }
+      |         ^
+gate.h: In member function ‘GATE::Result GATE::G_XOR_bt(int)’:
+gate.h:1064:9: warning: control reaches end of non-void function [-Wreturn-type]
+ 1064 |         }
+      |         ^
+g++ -c -O2 -Wall -DDEBUG  -o GetLongOpt.o GetLongOpt.cc
+g++ -c -O2 -Wall -DDEBUG  -o parser_isc.o parser_isc.cc
+In file included from parser_isc.cc:1:
+gate.h: In member function ‘GATE::Result GATE::G_NAND_bt(int)’:
+gate.h:443:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  443 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:413:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  413 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h: In member function ‘GATE::Result GATE::G_AND_bt(int)’:
+gate.h:543:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  543 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:513:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  513 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:518:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  518 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_NOR_bt(int)’:
+gate.h:644:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  644 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:614:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  614 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:619:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  619 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_OR_bt(int)’:
+gate.h:740:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  740 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:710:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  710 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:715:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  715 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_NOT_bt(int)’:
+gate.h:836:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  836 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:806:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  806 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:811:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  811 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_BUF_bt(int)’:
+gate.h:924:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+  924 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:894:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  894 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:899:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  899 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+gate.h: In member function ‘GATE::Result GATE::G_XOR_bt(int)’:
+gate.h:1012:31: warning: unused variable ‘cur_ipt_gat’ [-Wunused-variable]
+ 1012 |                         GATE *cur_ipt_gat = input_gate_cc_map["max_cc0"];
+      |                               ^~~~~~~~~~~
+gate.h:982:22: warning: unused variable ‘resolved’ [-Wunused-variable]
+  982 |                 bool resolved = false;
+      |                      ^~~~~~~~
+gate.h:987:26: warning: unused variable ‘fun’ [-Wunused-variable]
+  987 |                 GATEFUNC fun = this->GetFunction();
+      |                          ^~~
+In file included from parser_isc.cc:2:
+circuit.h: In member function ‘void CIRCUIT::init_levelN_input_gate_ctl(int)’:
+circuit.h:392:29: warning: unused variable ‘max_cc0’ [-Wunused-variable]
+  392 |                         int max_cc0 = *max_element(input_cc0.begin(), input_cc0.end());
+      |                             ^~~~~~~
+circuit.h:393:29: warning: unused variable ‘max_cc1’ [-Wunused-variable]
+  393 |                         int max_cc1 = *max_element(input_cc1.begin(), input_cc1.end());
+      |                             ^~~~~~~
+circuit.h:365:21: warning: unused variable ‘max_level’ [-Wunused-variable]
+  365 |                 int max_level = GetMaxLevel();
+      |                     ^~~~~~~~~
+circuit.h: In member function ‘GATE::Result CIRCUIT::isc_findPath(std::string, std::string)’:
+circuit.h:563:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+  563 |                 if (result.resolved & result.gate.size() > 0)
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~
+circuit.h: In member function ‘void CIRCUIT::set_gate(GATE*, int)’:
+circuit.h:600:32: warning: operation on ‘target’ may be undefined [-Wsequence-point]
+  600 |                         target = 0 ? target == 1 : target = 1;
+      |                         ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+circuit.h:600:32: warning: operation on ‘target’ may be undefined [-Wsequence-point]
+g++ -O2 -Wall -DDEBUG -o cpp_isc_parser.exe circuit.o main.o GetLongOpt.o parser_isc.o   

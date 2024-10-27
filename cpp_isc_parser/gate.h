@@ -311,56 +311,6 @@ public:
 	void ResetWireValue(int i, int idx) { WireValue[i].reset(idx); }
 	bool GetWireValue(int i, int idx) { return WireValue[i][idx]; }
 	bitset<PatternNum> GetWireValue(int i) { return WireValue[i]; }
-	char GetTransition_t()
-	{
-		if (Value == S0)
-		{
-			if (Value_t == S0)
-			{
-				return '0';
-			}
-			else
-			{
-				return 'R';
-			}
-		}
-		else
-		{
-			if (Value_t == S0)
-			{
-				return 'F';
-			}
-			else
-			{
-				return '1';
-			}
-		}
-	}
-	char GetTransition()
-	{
-		if (Value_t == S0)
-		{
-			if (Value == S0)
-			{
-				return '0';
-			}
-			else
-			{
-				return 'R';
-			}
-		}
-		else
-		{
-			if (Value == S0)
-			{
-				return 'F';
-			}
-			else
-			{
-				return '1';
-			}
-		}
-	}
 
 	struct Result
 	{
@@ -604,9 +554,6 @@ public:
 			return rst;
 		}
 	}
-
-
-
 
 	Result G_NOR_bt(int target)
 	{

@@ -3,7 +3,7 @@ CXX      = g++
 LINK     = g++
 # Remove -DDEBUG flag for VLST-Testing Lab0
 # CXXFLAGS = -O2 -Wno-all -g
-# CXXFLAGS = -O2 -Wall -DDEBUG
+# CXXFLAGS = -O2 -Wall -DDEBUG -Wno-unused-variable
 CXXFLAGS = -Wno-all -DDEBUG -g -std=c++11
 # CXXFLAGS = -g -DDEBUG_ATPG -Wall #Turn on debugging
 INCPATH  =

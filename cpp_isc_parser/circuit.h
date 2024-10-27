@@ -31,8 +31,8 @@ private:
 	vector<GATE *> PPOlist;
 	list<FAULT *> Flist;	// collapsing fault list
 	list<FAULT *> UFlist;	// undetected fault list
-	list<TFAULT *> TFlist;	// collapsing fault list
-	list<TFAULT *> UTFlist; // undetected fault list
+	// list<TFAULT *> TFlist;	// collapsing fault list
+	// list<TFAULT *> UTFlist; // undetected fault list
 	int MaxLevel;
 	int BackTrackLimit; // backtrack limit for Podem
 	typedef list<GATE *> ListofGate;
@@ -179,7 +179,6 @@ public:
 		std::cerr << "No gate found with netid: " << std::to_string(isc_netid) << std::endl;
 		return nullptr;
 	}
-	void InjectFaultValue(GATEPTR gptr, int idx, VALUE value);
 	int No_Gate() { return Netlist.size(); }
 	int No_PI() { return PIlist.size(); }
 	int No_PO() { return POlist.size(); }
@@ -216,43 +215,7 @@ public:
 			cout << "Successfully open openOutputFile: " << file_name << endl;
 	}
 
-	void openSimulatorFile(string file_name)
-	{
-		char str[] = "mkdir ";
-		strcat(str, xstr(SIMDIR));
-		system(str);
 
-		strcpy(str, "./");
-		strcat(str, xstr(SIMDIR));
-		strcat(str, "/");
-		strcat(str, file_name.c_str());
-		ofs.open(str, ofstream::out | ofstream::trunc);
-		ofsHeader.open("./simulator/header", ofstream::out | ofstream::trunc);
-		ofsMain.open("./simulator/main", ofstream::out | ofstream::trunc);
-		ofsEva.open("./simulator/evaluate", ofstream::out | ofstream::trunc);
-		ofsPrintIO.open("./simulator/printIO", ofstream::out | ofstream::trunc);
-		if (!ofs.is_open())
-			cout << "Cannot open output file!\n";
-		if (!ofsHeader.is_open())
-			cout << "Cannot open header!\n";
-		if (!ofsMain.is_open())
-			cout << "Cannot open main!\n";
-		if (!ofsEva.is_open())
-			cout << "Cannot open evaluate!\n";
-		if (!ofsPrintIO.is_open())
-			cout << "Cannot open printIO!\n";
-	}
-
-	void Schedule(GATE *gptr)
-	{
-		if (!gptr->GetFlag(SCHEDULED))
-		{
-			gptr->SetFlag(SCHEDULED);
-			cout << Queue << endl;
-			cout << gptr << endl;
-			Queue[gptr->GetLevel()].push_back(gptr);
-		}
-	}
 
 	// VLSI-Testing Lab1
 	// defined in path.cc
@@ -280,21 +243,7 @@ public:
 	void printGateIdTypeOutput();
 	void printSA();
 	void calc_output_level_1_max(int gate_level, string expect_or_actual);
-	void SetPPIZero(); // Initialize PPI state
-
-	void InitializeQueue();
-	void ScheduleFanout(GATE *);
-	void SchedulePI();
-	void SchedulePPI();
-	void LogicSimVectors();
-	void LogicSim();
-	void ModLogicSimVectors();
-	void ModLogicSim();
-	void PrintIO();
-	void PrintModIO();
-	VALUE Evaluate(GATEPTR gptr);
 	bitset<64> isc_Evaluate(GATEPTR gptr);
-	bitset<2> ModEvaluate(GATEPTR gptr);
 	void print_bitset();
 	void init_level0_input_gate();
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset);
@@ -305,8 +254,6 @@ public:
 	void show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool, bool);
 	// defined in atpg.cc
 	void GenerateAllFaultList();
-	void GenerateCheckPointFaultList();
-	void GenerateFaultList();
 	void Atpg();
 	void SortFaninByLevel();
 	bool CheckTest();
@@ -327,37 +274,11 @@ public:
 	void MarkPropagateTree(GATEPTR gptr);
 	void FaultSimVectors();
 	void FaultSim();
-	void FaultSimEvaluate(GATE *gptr);
 	bool CheckFaultyGate(FAULT *fptr);
-	void InjectFaultValue(GATEPTR gptr, unsigned idx, VALUE value);
 	int get_sa_error_cnt();
 
-	// defined in psim.cc for parallel logic simulation
-	void ParallelLogicSimVectors();
-	void ParallelLogicSim();
-	void ParallelEvaluate(GATEPTR gptr);
-	void PrintParallelIOs(unsigned idx);
-	void ScheduleAllPIs();
-	// defined in stfsim.cc for single pattern single transition-fault simulation
-	void GenerateAllTFaultList();
-	void TFaultSimVectors();
-	void TFaultSim_t();
-	void TFaultSim();
-	bool CheckTFaultyGate(TFAULT *fptr);
-	bool CheckTFaultyGate_t(TFAULT *fptr);
-	VALUE Evaluate_t(GATEPTR gptr);
-	void LogicSim_t();
-	void PrintTransition();
-	void PrintTransition_t();
 	void PrintIO_t();
 
-	// defined in tfatpg.cc for transition fault ATPG
-	void TFAtpg();
-	ATPG_STATUS Initialization(GATEPTR gptr, VALUE target, unsigned &total_backtrack_num);
-	ATPG_STATUS BackwardImply_t(GATEPTR gptr, VALUE value);
-	GATEPTR FindPIAssignment_t(GATEPTR gptr, VALUE value);
-	GATEPTR FindEasiestControl_t(GATEPTR gptr);
-	GATEPTR FindHardestControl_t(GATEPTR gptr);
 	void ipt_r();
 	void show_controlability();
 	//
