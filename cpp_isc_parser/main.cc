@@ -138,19 +138,26 @@ int main(int argc, char **argv)
         // calc expect value for  level 1 to level max gates
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
-            isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT");
+            // isc_Circuit->print_bitset();
+            isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT", "NONE");
+            // isc_Circuit->print_bitset();
         }
 
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
-            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL");
+            // isc_Circuit->print_bitset();
+            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL", "NONE");
+            // isc_Circuit->print_bitset();
         }
+
+
+
+
 
         cout << "Good circuit output calculated." << endl;
 
         if (read_input("Show patterns on Gates? 'yes' or 'no': "))
         {
-            // string a = isc_Circuit->GetFunctionString(G_PI);
             isc_Circuit->print_bitset();
         }
 

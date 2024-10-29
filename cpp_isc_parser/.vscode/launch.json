@@ -19,14 +19,14 @@
                 "-action", "ppsfp",
                   "-file_isc", "${workspaceFolder}/yong.isc",
             ],
-            "args_4": [
+            "args": [
                 "-action", "ppsfp",
                   "-file_isc", "${workspaceFolder}/../ISCAS-85/c17.isc",
             ],
             "args_2": [
                 "-help",
             ],
-            "args": [
+            "args_podem": [
                 "-action", 
                 "PODEM",
                 "-file_isc",
