@@ -62,32 +62,20 @@ isc_identifer: 23gat, type G_NAND
 
 ## Iterate SA fault, inject SA fault one by one
 Totally 23 SA fault defined in `c17.isc`. 
-Take NAND gate `22gat` for example, it has both `>sa0` and `sa1` defined.
-The output shows both of them were detected,
-Both `sa0` and `sa1` are covered by input pattern: `1gat_0,2gat_0,3gat_1,6gat_1,7gat_0`
+Take NAND gate `19gat` for example, it has `sa1` defined.
+The output shows `sa1@19gat` was detected on Primary Ouptut `23gat`, by input pattern: `1gat_0,2gat_0,3gat_0,6gat_0,7gat_1`
 
 ```
 Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': yes
 
-== Injecting SA0 on 16gat. Remaining sa error: 8
-PO: 22gat
-expected output: 1111111111111111111111111111111111111111111111111111111111111111
-actual   output: 1100100101011100111011011001011111010110101011101111001010111101
-stuck error detected on gate 16gat, removed the >sa0 fr'
-om the SAlist.
-16gat SA0 detected by 24 Input Patterns. Details of the first Input/Output pattern:
-	Input   Pattern: 1gat_0,2gat_0,3gat_1,6gat_1,7gat_0
-	Output Expected: 22gat_1
-	Output   Actual: 22gat_0
-
-== Injecting SA1 on 16gat. Remaining sa error: 7
-PO: 22gat
-expected output: 1111111111111111111111111111111111111111111111111111111111111111
-actual   output: 1100100101011100111011011001011111010110101011101111001010111101
-stuck error detected on gate 16gat, removed the >sa1 from the SAlist.
-16gat SA1 detected by 24 Input Patterns. Details of the first Input/Output pattern:
-	Input   Pattern: 1gat_0,2gat_0,3gat_1,6gat_1,7gat_0
-	Output Expected: 22gat_1
-	Output   Actual: 22gat_0
-
+== Injecting SA1 on 19gat. Remaining sa error: 14
+PO: 22gat,did not detect the stuck error. 
+PO: 23gat
+expected output: 1111110000001101100001010101110011011001101010010011010001110110
+actual   output: 1100000000001101000001010100010010000001101010010000010001000110
+stuck error detected on gate 19gat, removed the >sa1 from the SAlist.
+19gat SA1 detected by 14 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_0,3gat_0,6gat_0,7gat_1
+	Output Expected: 23gat_1
+	Output   Actual: 23gat_0
 ```
