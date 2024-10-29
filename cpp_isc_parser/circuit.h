@@ -280,7 +280,7 @@ public:
 	void PrintIO_t();
 
 	void ipt_r();
-	void show_controlability();
+	void show_controllability();
 	//
 
 	// handle level 0 input gates

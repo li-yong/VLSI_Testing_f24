@@ -30,17 +30,12 @@ int SetupOption(int argc, char **argv)
 {
 
     option.enroll("action", GetLongOpt::MandatoryValue,
-                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file\n\t\t ppsfp: perform parallel pattern single fault simulation on the circuit\n\t\t", 0);
+                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file.\n\t\t ppsfs: Parallel Pattern Single Fault Simulation on the circuit.\n\t\t ATPG: Automatic Test Pattern Generation (ATPG) with Path-Oriented Decision Making (PODEM) algorithm.", 0);
 
     option.enroll("file_isc", GetLongOpt::MandatoryValue,
                   "Input isc circuit file path. e.g C17.isc", 0);
     option.enroll("help", GetLongOpt::NoValue,
                   "Print this help summary", 0);
-
-    option.enroll("input", GetLongOpt::MandatoryValue,
-                  "set the input pattern file", 0);
-    option.enroll("output", GetLongOpt::MandatoryValue,
-                  "set the output pattern file", 0);
 
     int optind = option.parse(argc, argv);
     if (argc <= 1)
@@ -113,7 +108,7 @@ int main(int argc, char **argv)
         cout << "\nCircuit processing completed. " << file_isc << "\n"
              << endl;
     }
-    else if (action == "ppsfp")
+    else if (action == "ppsfs")
     {
         /******************************************
          * INIT THE 64bit BITSET ON EACH INPUT GATE
@@ -123,18 +118,24 @@ int main(int argc, char **argv)
         isc_Circuit->init_bitset(true, true, true); // bool inputv, bool oe, bool oa
         cout << "Circuit initalizated." << endl;
 
+        int total_sa_error = isc_Circuit->get_sa_error_cnt();
+        int detected_sa_error = 0;
+
+
+        // int loop_num = 0;
+
+        // for (int loop_num = 0; loop_num < 10; ++loop_num)
+        // {
+        // cout << "\n Loop number: " << loop_num << endl;
+
         //  isc_Circuit->print_bitset();
         isc_Circuit->init_level0_input_gate();
-
         cout << "Random patterns generated on Input gates, parallel pattern count 64." << endl;
         // isc_Circuit->print_bitset();
 
         /******************************************
          * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
         /******************************************/
-        int total_sa_error = isc_Circuit->get_sa_error_cnt();
-        int detected_sa_error = 0;
-
         // calc expect value for  level 1 to level max gates
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
@@ -150,10 +151,6 @@ int main(int argc, char **argv)
             // isc_Circuit->print_bitset();
         }
 
-
-
-
-
         cout << "Good circuit output calculated." << endl;
 
         if (read_input("Show patterns on Gates? 'yes' or 'no': "))
@@ -167,8 +164,6 @@ int main(int argc, char **argv)
             exit(0);
         }
 
-        // isc_Circuit->printNetlist();
-
         /******************************************
          * INJECT SA FAULTS
         /******************************************/
@@ -178,35 +173,34 @@ int main(int argc, char **argv)
         double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
 
         cout << "Total SA errors: " << total_sa_error << ", detected " << detected_sa_error << ". detect ratio " << err_detected_ratio << endl;
+        // } //end of the for loopyes
     }
-    else if (action == "PODEM")
+    else if (action == "ATPG")
     {
 
         cout << "\nLevelize the gates in circuit" << endl;
         isc_Circuit->Levelize();
 
-        cout << "\nCalculating gates controlability" << endl;
+        cout << "\nCalculating gates controllability" << endl;
         isc_Circuit->calc_gate_controlabilty();
 
         if (read_input("\nShow Controllability CC0, CC1 ? 'yes' or 'no': "))
         {
-            isc_Circuit->show_controlability();
+            isc_Circuit->show_controllability();
         }
 
-
-        cout << "\nInitalizing gates for backtracing. Set gate input to x"<< endl;
+        cout << "\nInitalizing gates for backtracing. Set gate input to x" << endl;
         isc_Circuit->podem_bt_candidates_init();
         // isc_Circuit->Atpg();
 
         int sa_error_cnt = isc_Circuit->get_sa_error_cnt();
 
         // iterate the SAlist
-         if (!read_input("\nRun PODEM ATPG? 'yes' or 'no': "))
+        if (!read_input("\nRun PODEM ATPG? 'yes' or 'no': "))
         {
             cout << "\nExiting." << endl;
             exit(0);
         }
-
 
         cout << "\nIterating all SA errors in circuit, then backtrace input pattern to justify the SA error" << endl;
         vector<GATE *> netlist = isc_Circuit->GetNetlist();

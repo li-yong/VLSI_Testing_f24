@@ -1,4 +1,4 @@
-# VLSI-Testing
+# VLSI-Testing Project 1
 
 This project is a VLSI testing tool designed to parse ISC files and populate the circuit netlist. The tool is implemented in C++ and Python, offering various functionalities for circuit analysis and testing.
 

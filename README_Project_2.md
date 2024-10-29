@@ -1,10 +1,10 @@
-# VLSI-Testing
+# VLSI-Testing Project 2
 
 This document explains the project 2 implementation. Build and Run are identical as Project 1.
 
 Project 2 use the same circuits as the Project, with additional functional features:
 1. Randomly assign 64 independent input values to the inputs of the circuit.
-2. Perform Parallal Pattern Single Fault (PPSFP) fault simulation.
+2. Perform Parallel Pattern Single Fault Propagation (`PPSFP`) fault simulation.
 3. Simulate the good(error-free) circuit output.
 4. Inject Stuck At (SA) fault defined to circuit one at a time.
 5. Parallel simulate patterns, compare the output with good output generate on error-free circuit.
@@ -14,45 +14,45 @@ Observability. User have options to:
 1.  View the generated pattens on each Input gate.
 2.  View the good circuit output for those input.
 3.  If error detected, view the expected output vs actual output, show the mismatched output gate.
-4.  View how many patterns detected a SA fault, and print the pattern catched this SA fault.
+4.  View how many patterns detected a SA fault, and print the pattern catches this SA fault.
 
 
-# Demo
+# Usage and Demo
 ## Invoke
 
 Invoke with `-action ppsfp` with `-file_isc`. Then program will 
-    parse the ciruit, Initialize Circuit, Generate Random Pattern, and Simulate Good circuit value.
+    parse the circuit, Initialize Circuit, Generate Random Pattern, and Simulate Good circuit value.
 
 ```
 $ ./cpp_isc_parser.exe -action ppsfp -file_isc ../ISCAS-85/c17.isc 
 ISC file: ../ISCAS-85/c17.isc
 
-Circuit initalizated.
+Circuit initiated.
 Random patterns generated on Input gates, parallel pattern count 64.
 Good circuit output calculated.
 ```
 
-## Show geneated patterns
+## Show generated patterns
 Each pattern is in 64bit, each bit stands for a pattern, total 64 patterns in parallel.
 Note `PI` gate don't have the `input vaule` because no gate input to `PI` gate.
 Other gates (`AND`,`NAND`, `OR`, `NOR`, `NOT`, `BUF` ) show both `input value`, `expected output` and `actual output`.
 The `actual output` are identify to `expected output` on the good circuit. 
 ```
 Show patterns on Gates? 'yes' or 'no': yes
-isc_identifer: 1gat, type G_PI
+isc_identifier: 1gat, type G_PI
 	 expected output: 1010101101001110101010011010010111010000101000110000011111110101
 	 actual   output: 1010101101001110101010011010010111010000101000110000011111110101
-isc_identifer: 2gat, type G_PI
+isc_identifier: 2gat, type G_PI
 	 expected output: 1100100100011101111011001001111101000110101111101111001010011100
 	 actual   output: 1100100100011101111011001001111101000110101111101111001010011100
 ...
 ...
-isc_identifer: 22gat, type G_NAND
+isc_identifier: 22gat, type G_NAND
 	 input    value : 1111111010111011010111100111111001101111011111111111111101001110
 	 input    value : 0011011111100011100100110110100010111001110100010000110101100011
 	 expected output: 1111111111111111111111111111111111111111111111111111111111111111
 	 actual   output: 1100100101011100111011011001011111010110101011101111001010111101
-isc_identifer: 23gat, type G_NAND
+isc_identifier: 23gat, type G_NAND
 	 input    value : 0011011111100011100100110110100010111001110100010000110101100011
 	 input    value : 0110110100011111110101110111101011111001110100001000111110100111
 	 expected output: 1111111111111111111111111111111111111111111111111111111111111111
@@ -61,9 +61,10 @@ isc_identifer: 23gat, type G_NAND
 ```
 
 ## Iterate SA fault, inject SA fault one by one
-Totally 23 SA fault defined in `c17.isc`. 
+In `c17.isc`, there are 5 Primary Input (`PI`) gates, 2 Primary Output (`PO`) gates, and 23 `SA` fault. We will iterate those SA fault one by one. For each SA fault, 64 input patterns are evaluated on all the gates in circuit simultaneously, then we comparing the `PO` gates output with the good circuit output, the mismatched bits stands for a test pattern that caught the injected SA fault.
+
 Take NAND gate `19gat` for example, it has `sa1` defined.
-The output shows `sa1@19gat` was detected on Primary Ouptut `23gat`, by input pattern: `1gat_0,2gat_0,3gat_0,6gat_0,7gat_1`
+The output shows `sa1@19gat` was detected on Primary Output `23gat`, by input pattern: `1gat_0,2gat_0,3gat_0,6gat_0,7gat_1`
 
 ```
 Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': yes

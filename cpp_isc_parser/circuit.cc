@@ -605,7 +605,7 @@ void CIRCUIT::init_bitset(bool inputv, bool oe, bool oa)
     }
 }
 
-void CIRCUIT::show_controlability()
+void CIRCUIT::show_controllability()
 {
     vector<GATE *>::iterator it_net;
 
@@ -614,9 +614,9 @@ void CIRCUIT::show_controlability()
         GATEFUNC function = (*it_net)->GetFunction();
         string function_s = (*it_net)->GetFunctionString();
         int netid = (*it_net)->Get_isc_net_id();
-        string isc_identifer = (*it_net)->Get_isc_identifier();
+        string isc_identifier = (*it_net)->Get_isc_identifier();
 
-        cout << netid << "  " << isc_identifer << ", CC0 " << (*it_net)->cc0 << ", CC1 " << (*it_net)->cc1 << endl;
+        cout << netid << "  " << isc_identifier << ", CC0 " << (*it_net)->cc0 << ", CC1 " << (*it_net)->cc1 << endl;
         //
     }
 }
@@ -754,7 +754,7 @@ void CIRCUIT::print_bitset()
         GATEFUNC function = (*it_net)->GetFunction();
         string function_s = (*it_net)->GetFunctionString();
         int netid = (*it_net)->Get_isc_net_id();
-        string isc_identifer = (*it_net)->Get_isc_identifier();
+        string isc_identifier = (*it_net)->Get_isc_identifier();
 
         isc_bitset_output_expected = (*it_net)->get_isc_bitset_output_expected();
         isc_bitset_output_actual = (*it_net)->get_isc_bitset_output_actual();
@@ -764,7 +764,7 @@ void CIRCUIT::print_bitset()
 
         {
 
-            cout << "isc_identifer: " << isc_identifer << ", type " << function_s << endl;
+            cout << "isc_identifier: " << isc_identifier << ", type " << function_s << endl;
 
             if (function != G_PI)
             {
