@@ -133,12 +133,12 @@ Circuit processing completed. ./ISCAS-85/c17.isc
 
 ## Project Screen
 #### Python Parse ISC to Json
-![Python Parse ISC to Json](./output_screenshot/python_parse_isc_to_json.png)
+![Python Parse ISC to Json](./output_screenshot/project_1_output/python_parse_isc_to_json.png)
 
 
 #### Cpp parse ISC for Gate_output and SA_fault.
 Linux
-![cpp_linux](./output_screenshot/cpp_linux_screenshot.png)
+![cpp_linux](./output_screenshot/project_1_output/cpp_linux_screenshot.png)
 
 Windows
-![cpp_win](./output_screenshot/cpp_windows_run.png)
+![cpp_win](./output_screenshot/project_1_output/cpp_windows_run.png)
