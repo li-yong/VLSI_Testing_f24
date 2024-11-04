@@ -1024,17 +1024,22 @@ int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
 
             int sa_error_cnt = get_sa_error_cnt();
 
-            // cout << error_gate_isc_ident << " " << SAlist[n] << endl;
+            cout << error_gate_isc_ident << " " << SAlist[n] << endl;
 
-            // if (error_gate_isc_ident == "16gat")
-            // {
-            //     cout << "debug" << endl;
-            // }
+            if (error_gate_isc_ident == "3gat")
+            {
+                cout << "debug" << endl;
+            }
 
             if (SAlist[n] == ">sa0")
             {
                 cout << "\n== Injecting SA0 on " << error_gate_isc_ident << ". Remaining sa error: " << --sa_error_cnt << endl;
                 g->set_isc_bitset_output_actual(bitset_all_zero);
+                // if (g->GetFunction == G_FROM){ //yong debug. Iterate the output fan list of the gate, set the output value to 0.
+                //     auto ofl = g->GetOutput_fan_list();
+
+                //     g->Output_fan_list[0]->set_isc_bitset_output_actual(bitset_all_zero);
+                // }
                 stuck_error = "SA0";
             }
             else if (SAlist[n] == ">sa1")
@@ -1050,7 +1055,7 @@ int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
                 calc_output_level_1_max(gate_level, "ACTUAL", error_gate_isc_ident);
             }
 
-            // print_bitset();
+            print_bitset();
 
             // Iterate the PO GATES
             // iterate the gates in circuits. Check the output gate actual value vs expected value.

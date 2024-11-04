@@ -122,11 +122,11 @@ int main(int argc, char **argv)
         int detected_sa_error = 0;
 
 
-        // int loop_num = 0;
+        int loop_num = 0;
 
-        // for (int loop_num = 0; loop_num < 10; ++loop_num)
-        // {
-        // cout << "\n Loop number: " << loop_num << endl;
+        for (int loop_num = 0; loop_num < 2; ++loop_num)
+        {
+        cout << "\n Loop number: " << loop_num << endl;
 
         //  isc_Circuit->print_bitset();
         isc_Circuit->init_level0_input_gate();
@@ -151,29 +151,37 @@ int main(int argc, char **argv)
             // isc_Circuit->print_bitset();
         }
 
-        cout << "Good circuit output calculated." << endl;
+        // cout << "Good circuit output calculated." << endl;
 
-        if (read_input("Show patterns on Gates? 'yes' or 'no': "))
-        {
-            isc_Circuit->print_bitset();
-        }
+        // if (read_input("Show patterns on Gates? 'yes' or 'no': "))
+        // {
+        //     isc_Circuit->print_bitset();
+        // }
 
-        if (!read_input("Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': "))
-        {
-            cout << "Exiting." << endl;
-            exit(0);
-        }
+        // if (!read_input("Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': "))
+        // {
+        //     cout << "Exiting." << endl;
+        //     exit(0);
+        // }
 
         /******************************************
          * INJECT SA FAULTS
         /******************************************/
         // iterate the FAULTS in circuits
         cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault." << endl;
-        detected_sa_error += isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+        // detected_sa_error += isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+        isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+
+        } //end of the for loopyes
+
+        int left_sa_error =  isc_Circuit->get_sa_error_cnt();
+        detected_sa_error = total_sa_error - left_sa_error;
+
         double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
 
         cout << "Total SA errors: " << total_sa_error << ", detected " << detected_sa_error << ". detect ratio " << err_detected_ratio << endl;
-        // } //end of the for loopyes
+
+
     }
     else if (action == "ATPG")
     {
