@@ -242,8 +242,8 @@ public:
 	void printGateOutput();
 	void printGateIdTypeOutput();
 	void printSA();
-	void calc_output_level_1_max(int gate_level, string expect_or_actual, string fault_injection_gate_isc_identifier);
-	bitset<64> isc_Evaluate(GATEPTR gptr);
+	void calc_output_level_1_max(int gate_level, string expect_or_actual, vector<string> fault_injection_gate_isc_identifier_list);
+	bitset<64> isc_Evaluate(GATEPTR gptr,vector<string> fault_injection_gate_isc_identifier_list);
 	void print_bitset();
 	void init_level0_input_gate();
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset);

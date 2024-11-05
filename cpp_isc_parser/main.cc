@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
         int loop_num = 0;
 
-        for (int loop_num = 0; loop_num < 2; ++loop_num)
+        for (int loop_num = 0; loop_num < 10; ++loop_num)
         {
         cout << "\n Loop number: " << loop_num << endl;
 
@@ -140,14 +140,14 @@ int main(int argc, char **argv)
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
             // isc_Circuit->print_bitset();
-            isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT", "NONE");
+            isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT", vector<string>{});
             // isc_Circuit->print_bitset();
         }
 
         for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
         {
             // isc_Circuit->print_bitset();
-            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL", "NONE");
+            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL", vector<string>{});
             // isc_Circuit->print_bitset();
         }
 

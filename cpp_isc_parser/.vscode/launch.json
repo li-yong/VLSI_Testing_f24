@@ -20,7 +20,7 @@
                   "-file_isc", "${workspaceFolder}/yong.isc",
             ],
             "args": [
-                "-action", "ppsfp",
+                "-action", "ppsfs",
                   "-file_isc", "${workspaceFolder}/../ISCAS-85/c17.isc",
             ],
             "args_2": [
