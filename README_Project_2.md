@@ -67,7 +67,15 @@ isc_identifier: 837gat, type G_NAND
 
 
 ## Iterating and Injecting SA Faults One by One
-In `c17.isc`, there are 5 Primary Input (`PI`) gates, 2 Primary Output (`PO`) gates, and 23 defined `SA` (Stuck-At) faults. We will iterate through these SA faults one by one. For each SA fault, 64 input patterns are evaluated simultaneously across all gates in the circuit. The output of the `PO` gates is then compared with the error-free circuit output. Any mismatched bits indicate a test pattern that detected the injected SA fault.
+In `c17.isc`, there are 5 Primary Input (`PI`) gates, 2 Primary Output (`PO`) gates, and 22 defined `SA` (Stuck-At) faults. We will iterate through these SA faults one by one. For each SA fault, 64 input patterns are evaluated simultaneously across all gates in the circuit. The output of the `PO` gates is then compared with the error-free circuit output. Any mismatched bits indicate a test pattern that detected the injected SA fault.
+
+<figure>
+  <img
+  src="output_screenshot/c17_schema.png"
+  alt="C17 Gate-Level Schematic">
+  <figcaption>C17 Gate-Level Schematic</figcaption>
+</figure>
+
 
 For example, consider the NAND gate `19gat`, which has an `sa1` fault defined.
 The output shows that `sa1@19gat` was detected at the Primary Output `23gat`, triggered by the input pattern:
