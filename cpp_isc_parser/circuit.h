@@ -246,7 +246,7 @@ public:
 	bitset<64> isc_Evaluate(GATEPTR gptr,vector<string> fault_injection_gate_isc_identifier_list);
 	void print_bitset();
 	void init_level0_input_gate();
-	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset);
+	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
 	int iterate_gates_sa_errors(int detected_sa_error);
 	void init_bitset(bool v12, bool oe, bool oa);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);

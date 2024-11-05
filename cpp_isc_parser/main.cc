@@ -114,74 +114,88 @@ int main(int argc, char **argv)
          * INIT THE 64bit BITSET ON EACH INPUT GATE
         /******************************************/
 
+        bool interaction = true;
+
         isc_Circuit->Levelize();
         isc_Circuit->init_bitset(true, true, true); // bool inputv, bool oe, bool oa
         cout << "Circuit initalizated." << endl;
 
         int total_sa_error = isc_Circuit->get_sa_error_cnt();
+        int detected_sa_error_realtime = 0;
         int detected_sa_error = 0;
 
+        int loop_cnt = 0;
 
-        int loop_num = 0;
-
-        for (int loop_num = 0; loop_num < 10; ++loop_num)
+        for (int loop_num = 1; loop_num < 11; ++loop_num)
         {
-        cout << "\n Loop number: " << loop_num << endl;
+            if (detected_sa_error_realtime == total_sa_error)
+            {
+                cout << "\nAll SA errors detected in " << loop_cnt << " loops." << endl;
+                break;
+            }
 
-        //  isc_Circuit->print_bitset();
-        isc_Circuit->init_level0_input_gate();
-        cout << "Random patterns generated on Input gates, parallel pattern count 64." << endl;
-        // isc_Circuit->print_bitset();
+            cout << "\nLoop number: " << loop_num << endl;
 
-        /******************************************
-         * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
-        /******************************************/
-        // calc expect value for  level 1 to level max gates
-        for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
-        {
+            //  isc_Circuit->print_bitset();
+            isc_Circuit->init_level0_input_gate();
+            cout << "Random patterns generated on Input gates, parallel pattern count 64." << endl;
             // isc_Circuit->print_bitset();
-            isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT", vector<string>{});
-            // isc_Circuit->print_bitset();
-        }
 
-        for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
-        {
-            // isc_Circuit->print_bitset();
-            isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL", vector<string>{});
-            // isc_Circuit->print_bitset();
-        }
+            /******************************************
+             * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
+            /******************************************/
+            // calc expect value for  level 1 to level max gates
+            for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
+            {
+                // isc_Circuit->print_bitset();
+                isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT", vector<string>{});
+                // isc_Circuit->print_bitset();
+            }
 
-        // cout << "Good circuit output calculated." << endl;
+            for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
+            {
+                // isc_Circuit->print_bitset();
+                isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL", vector<string>{});
+                // isc_Circuit->print_bitset();
+            }
 
-        // if (read_input("Show patterns on Gates? 'yes' or 'no': "))
-        // {
-        //     isc_Circuit->print_bitset();
-        // }
+            cout << "Good circuit output calculated." << endl;
 
-        // if (!read_input("Run Parallel Pattern Single Fault (PPSF) Simulation? 'yes' or 'no': "))
-        // {
-        //     cout << "Exiting." << endl;
-        //     exit(0);
-        // }
+            if (interaction && read_input("Show patterns on Gates? 'yes' or 'no': "))
+            {
+                isc_Circuit->print_bitset();
+            }
 
-        /******************************************
-         * INJECT SA FAULTS
-        /******************************************/
-        // iterate the FAULTS in circuits
-        cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault." << endl;
-        // detected_sa_error += isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
-        isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+            if (interaction)
+            {
+                if (!read_input("Interactive mode? 'yes' or 'no': "))
+                {
+                    interaction = false;
+                }
+            }
 
-        } //end of the for loopyes
+            /******************************************
+             * INJECT SA FAULTS
+            /******************************************/
+            // iterate the FAULTS in circuits
+            cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault." << endl;
+            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+            // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+            loop_cnt++;
 
-        int left_sa_error =  isc_Circuit->get_sa_error_cnt();
+        } // end of the for loopyes
+
+        int left_sa_error = isc_Circuit->get_sa_error_cnt();
         detected_sa_error = total_sa_error - left_sa_error;
 
         double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
 
-        cout << "Total SA errors: " << total_sa_error << ", detected " << detected_sa_error << ". detect ratio " << err_detected_ratio << endl;
-
-
+        cout << "\n=== PPSFS Simulation Completed ===" << endl;
+        cout << "Circuit              : " << file_isc << endl;
+        cout << "Total SA Errors      : " << total_sa_error << endl;
+        cout << "Detected Errors      : " << detected_sa_error << endl;
+        cout << "Detection Ratio      : " << err_detected_ratio << endl;
+        cout << "Iteration Count      : " << loop_cnt << endl;
     }
     else if (action == "ATPG")
     {

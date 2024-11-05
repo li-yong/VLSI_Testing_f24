@@ -1,0 +1,244 @@
+ISC file: ./ISCAS-85/c17.isc
+
+Circuit initalizated.
+
+Loop number: 1
+Random patterns generated on Input gates, parallel pattern count 64.
+Good circuit output calculated.
+Show patterns on Gates? 'yes' or 'no': Interactive mode? 'yes' or 'no': 
+Injecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault.
+
+== Injecting SA1 on 1gat. Remaining sa error: 22
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1011111110111111110111110111111110111111111111110101111011111101
+stuck error detected on gate 1gat, removed the >sa1 from the SAlist.
+1gat SA1 detected by 13 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_1,6gat_1,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA1 on 2gat. Remaining sa error: 21
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1111111111011100111110101111011111110111111111111111011101100111
+stuck error detected on gate 2gat, removed the >sa1 from the SAlist.
+2gat SA1 detected by 11 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_0,3gat_0,6gat_1,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA0 on 3gat. Remaining sa error: 20
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 0011111000110101000110010011000000101111111001000101011011011101
+stuck error detected on gate 3gat, removed the >sa0 from the SAlist.
+3gat SA0 detected by 23 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_1,6gat_1,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA1 on 3gat. Remaining sa error: 19
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1010011110001100010110100111011010110111111111111011001001100101
+stuck error detected on gate 3gat, removed the >sa1 from the SAlist.
+3gat SA1 detected by 7 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_1,7gat_0,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA1 on 8fan. Remaining sa error: 18
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1011111110011100010110100111011010110111111111111111011001100101
+stuck error detected on gate 8fan, removed the >sa1 from the SAlist.
+8fan SA1 detected by 2 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_1,2gat_0,3gat_0,6gat_0,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA1 on 9fan. Remaining sa error: 17
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1010011110001000010110100111011010110110111111110001001001100101
+stuck error detected on gate 9fan, removed the >sa1 from the SAlist.
+9fan SA1 detected by 7 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_1,7gat_0,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA1 on 6gat. Remaining sa error: 16
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1011101110011100010100100110011010110011110111110100011001100101
+stuck error detected on gate 6gat, removed the >sa1 from the SAlist.
+6gat SA1 detected by 6 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_1,6gat_0,7gat_0,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA1 on 7gat. Remaining sa error: 15
+PO: 22gat,did not detect the stuck error. 
+PO: 23gat
+expected output: 0001111000011100110010001011000100000111001000010101011101000101
+actual   output: 0101111001011100111010001111010101000111001110011111011101000111
+stuck error detected on gate 7gat, removed the >sa1 from the SAlist.
+7gat SA1 detected by 11 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_0,3gat_0,6gat_1,7gat_0,
+	Output Expected: 23gat_0,
+	Output   Actual: 23gat_1,
+
+== Injecting SA1 on 10gat. Remaining sa error: 14
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 0001111000010100000010000011000000000111001000000101011001000101
+stuck error detected on gate 10gat, removed the >sa1 from the SAlist.
+10gat SA1 detected by 22 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_1,2gat_0,3gat_1,6gat_1,7gat_1,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA0 on 11gat. Remaining sa error: 13
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1010000110001000010100100110011010110000110111110000000000100000
+stuck error detected on gate 11gat, removed the >sa0 from the SAlist.
+11gat SA0 detected by 19 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_0,7gat_0,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA1 on 11gat. Remaining sa error: 12
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1011111110111101010110110111011010111111111111110101011011111101
+stuck error detected on gate 11gat, removed the >sa1 from the SAlist.
+11gat SA1 detected by 7 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_1,6gat_1,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA1 on 14fan. Remaining sa error: 11
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1011111110111101010110110111011010111111111111110101011011111101
+stuck error detected on gate 14fan, removed the >sa1 from the SAlist.
+14fan SA1 detected by 7 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_1,6gat_1,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA1 on 15fan. Remaining sa error: 10
+PO: 22gat,did not detect the stuck error. 
+PO: 23gat
+expected output: 0001111000011100110010001011000100000111001000010101011101000101
+actual   output: 0011111110011111110111111011100110110111011000110101111111110101
+stuck error detected on gate 15fan, removed the >sa1 from the SAlist.
+15fan SA1 detected by 19 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_1,6gat_1,7gat_1,
+	Output Expected: 23gat_0,
+	Output   Actual: 23gat_1,
+
+== Injecting SA0 on 16gat. Remaining sa error: 9
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1111111111111111111111111111111111111111111111111111111111111111
+stuck error detected on gate 16gat, removed the >sa0 from the SAlist.
+16gat SA0 detected by 22 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_0,3gat_0,6gat_1,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA1 on 16gat. Remaining sa error: 8
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1010000110001000010100100110011010110000110111110000000000100000
+stuck error detected on gate 16gat, removed the >sa1 from the SAlist.
+16gat SA1 detected by 19 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_0,7gat_0,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA1 on 20fan. Remaining sa error: 7
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1010000110001000010100100110011010110000110111110000000000100000
+stuck error detected on gate 20fan, removed the >sa1 from the SAlist.
+20fan SA1 detected by 19 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_0,7gat_0,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA1 on 21fan. Remaining sa error: 6
+PO: 22gat,did not detect the stuck error. 
+PO: 23gat
+expected output: 0001111000011100110010001011000100000111001000010101011101000101
+actual   output: 0000000000011100110000001011000100000101001000010100001101000000
+stuck error detected on gate 21fan, removed the >sa1 from the SAlist.
+21fan SA1 detected by 10 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_0,7gat_0,
+	Output Expected: 23gat_1,
+	Output   Actual: 23gat_0,
+
+== Injecting SA1 on 19gat. Remaining sa error: 5
+PO: 22gat,did not detect the stuck error. 
+PO: 23gat
+expected output: 0001111000011100110010001011000100000111001000010101011101000101
+actual   output: 0001111000010100000010000011000000000111001000000101011001000101
+stuck error detected on gate 19gat, removed the >sa1 from the SAlist.
+19gat SA1 detected by 7 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_0,3gat_0,6gat_1,7gat_1,
+	Output Expected: 23gat_1,
+	Output   Actual: 23gat_0,
+
+== Injecting SA0 on 22gat. Remaining sa error: 4
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 0000000000000000000000000000000000000000000000000000000000000000
+stuck error detected on gate 22gat, removed the >sa0 from the SAlist.
+22gat SA0 detected by 42 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_0,7gat_0,
+	Output Expected: 22gat_1,
+	Output   Actual: 22gat_0,
+
+== Injecting SA1 on 22gat. Remaining sa error: 3
+PO: 22gat
+expected output: 1011111110011100010110100111011010110111111111110101011001100101
+actual   output: 1111111111111111111111111111111111111111111111111111111111111111
+stuck error detected on gate 22gat, removed the >sa1 from the SAlist.
+22gat SA1 detected by 22 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_0,3gat_0,6gat_1,7gat_0,
+	Output Expected: 22gat_0,
+	Output   Actual: 22gat_1,
+
+== Injecting SA0 on 23gat. Remaining sa error: 2
+PO: 22gat,did not detect the stuck error. 
+PO: 23gat
+expected output: 0001111000011100110010001011000100000111001000010101011101000101
+actual   output: 0000000000000000000000000000000000000000000000000000000000000000
+stuck error detected on gate 23gat, removed the >sa0 from the SAlist.
+23gat SA0 detected by 27 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_1,3gat_0,6gat_0,7gat_0,
+	Output Expected: 23gat_1,
+	Output   Actual: 23gat_0,
+
+== Injecting SA1 on 23gat. Remaining sa error: 1
+PO: 22gat,did not detect the stuck error. 
+PO: 23gat
+expected output: 0001111000011100110010001011000100000111001000010101011101000101
+actual   output: 1111111111111111111111111111111111111111111111111111111111111111
+stuck error detected on gate 23gat, removed the >sa1 from the SAlist.
+23gat SA1 detected by 37 Input Patterns. Details of the first Input/Output pattern:
+	Input   Pattern: 1gat_0,2gat_0,3gat_0,6gat_1,7gat_0,
+	Output Expected: 23gat_0,
+	Output   Actual: 23gat_1,
+
+All SA errors detected in 1 loops.
+
+=== PPSFS Simulation Completed ===
+Circuit              : ./ISCAS-85/c17.isc
+Total SA Errors      : 22
+Detected Errors      : 22
+Detection Ratio      : 1
+Iteration Count      : 1
