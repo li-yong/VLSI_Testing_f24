@@ -30,7 +30,7 @@ int SetupOption(int argc, char **argv)
 {
 
     option.enroll("action", GetLongOpt::MandatoryValue,
-                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file.\n\t\t ppsfs: Parallel Pattern Single Fault Simulation on the circuit.\n\t\t ATPG: Automatic Test Pattern Generation (ATPG) with Path-Oriented Decision Making (PODEM) algorithm.", 0);
+                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file.\n\t\t ppsfp: `Parallel Pattern Single Fault Propagation` Simulation on the circuit.\n\t\t ATPG: Automatic Test Pattern Generation (ATPG) with Path-Oriented Decision Making (PODEM) algorithm.", 0);
 
     option.enroll("file_isc", GetLongOpt::MandatoryValue,
                   "Input isc circuit file path. e.g C17.isc", 0);
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
         cout << "\nCircuit processing completed. " << file_isc << "\n"
              << endl;
     }
-    else if (action == "ppsfs")
+    else if (action == "ppsfp")
     {
         /******************************************
          * INIT THE 64bit BITSET ON EACH INPUT GATE
@@ -190,7 +190,7 @@ int main(int argc, char **argv)
 
         double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
 
-        cout << "\n=== PPSFS Simulation Completed ===" << endl;
+        cout << "\n=== PPSFP Simulation Completed ===" << endl;
         cout << "Circuit              : " << file_isc << endl;
         cout << "Total SA Errors      : " << total_sa_error << endl;
         cout << "Detected Errors      : " << detected_sa_error << endl;
