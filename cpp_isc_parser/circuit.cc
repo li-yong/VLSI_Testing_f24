@@ -1148,7 +1148,7 @@ int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
                     break;
                 }
 
-                cout << "PO: " << g1->Get_isc_identifier() << ",did not detect the stuck error. " << endl;
+                // cout << "PO: " << g1->Get_isc_identifier() << ",did not detect the stuck error. " << endl;
             }
         }
     }
@@ -1307,3 +1307,4 @@ void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, 
 
     cout << h << endl;
 }
+

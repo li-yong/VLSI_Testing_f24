@@ -15,16 +15,22 @@
                 "-file_isc",
                 "${workspaceFolder}/../ISCAS-85/c7552.isc",
             ],
-            "args_0": [
-                "-action", "ppsfp",
+            "args": [
+                "-action", "LFSR",
                   "-file_isc", "${workspaceFolder}/yong.isc",
             ],
-            "args": [
+            "args_ppsfs": [
                 "-action", "ppsfs",
                   "-file_isc", "${workspaceFolder}/../ISCAS-85/c17.isc",
             ],
             "args_2": [
                 "-help",
+            ],
+            "args_podem": [
+                "-action", 
+                "PODEM",
+                "-file_isc",
+                "${workspaceFolder}/ISCAS-85/c432.isc", 
             ],
             "args_podem": [
                 "-action", 

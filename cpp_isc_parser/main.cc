@@ -10,6 +10,7 @@
 #include <vector>
 #include <bitset>
 #include <algorithm>
+#include "LFSR.h"
 
 using namespace std;
 
@@ -276,6 +277,83 @@ int main(int argc, char **argv)
         } // for loop, salist.
 
     } // for loop, netlist.
+
+    else if (action == "LFSR")
+    {
+
+        vector<int> poly_vec = {3, 1}; // X^5+X^3+X+1.
+
+        // LFSR is 32-bits with equation h(x) = x32 + x22 + x2 + x1 + 1
+        vector<int> poly_vec_tpg = {22, 2, 1};
+
+        // The ORA is a 16-bit LFSR whose equation is h(x) = x16 + x15 + x13 + x4 + 1.
+        vector<int> poly_vec_ora = {15, 13, 4};
+
+        int d_ff_num; // number of D flip-flops.
+
+        bool enable_inputS; // Enable the inputS. Set to True if inputS is provided.
+        string inputS;      // The string feeding to the input of the LFSR. Not the feedback input.
+
+        string initS; // The initial state of the LFSR.
+
+        LFSR lfsr(32);
+
+        // enable_inputS = true;
+        enable_inputS = false;
+
+        if (enable_inputS)
+        {
+            inputS = "01010001";
+        }
+
+        // Initialize the register with the input
+        // Iterate from right (least significant bit) to left (most significant bit)
+
+        if (enable_inputS)
+        {
+            initS = "00000"; // initial state is all 0 if inputS is provided.
+            LFSR lfsr(5);
+            d_ff_num = 5;
+        }
+        else
+        {
+            initS = "101010101010101010101010100101010";
+            initS = "10101010101010101010101010010101";
+
+            initS = initS.substr(initS.size() - 32); // take the last 32 bits of the string.
+
+            // Create a n bits register, by default all bits are set to 0
+            LFSR lfsr(32);
+            d_ff_num = 32;
+        }
+
+        vector<int> bv = isc_Circuit->stringToBinaryVector(initS, true);
+
+        /* INIT LFSR  */
+
+        for (int i = 0; i < bv.size(); ++i)
+        {
+            lfsr.setBit(i, bv[i]);
+        }
+
+        /* SCAN  */
+
+        if (enable_inputS)
+        {
+            inputS = "01010001";
+            bitset<8> input_bs(inputS);
+            isc_Circuit->tpg_has_input(lfsr, poly_vec, d_ff_num, inputS);
+        }
+        else
+        {
+            int loop_num = 100;
+            isc_Circuit->tpg_has_no_input(lfsr, poly_vec_tpg, d_ff_num, loop_num);
+        }
+
+        exit(0);
+
+        cout << "LFSR" << endl;
+    }
 
     else
     {

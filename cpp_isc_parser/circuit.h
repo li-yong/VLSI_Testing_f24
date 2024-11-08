@@ -11,6 +11,7 @@
 #include <iostream>
 #include <map>
 #include <algorithm>
+#include "LFSR.h"
 
 #define xstr(s) ystr(s)
 #define ystr(s) #s
@@ -29,8 +30,8 @@ private:
 	vector<GATE *> POlist;
 	vector<GATE *> PPIlist;
 	vector<GATE *> PPOlist;
-	list<FAULT *> Flist;	// collapsing fault list
-	list<FAULT *> UFlist;	// undetected fault list
+	list<FAULT *> Flist;  // collapsing fault list
+	list<FAULT *> UFlist; // undetected fault list
 	// list<TFAULT *> TFlist;	// collapsing fault list
 	// list<TFAULT *> UTFlist; // undetected fault list
 	int MaxLevel;
@@ -185,7 +186,6 @@ public:
 	int No_PPI() { return PPIlist.size(); }
 	int No_PPO() { return PPOlist.size(); }
 
-	
 	void openFile(string file_name)
 	{
 		cout << "in function openFile" << endl;
@@ -215,15 +215,11 @@ public:
 			cout << "Successfully open openOutputFile: " << file_name << endl;
 	}
 
-
-
 	// VLSI-Testing Lab1
 	// defined in path.cc
 	void path(string src_name_gate, string dest_gate_name);
 	bool findPath();
 	void printPath();
-
-
 
 	vector<GATE *> GetGateInLevel(int);
 
@@ -243,7 +239,7 @@ public:
 	void printGateIdTypeOutput();
 	void printSA();
 	void calc_output_level_1_max(int gate_level, string expect_or_actual, vector<string> fault_injection_gate_isc_identifier_list);
-	bitset<64> isc_Evaluate(GATEPTR gptr,vector<string> fault_injection_gate_isc_identifier_list);
+	bitset<64> isc_Evaluate(GATEPTR gptr, vector<string> fault_injection_gate_isc_identifier_list);
 	void print_bitset();
 	void init_level0_input_gate();
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
@@ -535,7 +531,7 @@ public:
 		}
 		else
 		{
- 			// cout << "\tBacktrace failed, no pattern for this error." << endl;
+			// cout << "\tBacktrace failed, no pattern for this error." << endl;
 		}
 
 		return result;
@@ -567,6 +563,138 @@ public:
 			exit(1);
 		}
 	}
-};
+
+	vector<int> stringToBinaryVector(const string &binaryString, bool revert = true)
+	{
+		vector<int> result;
+		for (char ch : binaryString)
+		{
+			// Convert each character ('0' or '1') to an integer (0 or 1)
+			result.push_back(ch - '0');
+		}
+
+		if (revert)
+		{
+			reverse(result.begin(), result.end()); // reverse the vector
+		}
+
+		return result;
+	}
+
+	vector<int> intToBinaryVector(int num, int N)
+	{
+		vector<int> binaryRepresentation;
+
+		// Convert to binary representation
+		while (num > 0)
+		{
+			binaryRepresentation.push_back(num % 2); // Get the least significant bit
+			num /= 2;								 // Shift right by dividing by 2
+		}
+
+		// Pad with 0s to ensure the length is N
+		while (binaryRepresentation.size() < N)
+		{
+			binaryRepresentation.push_back(0);
+		}
+		// Reverse to get the most significant bit on the left
+		std::reverse(binaryRepresentation.begin(), binaryRepresentation.end());
+
+		return binaryRepresentation;
+	}
+
+	void tpg_has_input(LFSR lfsr, vector<int> poly_vec, int d_ff_num, string inputS)
+	{
+
+		int len = inputS.length();
+		vector<int> input_vector = stringToBinaryVector(inputS, true);
+
+		// Iterate from right (least significant bit) to left (most significant bit)
+		for (int i = 0; i < inputS.length(); ++i)
+		{
+			uint32_t get32bit = lfsr.get32bit();
+
+			vector<int> last_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+
+			lfsr.rightShift(0);				// shift right 1 bit, fill 0 at MSB.
+			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
+
+			/*
+			d-ff: X0, X1, X2, X3, X4
+			last_op: [0], 1, 2, 3, [4]
+			lsfr: bit[4], bit[3], bit[2], bit[1], bit[0]
+			*/
+
+			auto x0 = FB ^ input_vector[i]; // MSB.
+			lfsr.setBit(d_ff_num - 1, x0);
+
+			lfsr.setBit(0, last_op[d_ff_num - 2]); // LSB
+
+			// Middle terms in Polynomial.
+			// iterate poly_x
+			for (int j = 0; j < poly_vec.size(); ++j)
+			{
+				auto x = FB ^ last_op[poly_vec[j] - 1];		// xor (lsb, previous_postion_bit_in_last_run)
+				lfsr.setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
+			}
+
+			// bitset<32> this_op(lfsr.get32bit());
+			vector<int> this_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+			cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
+
+			for (int i = 0; i < this_op.size(); ++i)
+			{
+				cout << this_op[i];
+			}
+
+			cout << '\n';
+		}
+	}
+
+	void tpg_has_no_input(LFSR lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
+	{
+
+		// Iterate from right (least significant bit) to left (most significant bit)
+		for (int i = 0; i < loop_num; ++i)
+		{
+			uint32_t get32bit = lfsr.get32bit();
+
+			vector<int> last_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+
+			lfsr.rightShift(0);				// shift right 1 bit, fill 0 at MSB.
+			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
+
+			/*
+			d-ff: X0, X1, X2, X3, X4
+			last_op: [0], 1, 2, 3, [4]
+			lsfr: bit[4], bit[3], bit[2], bit[1], bit[0]
+			*/
+
+			lfsr.setBit(d_ff_num - 1, FB); // MSB.
+
+			lfsr.setBit(0, last_op[d_ff_num - 2]); // LSB
+
+			// Middle terms in Polynomial.
+			// iterate poly_x
+			for (int j = 0; j < poly_vec.size(); ++j)
+			{
+				auto x = FB ^ last_op[poly_vec[j] - 1];		// xor (lsb, previous_postion_bit_in_last_run)
+				lfsr.setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
+			}
+
+			// bitset<32> this_op(lfsr.get32bit());
+			vector<int> this_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+			cout << "loop " << i << ", feed last output to input " << FB << ", output: ";
+
+			for (int i = 0; i < this_op.size(); ++i)
+			{
+				cout << this_op[i];
+			}
+
+			cout << '\n';
+		}
+	}
+
+}; // end of class
 
 #endif

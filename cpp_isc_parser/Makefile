@@ -18,7 +18,7 @@ HEADERS = gate.h fault.h circuit.h GetLongOpt.h typeemu.h  hash.h tfault.h
 
 # Add source file assignment.c to be compiled
 SOURCES = circuit.cc main.cc GetLongOpt.cc \
-					parser_isc.cc 
+					parser_isc.cc LFSR.cc
 					# atpg.cc fsim.cc  sim.cc
 					# path.cc \
 					# sim.cc stfsim.cc atpg.cc fsim.cc pattern.cc
@@ -26,7 +26,7 @@ SOURCES = circuit.cc main.cc GetLongOpt.cc \
 
 # Add object file assignment.o to be linked
 OBJECTS = circuit.o main.o GetLongOpt.o  \
-					parser_isc.o 
+					parser_isc.o  LFSR.o
 					# atpg.o fsim.o sim.o  
 					# path.o \
 					# stfsim.o atpg.o fsim.o pattern.o
