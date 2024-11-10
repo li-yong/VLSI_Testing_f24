@@ -92,6 +92,7 @@ public:
 
     ~LFSR()
     {
+        std::cout << "FREE LFSR" << std::endl;
         delete [] array;
         delete [] address;
         delete [] position;

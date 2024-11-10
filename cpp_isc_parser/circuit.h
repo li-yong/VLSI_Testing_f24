@@ -606,7 +606,7 @@ public:
 		return binaryRepresentation;
 	}
 
-	void tpg_has_input(LFSR lfsr, vector<int> poly_vec, int d_ff_num, string inputS)
+	void tpg_has_input(LFSR* lfsr, vector<int> poly_vec, int d_ff_num, string inputS)
 	{
 
 		int len = inputS.length();
@@ -615,11 +615,11 @@ public:
 		// Iterate from right (least significant bit) to left (most significant bit)
 		for (int i = 0; i < inputS.length(); ++i)
 		{
-			uint32_t get32bit = lfsr.get32bit();
+			uint32_t get32bit = lfsr->get32bit();
 
-			vector<int> last_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+			vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 
-			lfsr.rightShift(0);				// shift right 1 bit, fill 0 at MSB.
+			lfsr->rightShift(0);				// shift right 1 bit, fill 0 at MSB.
 			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
 
 			/*
@@ -629,20 +629,20 @@ public:
 			*/
 
 			auto x0 = FB ^ input_vector[i]; // MSB.
-			lfsr.setBit(d_ff_num - 1, x0);
+			lfsr->setBit(d_ff_num - 1, x0);
 
-			lfsr.setBit(0, last_op[d_ff_num - 2]); // LSB
+			lfsr->setBit(0, last_op[d_ff_num - 2]); // LSB
 
 			// Middle terms in Polynomial.
 			// iterate poly_x
 			for (int j = 0; j < poly_vec.size(); ++j)
 			{
 				auto x = FB ^ last_op[poly_vec[j] - 1];		// xor (lsb, previous_postion_bit_in_last_run)
-				lfsr.setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
+				lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
 			}
 
-			// bitset<32> this_op(lfsr.get32bit());
-			vector<int> this_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+			// bitset<32> this_op(lfsr->get32bit());
+			vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 			cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
 
 			for (int i = 0; i < this_op.size(); ++i)
@@ -654,18 +654,18 @@ public:
 		}
 	}
 
-	vector<vector<int>> tpg_has_no_input(LFSR lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
+	vector<vector<int>> tpg_has_no_input(LFSR* lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
 	{
 
 		vector<vector<int>> tpg_generated_inputs = {};
 		// Iterate from right (least significant bit) to left (most significant bit)
 		for (int i = 0; i < loop_num; ++i)
 		{
-			uint32_t get32bit = lfsr.get32bit();
+			uint32_t get32bit = lfsr->get32bit();
 
-			vector<int> last_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+			vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 
-			lfsr.rightShift(0);				// shift right 1 bit, fill 0 at MSB.
+			lfsr->rightShift(0);				// shift right 1 bit, fill 0 at MSB.
 			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
 
 			/*
@@ -674,20 +674,20 @@ public:
 			lsfr: bit[4], bit[3], bit[2], bit[1], bit[0]
 			*/
 
-			lfsr.setBit(d_ff_num - 1, FB); // MSB.
+			lfsr->setBit(d_ff_num - 1, FB); // MSB.
 
-			lfsr.setBit(0, last_op[d_ff_num - 2]); // LSB
+			lfsr->setBit(0, last_op[d_ff_num - 2]); // LSB
 
 			// Middle terms in Polynomial.
 			// iterate poly_x
 			for (int j = 0; j < poly_vec.size(); ++j)
 			{
 				auto x = FB ^ last_op[poly_vec[j] - 1];		// xor (lsb, previous_postion_bit_in_last_run)
-				lfsr.setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
+				lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
 			}
 
-			// bitset<32> this_op(lfsr.get32bit());
-			vector<int> this_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+			// bitset<32> this_op(lfsr->get32bit());
+			vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 			tpg_generated_inputs.push_back(this_op);
 
 			cout << "loop " << i << ", feed last output to input " << FB << ", output: ";
