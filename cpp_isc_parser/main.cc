@@ -292,9 +292,11 @@ int main(int argc, char **argv)
 
         // LFSR is 32-bits with equation h(x) = x32 + x22 + x2 + x1 + 1
         vector<int> poly_vec_tpg = {22, 2, 1};
+        int sff_num_tpg = 32;
 
         // The ORA is a 16-bit LFSR whose equation is h(x) = x16 + x15 + x13 + x4 + 1.
         vector<int> poly_vec_ora = {15, 13, 4};
+        int sff_num_ora = 16;
 
         int d_ff_num; // number of D flip-flops.
 
@@ -385,7 +387,11 @@ int main(int argc, char **argv)
 
         int loop_cnt = 0;
 
-        // for (int loop_num = 1; loop_num < 2; ++loop_num)
+        // Main loop, each loop assign TPG generated input to gates,
+        // Then calculate the golden signature
+        // Then inject SA fault one at a time. (sub loop)
+        //      Then calculate the actual signature.
+        //      Then compare the golden and actual signature.
         while (tpg_generated_input.size() >= isc_Circuit->No_PI())
         {
 
@@ -400,12 +406,24 @@ int main(int argc, char **argv)
 
             // cout << "\nLoop number: " << loop_num << endl;
 
-            //  isc_Circuit->print_bitset();
-            // isc_Circuit->init_level0_input_gate();
+            //  ASSIGN TPG GENERATED INPUT PATTERN TO GATES
             tpg_generated_input = isc_Circuit->init_level0_input_gate_assign(tpg_generated_input);
 
             cout << "TPG patterns generated on Input gates, parallel pattern count 32." << endl;
             isc_Circuit->print_bitset(true);
+
+            vector<string> golden_signature = isc_Circuit->calc_po_signature(poly_vec_ora, sff_num_ora);
+
+            // print out the golden_signature
+            cout << "Golden signature calculated: "  ;
+            for (int i = 0; i < golden_signature.size(); ++i)
+            {
+                cout << golden_signature[i];
+            }
+
+            cout  << endl;
+
+            
 
             /******************************************
              * CACLUATE THE ERROR FREE CIRCUIT OUTPUT

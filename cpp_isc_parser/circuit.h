@@ -240,7 +240,7 @@ public:
 	void printSA();
 	void calc_output_level_1_max(int gate_level, string expect_or_actual, vector<string> fault_injection_gate_isc_identifier_list);
 	bitset<64> isc_Evaluate(GATEPTR gptr, vector<string> fault_injection_gate_isc_identifier_list);
-	void print_bitset(bool bitset32=false);
+	void print_bitset(bool bitset32 = false);
 	void init_level0_input_gate();
 	vector<vector<int>> init_level0_input_gate_assign(vector<vector<int>> inputv);
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
@@ -606,11 +606,13 @@ public:
 		return binaryRepresentation;
 	}
 
-	void tpg_has_input(LFSR* lfsr, vector<int> poly_vec, int d_ff_num, string inputS)
+	vector<string> tpg_has_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, string inputS)
 	{
 
 		int len = inputS.length();
+
 		vector<int> input_vector = stringToBinaryVector(inputS, true);
+		vector<string> signature = {};
 
 		// Iterate from right (least significant bit) to left (most significant bit)
 		for (int i = 0; i < inputS.length(); ++i)
@@ -619,7 +621,7 @@ public:
 
 			vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 
-			lfsr->rightShift(0);				// shift right 1 bit, fill 0 at MSB.
+			lfsr->rightShift(0);			// shift right 1 bit, fill 0 at MSB.
 			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
 
 			/*
@@ -637,7 +639,7 @@ public:
 			// iterate poly_x
 			for (int j = 0; j < poly_vec.size(); ++j)
 			{
-				auto x = FB ^ last_op[poly_vec[j] - 1];		// xor (lsb, previous_postion_bit_in_last_run)
+				auto x = FB ^ last_op[poly_vec[j] - 1];		 // xor (lsb, previous_postion_bit_in_last_run)
 				lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
 			}
 
@@ -645,16 +647,20 @@ public:
 			vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 			cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
 
+			signature = {};
 			for (int i = 0; i < this_op.size(); ++i)
 			{
 				cout << this_op[i];
+				signature.push_back(to_string(this_op[i]));
 			}
 
 			cout << '\n';
 		}
+
+		return signature;
 	}
 
-	vector<vector<int>> tpg_has_no_input(LFSR* lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
+	vector<vector<int>> tpg_has_no_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
 	{
 
 		vector<vector<int>> tpg_generated_inputs = {};
@@ -665,7 +671,7 @@ public:
 
 			vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 
-			lfsr->rightShift(0);				// shift right 1 bit, fill 0 at MSB.
+			lfsr->rightShift(0);			// shift right 1 bit, fill 0 at MSB.
 			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
 
 			/*
@@ -682,7 +688,7 @@ public:
 			// iterate poly_x
 			for (int j = 0; j < poly_vec.size(); ++j)
 			{
-				auto x = FB ^ last_op[poly_vec[j] - 1];		// xor (lsb, previous_postion_bit_in_last_run)
+				auto x = FB ^ last_op[poly_vec[j] - 1];		 // xor (lsb, previous_postion_bit_in_last_run)
 				lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
 			}
 
@@ -703,19 +709,39 @@ public:
 		return tpg_generated_inputs;
 	}
 
+	bitset<32> convertToBitset32(bitset<64> &bitset64)
+	{
+		// Create a new bitset<32> and assign the rightmost 32 bits of bitset64 to it
+		bitset<32> bitset32;
+		for (size_t i = 0; i < 32; ++i)
+		{
+			bitset32[i] = bitset64[i]; // Copy each bit from the right side
+		}
+		return bitset32;
+	}
 
+	vector<string> calc_po_signature(vector<int> poly_vec_ora, int sff_num)
+	{
 
-bitset<32> convertToBitset32( bitset<64>& bitset64) {
-    // Create a new bitset<32> and assign the rightmost 32 bits of bitset64 to it
-    bitset<32> bitset32;
-    for (size_t i = 0; i < 32; ++i) {
-        bitset32[i] = bitset64[i];  // Copy each bit from the right side
-    }
-    return bitset32;
-}
+		string inputS = "";
 
+		// function to get the PO actual value, then calculate the signature. << @TODO
+		for (int po_index = 0; po_index < No_PO(); po_index++)
+		{
+			GATE *po_gate = POGate(po_index);
+			cout << po_gate->Get_isc_identifier() << endl;
+			bitset<64> b = po_gate->get_isc_bitset_output_actual();
+			string x = convertToBitset32(b).to_string();
+			inputS += x;
+		}
 
+		LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
 
+		vector<string> golden_signature = tpg_has_input(lfsr_ora, poly_vec_ora, sff_num, inputS); // just print
+
+		cout << 1 << endl;
+		return golden_signature;
+	}
 
 }; // end of class
 
