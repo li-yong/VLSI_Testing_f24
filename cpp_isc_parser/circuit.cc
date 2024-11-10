@@ -1336,25 +1336,9 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
             }
 
             // Calculate output signature
-            bool debug=false;
+            bool debug = false;
 
             vector<string> po_signature = calc_po_signature(poly_vec_ora, sff_num_ora, debug);
-
-            // print out the golden_signature
-            cout << "Golden signature: ";
-            for (int i = 0; i < golden_signature.size(); ++i)
-            {
-                cout << golden_signature[i];
-            }
-            cout << endl;
-
-            // print out the FLT circuit signature
-            cout << "Faulty circuit signature: ";
-            for (int i = 0; i < po_signature.size(); ++i)
-            {
-                cout << po_signature[i];
-            }
-            cout << endl;
 
             if (po_signature == golden_signature)
             {
@@ -1363,6 +1347,22 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
             else
             {
                 cout << "signature of fault circuit does not match golden signature." << endl;
+
+                // print out the golden_signature
+                cout << "\tGolden         signature: ";
+                for (int i = 0; i < golden_signature.size(); ++i)
+                {
+                    cout << golden_signature[i];
+                }
+                cout << endl;
+
+                // print out the FLT circuit signature
+                cout << "\tFaulty circuit signature: ";
+                for (int i = 0; i < po_signature.size(); ++i)
+                {
+                    cout << po_signature[i];
+                }
+                cout << endl;
 
                 // remove the stuck at fault from the fault list.
                 cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
