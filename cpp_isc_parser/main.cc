@@ -81,6 +81,13 @@ int main(int argc, char **argv)
 
     isc_Circuit = parse_isc_main(file_isc);
 
+    isc_Circuit->SetupIO_ID();
+
+    cout << "Circuit Gates:" << endl;
+    cout << "Num of Gate " << isc_Circuit->No_Gate() << endl;
+    cout << "Num of PI " << isc_Circuit->No_PI() << endl;
+    cout << "Num of PO " << isc_Circuit->No_PO() << endl;
+
     if (action == "parse_isc")
     {
         string pattern_name = (string)option.retrieve("output");
@@ -184,7 +191,7 @@ int main(int argc, char **argv)
             // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
             loop_cnt++;
 
-        } // end of the for loopyes
+        } // end of the for loop
 
         int left_sa_error = isc_Circuit->get_sa_error_cnt();
         detected_sa_error = total_sa_error - left_sa_error;
@@ -337,22 +344,119 @@ int main(int argc, char **argv)
         }
 
         /* SCAN  */
+        vector<vector<int>> tpg_generated_input = {};
 
         if (enable_inputS)
         {
             inputS = "01010001";
             bitset<8> input_bs(inputS);
-            isc_Circuit->tpg_has_input(lfsr, poly_vec, d_ff_num, inputS);
+            isc_Circuit->tpg_has_input(lfsr, poly_vec, d_ff_num, inputS); // just print
         }
         else
         {
-            int loop_num = 100;
-            isc_Circuit->tpg_has_no_input(lfsr, poly_vec_tpg, d_ff_num, loop_num);
+            int loop_num = 100; // 100
+            tpg_generated_input = isc_Circuit->tpg_has_no_input(lfsr, poly_vec_tpg, d_ff_num, loop_num);
+            cout << "Generated inputs: " << endl;
         }
 
-        exit(0);
+        // exit(0);
 
-        cout << "LFSR" << endl;
+        bool interaction = true;
+        interaction = false; // debug
+
+        isc_Circuit->Levelize();
+        isc_Circuit->init_bitset(true, true, true); // bool inputv, bool oe, bool oa
+
+        // isc_Circuit->init_level0_input_gate_assign(tpg_generated_input);
+
+        // isc_Circuit->print_bitset();
+
+        cout << "Circuit initalizated." << endl;
+
+        int total_sa_error = isc_Circuit->get_sa_error_cnt();
+        int detected_sa_error_realtime = 0;
+        int detected_sa_error = 0;
+
+        int loop_cnt = 0;
+
+        // for (int loop_num = 1; loop_num < 2; ++loop_num)
+        while (tpg_generated_input.size() >= isc_Circuit->No_PI())
+        {
+
+            cout << "Remain TPG Generated Pattern: " << tpg_generated_input.size() << endl;
+            cout << "Circuit Input Gate number: " << isc_Circuit->No_PI() << endl;
+
+            if (detected_sa_error_realtime == total_sa_error)
+            {
+                cout << "\nAll SA errors detected in " << loop_cnt << " loops." << endl;
+                break;
+            }
+
+            // cout << "\nLoop number: " << loop_num << endl;
+
+            //  isc_Circuit->print_bitset();
+            // isc_Circuit->init_level0_input_gate();
+            tpg_generated_input = isc_Circuit->init_level0_input_gate_assign(tpg_generated_input);
+
+            cout << "TPG patterns generated on Input gates, parallel pattern count 32." << endl;
+            isc_Circuit->print_bitset(true);
+
+            /******************************************
+             * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
+            /******************************************/
+            // calc expect value for  level 1 to level max gates
+            for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
+            {
+                // isc_Circuit->print_bitset(true);
+                isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT", vector<string>{});
+                // isc_Circuit->print_bitset(true);
+            }
+
+            for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
+            {
+                // isc_Circuit->print_bitset(true);
+                isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL", vector<string>{});
+                // isc_Circuit->print_bitset(true);
+            }
+
+            cout << "Good circuit output calculated." << endl;
+
+            if (interaction && read_input("Show patterns on Gates? 'yes' or 'no': "))
+            {
+                isc_Circuit->print_bitset(true);
+            }
+
+            if (interaction)
+            {
+                if (!read_input("Interactive mode? 'yes' or 'no': "))
+                {
+                    interaction = false;
+                }
+            }
+
+            /******************************************
+             * INJECT SA FAULTS
+            /******************************************/
+            // iterate the FAULTS in circuits
+            cout << "\nInjecting SA faults one at a time. See if any 64 parallel Pattern could catch the fault." << endl;
+            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error);
+            // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
+            loop_cnt++;
+            cout << "Remain TPG Generated Pattern: " << tpg_generated_input.size() << endl;
+
+        } // end of the while loop
+
+        int left_sa_error = isc_Circuit->get_sa_error_cnt();
+        detected_sa_error = total_sa_error - left_sa_error;
+
+        double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
+
+        cout << "\n=== LFSR Simulation Completed ===" << endl;
+        cout << "Circuit              : " << file_isc << endl;
+        cout << "Total SA Errors      : " << total_sa_error << endl;
+        cout << "Detected Errors      : " << detected_sa_error << endl;
+        cout << "Detection Ratio      : " << err_detected_ratio << endl;
+        cout << "Iteration Count      : " << loop_cnt << endl;
     }
 
     else

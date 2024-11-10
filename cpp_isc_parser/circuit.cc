@@ -322,13 +322,23 @@ void CIRCUIT::SetMaxLevel()
 // Setup the list of PI PPI PO PPO
 void CIRCUIT::SetupIO_ID()
 {
+
+    // iterate the circuit
+
     int i = 0;
     GATE *gptr;
     vector<GATE *>::iterator Circuit_ite = Netlist.begin();
     for (; Circuit_ite != Netlist.end(); Circuit_ite++, i++)
     {
         gptr = (*Circuit_ite);
-        gptr->SetID(i);
+
+        if (gptr->is_po_gate)
+        {
+            POlist.push_back(gptr);
+            continue;
+        }
+
+        // gptr->SetID(i);
         switch (gptr->GetFunction())
         {
         case G_PI:
@@ -343,16 +353,17 @@ void CIRCUIT::SetupIO_ID()
         case G_PPO:
             PPOlist.push_back(gptr);
             break;
-        case G_NOT:
-            gptr->SetInversion();
-            break;
-        case G_NAND:
-            gptr->SetInversion();
-            break;
-        case G_NOR:
-            gptr->SetInversion();
-            break;
+        // case G_NOT:
+        //     gptr->SetInversion();
+        //     break;
+        // case G_NAND:
+        //     gptr->SetInversion();
+        //     break;
+        // case G_NOR:
+        //     gptr->SetInversion();
+        //     break;
         default:
+
             break;
         }
     }
@@ -605,6 +616,40 @@ void CIRCUIT::init_bitset(bool inputv, bool oe, bool oa)
     }
 }
 
+// void CIRCUIT::assign_input_value()
+// {
+//     vector<GATE *>::iterator it_net;
+//     bitset<64> bitset_all_zero;
+//     int index = 0;
+
+//     const int input_size = inputv.size();
+
+//     std::bitset<1> inputv_bs;
+
+//     for (it_net = Netlist.begin(); it_net != Netlist.end(); ++it_net)
+//     {
+
+//         vector<bitset<64>> bs = (*it_net)->InputValues_bitset;
+
+//         for (size_t i = 0; i < bs.size(); i++)
+//         {
+//             bs[i] = bitset_all_zero;
+//         }
+
+//         if ((*it_net)->GetFunction() == G_PI)
+//         {
+//             //     // Assuming the vector contains only 0s and 1s
+//             for (int k = 0; k < inputv[index].size(); ++k)
+//             {
+//                 bs[k] = inputv[index][k];
+//             }
+//             (*it_net)->InputValues_bitset = bs;
+//             index++;
+//             cout << "assign input value to " << (*it_net)->Get_isc_identifier() << endl;
+//         }
+//     }
+// }
+
 void CIRCUIT::show_controllability()
 {
     vector<GATE *>::iterator it_net;
@@ -741,9 +786,10 @@ bitset<64> CIRCUIT::isc_Evaluate(GATEPTR gptr, vector<string> fault_injection_ga
     return result;
 }
 
-void CIRCUIT::print_bitset()
+void CIRCUIT::print_bitset(bool bitset32)
 {
     bitset<64> input_gate_value_1, input_gate_value_2, isc_bitset_output_expected, isc_bitset_output_actual;
+    bitset<32> input_gate_value_1_32, input_gate_value_2_32, isc_bitset_output_expected_32, isc_bitset_output_actual_32;
 
     vector<GATE *>::iterator it_net;
 
@@ -764,9 +810,28 @@ void CIRCUIT::print_bitset()
         isc_bitset_output_expected = (*it_net)->get_isc_bitset_output_expected();
         isc_bitset_output_actual = (*it_net)->get_isc_bitset_output_actual();
 
-        // input_gate_value_1 = (*it_net)->GetValue1();
-        // input_gate_value_2 = (*it_net)->GetValue2();
+        // input_gate_value_1_32, input_gate_value_2_32,
+        isc_bitset_output_expected_32 = convertToBitset32(isc_bitset_output_expected);
+        isc_bitset_output_actual_32 = convertToBitset32(isc_bitset_output_actual);
+        ;
 
+        if (bitset32)
+        {
+
+            cout << "isc_identifier: " << isc_identifier << ", type " << function_s << endl;
+
+            if (function != G_PI)
+            {
+                for (size_t i = 0; i < (*it_net)->InputValues_bitset.size(); i++)
+                {
+                    cout << "\t input    value " << ": " << convertToBitset32((*it_net)->InputValues_bitset[i]) << endl;
+                }
+            }
+
+            cout << "\t expected output: " << isc_bitset_output_expected_32 << endl;
+            cout << "\t actual   output: " << isc_bitset_output_actual_32 << endl;
+        }
+        else // 64bitset
         {
 
             cout << "isc_identifier: " << isc_identifier << ", type " << function_s << endl;
@@ -777,24 +842,16 @@ void CIRCUIT::print_bitset()
                 for (size_t i = 0; i < (*it_net)->InputValues_bitset.size(); i++)
                 {
                     cout << "\t input    value " << ": " << (*it_net)->InputValues_bitset[i] << endl;
-                    // cout << "deubg" << endl;
                 }
-
-                // cout << "\t input    value1: " << input_gate_value_1 << endl;
-                // cout << "\t input    value2: " << input_gate_value_2 << endl;
             }
-
-            // for (const auto &bits : )
-            // {
 
             cout << "\t expected output: " << isc_bitset_output_expected << endl;
             cout << "\t actual   output: " << isc_bitset_output_actual << endl;
-            // }
         }
     }
 }
 
-void CIRCUIT::update_fanout_bitset(GATE *gate, string expect_or_actual, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list={})
+void CIRCUIT::update_fanout_bitset(GATE *gate, string expect_or_actual, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list = {})
 {
     // get v[i]'s output gate list
     vector<GATE *> outputfanlist = gate->GetOutput_fan_list();
@@ -823,7 +880,7 @@ void CIRCUIT::update_fanout_bitset(GATE *gate, string expect_or_actual, bitset<6
 
             if (find(fault_injection_gate_isc_identifier_list.begin(), fault_injection_gate_isc_identifier_list.end(), outputfanlist[j]->Get_isc_identifier()) == fault_injection_gate_isc_identifier_list.end())
             {
-                outputfanlist[j]->set_isc_bitset_output_actual(bitset);  // only update gate not in the fault_injection_gate_isc_identifier_list.
+                outputfanlist[j]->set_isc_bitset_output_actual(bitset); // only update gate not in the fault_injection_gate_isc_identifier_list.
             }
         }
     }
@@ -855,6 +912,40 @@ void CIRCUIT::init_level0_input_gate()
         update_fanout_bitset(v[i], "EXPECT", bitset_random);
         update_fanout_bitset(v[i], "ACTUAL", bitset_random);
     }
+}
+
+// handle level 0 input gates
+vector<vector<int>> CIRCUIT::init_level0_input_gate_assign(vector<vector<int>> inputv)
+{
+    // int index = 0;
+
+    // get level 0 gates. Input gate only have one pin.
+    vector<GATE *> v = GetGateInLevel(0);
+
+    // cout << "get level 0 output gates" << endl;
+    for (long unsigned i = 0; i < v.size(); i++)
+    {
+        // cout << v[i]->Get_isc_identifier() << "  " << v[i]->GetLevel() << endl;
+        bitset<64> bs = {};
+
+        for (int k = 0; k < inputv[0].size(); ++k)
+        {
+            bs[k] = inputv[0][k];
+        }
+
+        v[i]->set_isc_bitset_output_expected(bs);
+        v[i]->set_isc_bitset_output_actual(bs);
+        v[i]->InputValues_bitset.push_back(bs);
+
+        // handle fanout
+        update_fanout_bitset(v[i], "EXPECT", bs);
+        update_fanout_bitset(v[i], "ACTUAL", bs);
+
+        inputv.erase(inputv.begin()); // remove the 1st element
+        // index += 1;
+    }
+
+    return (inputv);
 }
 
 // handle level 1->max level gates
@@ -1155,6 +1246,145 @@ int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
     return detected_sa_error;
 }
 
+////iterate the gates in circuits
+int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error)
+{
+
+    vector<GATE *> netlist = GetNetlist();
+
+    for (unsigned i = 0; i < netlist.size(); i++)
+    {
+
+        GATE *g; // gate under test
+        g = netlist[i];
+        string error_gate_isc_ident = g->Get_isc_identifier();
+        GATEFUNC fun = g->GetFunction();
+        string stuck_error;
+
+        bitset<64> bitset_all_zero;
+        bitset<64> bitset_all_one;
+        bitset_all_one.set();
+
+        // iterate the SAlist
+
+        vector<string> SAlist = g->Get_isc_StuckAt();
+
+        for (size_t n = 0; n < SAlist.size(); ++n)
+        {
+
+            // reset circuit to remove all previous injected faults
+            //  cout << "\nResetting the circuit to remove all previous injected faults." << endl;
+            // init_bitset(false, false, false, true); // bool v1, bool v2, bool oe, bool oa
+            set_actual_from_expect();
+
+            int sa_error_cnt = get_sa_error_cnt();
+
+            // cout << error_gate_isc_ident << " " << SAlist[n] << endl; //debug
+
+            // if (error_gate_isc_ident == "14fan")
+            // {
+            //     cout << "debug" << endl;
+            // }
+
+            vector<string> fault_injection_gate_isc_identifier_list = {error_gate_isc_ident};
+
+            if (SAlist[n] == ">sa0")
+            {
+                cout << "\n== Injecting SA0 on " << error_gate_isc_ident << ". Remaining sa error: " << sa_error_cnt << endl;
+                g->set_isc_bitset_output_actual(bitset_all_zero);
+                // if (g->GetFunction == G_FROM){ //yong debug. Iterate the output fan list of the gate, set the output value to 0.
+                vector<GATE *> ofl = g->GetOutput_fan_list();
+                for (size_t i = 0; i < ofl.size(); i++)
+                {
+                    ofl[i]->set_isc_bitset_output_actual(bitset_all_zero);
+                    fault_injection_gate_isc_identifier_list.push_back(ofl[i]->Get_isc_identifier());
+                }
+
+                // if (g->GetFunction() == G_FROM)
+                // {
+                //     cout << "debug G_FROM, set INPUT gate to error value" << endl;
+                // }
+
+                //     g->Output_fan_list[0]->set_isc_bitset_output_actual(bitset_all_zero);
+                // }
+                stuck_error = "SA0";
+            }
+            else if (SAlist[n] == ">sa1")
+            {
+                cout << "\n== Injecting SA1 on " << error_gate_isc_ident << ". Remaining sa error: " << sa_error_cnt << endl;
+                g->set_isc_bitset_output_actual(bitset_all_one);
+                stuck_error = "SA1";
+
+                vector<GATE *> ofl = g->GetOutput_fan_list();
+                for (size_t i = 0; i < ofl.size(); i++)
+                {
+                    ofl[i]->set_isc_bitset_output_actual(bitset_all_one);
+                    fault_injection_gate_isc_identifier_list.push_back(ofl[i]->Get_isc_identifier());
+                }
+            }
+
+            // print_bitset(); // yong debug
+
+            // evaluate actual output for each gate
+            for (int gate_level = 1; gate_level <= GetMaxLevel(); gate_level++)
+            {
+                // print_bitset(); // yong debug
+                calc_output_level_1_max(gate_level, "ACTUAL", fault_injection_gate_isc_identifier_list);
+                // print_bitset(); // yong debug
+            }
+
+            // print_bitset(); // yong debug
+
+            // Iterate the PO GATES
+            // iterate the gates in circuits. Check the output gate actual value vs expected value.
+            for (unsigned i1 = 0; i1 < netlist.size(); i1++)
+            {
+                GATE *g1;
+                g1 = netlist[i1];
+                int foc = g1->Get_isc_fo_cnt();
+                if (foc > 0 | g1->GetFunction() == G_FROM)
+                {
+                    continue;
+                }
+
+                if (g1->get_isc_bitset_output_expected() != g1->get_isc_bitset_output_actual() & g1->Get_isc_fo_cnt() == 0)
+                {
+                    cout << "PO: " << g1->Get_isc_identifier() << endl;
+                    cout << "expected output: " << g1->get_isc_bitset_output_expected() << endl;
+                    cout << "actual   output: " << g1->get_isc_bitset_output_actual() << endl;
+
+                    vector<int> differing_positions;
+                    for (int i2 = 0; i2 < 64; i2++)
+                    {
+                        if (g1->get_isc_bitset_output_expected()[i2] != g1->get_isc_bitset_output_actual()[i2])
+                        {
+                            differing_positions.push_back(i2);
+                            // break; // only need to find one position. YONG DEBUG
+                        }
+                    }
+
+                    // cout << "PO: " << g->Get_isc_identifier() << " is failing" << endl;
+
+                    // remove the stuck at fault from the fault list.
+                    cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
+                    vector<string> salist = g->Get_isc_StuckAt();
+                    salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
+                    g->Set_isc_StuckAt(salist);
+
+                    cout << error_gate_isc_ident << " " << stuck_error << " detected by " << differing_positions.size() << " Input Patterns" << ". Details of the first Input/Output pattern:" << endl;
+                    gather_input_output_pattern_and_show_ptn_at_diff_postion({differing_positions[0]}, g1->Get_isc_identifier());
+                    detected_sa_error += 1;
+
+                    break;
+                }
+
+                // cout << "PO: " << g1->Get_isc_identifier() << ",did not detect the stuck error. " << endl;
+            }
+        }
+    }
+    return detected_sa_error;
+}
+
 void CIRCUIT::gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier)
 {
 
@@ -1307,4 +1537,3 @@ void CIRCUIT::show_diff_pattern(map<string, map<string, bitset<64>>> dict_gate, 
 
     cout << h << endl;
 }
-

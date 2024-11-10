@@ -240,11 +240,14 @@ public:
 	void printSA();
 	void calc_output_level_1_max(int gate_level, string expect_or_actual, vector<string> fault_injection_gate_isc_identifier_list);
 	bitset<64> isc_Evaluate(GATEPTR gptr, vector<string> fault_injection_gate_isc_identifier_list);
-	void print_bitset();
+	void print_bitset(bool bitset32=false);
 	void init_level0_input_gate();
+	vector<vector<int>> init_level0_input_gate_assign(vector<vector<int>> inputv);
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
 	int iterate_gates_sa_errors(int detected_sa_error);
+	int iterate_gates_sa_errors_lfsr(int detected_sa_error);
 	void init_bitset(bool v12, bool oe, bool oa);
+	void assign_input_value(vector<vector<int>> inputv);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);
 	void show_diff_pattern(std::map<string, map<string, bitset<64>>> dict_gate, vector<int> differing_positions, string err_out_gate_isc_identifier, bool b_ipt, bool b_opt_exp, bool b_opt_act);
 	void show_ptn_header(map<string, map<string, bitset<64>>> dict_gate, bool b_ipt, bool, bool);
@@ -651,9 +654,10 @@ public:
 		}
 	}
 
-	void tpg_has_no_input(LFSR lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
+	vector<vector<int>> tpg_has_no_input(LFSR lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
 	{
 
+		vector<vector<int>> tpg_generated_inputs = {};
 		// Iterate from right (least significant bit) to left (most significant bit)
 		for (int i = 0; i < loop_num; ++i)
 		{
@@ -684,6 +688,8 @@ public:
 
 			// bitset<32> this_op(lfsr.get32bit());
 			vector<int> this_op = intToBinaryVector(lfsr.get32bit(), d_ff_num);
+			tpg_generated_inputs.push_back(this_op);
+
 			cout << "loop " << i << ", feed last output to input " << FB << ", output: ";
 
 			for (int i = 0; i < this_op.size(); ++i)
@@ -693,7 +699,23 @@ public:
 
 			cout << '\n';
 		}
+
+		return tpg_generated_inputs;
 	}
+
+
+
+bitset<32> convertToBitset32( bitset<64>& bitset64) {
+    // Create a new bitset<32> and assign the rightmost 32 bits of bitset64 to it
+    bitset<32> bitset32;
+    for (size_t i = 0; i < 32; ++i) {
+        bitset32[i] = bitset64[i];  // Copy each bit from the right side
+    }
+    return bitset32;
+}
+
+
+
 
 }; // end of class
 

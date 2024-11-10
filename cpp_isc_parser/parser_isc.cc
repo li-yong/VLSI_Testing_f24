@@ -229,12 +229,14 @@ void processBuffer(const string &buffer)
         if (fields[3] == "0")
         {
             isc_gptr->SetFunction(G_PO);
+            isc_gptr->is_po_gate=true; // cannot use SetFunction for PO gate, as the PO gate will be overwrote to G_NAND.
         }
 
         // #FI == 0, set primary input. (no input from any gates.)
         if (fields[4] == "0")
         {
             isc_gptr->SetFunction(G_PI);
+
         }
 
         // Check if there are at least 3 fields and if the 3rd field is "nand"

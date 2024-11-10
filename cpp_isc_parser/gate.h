@@ -66,6 +66,7 @@ public:
 	string implicant_value = "x"; // calculated implicated value
 	vector<string> v_path;			  // input patter to get target value (0 or 1) on this gate output. {gate1_0, gate2_0, gate3_1}
 	bool v_path_found = false;
+	bool is_po_gate = false;
 
 	// Initialize GATE
 	GATE() : Function(G_BAD), Level(-1), Value(X), Value_t(X), Inversion(false)
