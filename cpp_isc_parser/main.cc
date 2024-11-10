@@ -307,6 +307,8 @@ int main(int argc, char **argv)
 
         LFSR *lfsr;
 
+        bool debug = false;
+
         enable_inputS = true;
         enable_inputS = false;
 
@@ -361,7 +363,7 @@ int main(int argc, char **argv)
             int loop_num = 100; // 100
             cout << lfsr->get16bit() << endl;
 
-            tpg_generated_input = isc_Circuit->tpg_has_no_input(lfsr, poly_vec_tpg, d_ff_num, loop_num);
+            tpg_generated_input = isc_Circuit->tpg_has_no_input(lfsr, poly_vec_tpg, d_ff_num, loop_num, debug);
             cout << "Generated inputs: " << endl;
         }
 
@@ -407,23 +409,25 @@ int main(int argc, char **argv)
             // cout << "\nLoop number: " << loop_num << endl;
 
             //  ASSIGN TPG GENERATED INPUT PATTERN TO GATES
-            tpg_generated_input = isc_Circuit->init_level0_input_gate_assign(tpg_generated_input);
+
+            tpg_generated_input = isc_Circuit->init_level0_input_gate_assign(tpg_generated_input, debug);
 
             cout << "TPG patterns generated on Input gates, parallel pattern count 32." << endl;
-            isc_Circuit->print_bitset(true);
+            if (debug)
+            {
+                isc_Circuit->print_bitset(true);
+            }
 
-            vector<string> golden_signature = isc_Circuit->calc_po_signature(poly_vec_ora, sff_num_ora);
+            vector<string> golden_signature = isc_Circuit->calc_po_signature(poly_vec_ora, sff_num_ora, debug);
 
             // print out the golden_signature
-            cout << "Golden signature calculated: "  ;
+            cout << "Golden signature calculated: ";
             for (int i = 0; i < golden_signature.size(); ++i)
             {
                 cout << golden_signature[i];
             }
 
-            cout  << endl;
-
-            
+            cout << endl;
 
             /******************************************
              * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
@@ -463,7 +467,7 @@ int main(int argc, char **argv)
             /******************************************/
             // iterate the FAULTS in circuits
             cout << "\nInjecting SA faults one at a time." << endl;
-            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error);
+            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error, poly_vec_ora, sff_num_ora, golden_signature);
             // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
             loop_cnt++;
             cout << "Remaining TPG Pattern: " << tpg_generated_input.size() << endl;

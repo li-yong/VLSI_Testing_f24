@@ -242,10 +242,10 @@ public:
 	bitset<64> isc_Evaluate(GATEPTR gptr, vector<string> fault_injection_gate_isc_identifier_list);
 	void print_bitset(bool bitset32 = false);
 	void init_level0_input_gate();
-	vector<vector<int>> init_level0_input_gate_assign(vector<vector<int>> inputv);
+	vector<vector<int>> init_level0_input_gate_assign(vector<vector<int>> inputv, bool debug = false);
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
 	int iterate_gates_sa_errors(int detected_sa_error);
-	int iterate_gates_sa_errors_lfsr(int detected_sa_error);
+	int iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature);
 	void init_bitset(bool v12, bool oe, bool oa);
 	void assign_input_value(vector<vector<int>> inputv);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);
@@ -606,7 +606,7 @@ public:
 		return binaryRepresentation;
 	}
 
-	vector<string> tpg_has_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, string inputS)
+	vector<string> tpg_has_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, string inputS, bool debug = false)
 	{
 
 		int len = inputS.length();
@@ -645,22 +645,31 @@ public:
 
 			// bitset<32> this_op(lfsr->get32bit());
 			vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
-			cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
+			if (debug)
+			{
+				cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
+			}
 
 			signature = {};
 			for (int i = 0; i < this_op.size(); ++i)
 			{
-				cout << this_op[i];
+				if (debug)
+				{
+					cout << this_op[i];
+				}
 				signature.push_back(to_string(this_op[i]));
 			}
 
-			cout << '\n';
+			if (debug)
+			{
+				cout << '\n';
+			}
 		}
 
 		return signature;
 	}
 
-	vector<vector<int>> tpg_has_no_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int loop_num)
+	vector<vector<int>> tpg_has_no_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int loop_num, bool debug = false)
 	{
 
 		vector<vector<int>> tpg_generated_inputs = {};
@@ -696,14 +705,17 @@ public:
 			vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
 			tpg_generated_inputs.push_back(this_op);
 
-			cout << "loop " << i << ", feed last output to input " << FB << ", output: ";
-
-			for (int i = 0; i < this_op.size(); ++i)
+			if (debug)
 			{
-				cout << this_op[i];
-			}
+				cout << "loop " << i << ", feed last output to input " << FB << ", output: ";
 
-			cout << '\n';
+				for (int i = 0; i < this_op.size(); ++i)
+				{
+					cout << this_op[i];
+				}
+
+				cout << '\n';
+			}
 		}
 
 		return tpg_generated_inputs;
@@ -720,7 +732,7 @@ public:
 		return bitset32;
 	}
 
-	vector<string> calc_po_signature(vector<int> poly_vec_ora, int sff_num)
+	vector<string> calc_po_signature(vector<int> poly_vec_ora, int sff_num, bool debug = false)
 	{
 
 		string inputS = "";
@@ -729,7 +741,7 @@ public:
 		for (int po_index = 0; po_index < No_PO(); po_index++)
 		{
 			GATE *po_gate = POGate(po_index);
-			cout << po_gate->Get_isc_identifier() << endl;
+			// cout << po_gate->Get_isc_identifier() << endl;
 			bitset<64> b = po_gate->get_isc_bitset_output_actual();
 			string x = convertToBitset32(b).to_string();
 			inputS += x;
@@ -737,9 +749,8 @@ public:
 
 		LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
 
-		vector<string> golden_signature = tpg_has_input(lfsr_ora, poly_vec_ora, sff_num, inputS); // just print
+		vector<string> golden_signature = tpg_has_input(lfsr_ora, poly_vec_ora, sff_num, inputS, debug); // just print
 
-		cout << 1 << endl;
 		return golden_signature;
 	}
 
