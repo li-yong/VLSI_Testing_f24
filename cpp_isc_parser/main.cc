@@ -361,7 +361,7 @@ int main(int argc, char **argv)
         else
         {
             int loop_num = 100; // 100
-            cout << lfsr->get16bit() << endl;
+            // cout << lfsr->get16bit() << endl;
 
             tpg_generated_input = isc_Circuit->tpg_has_no_input(lfsr, poly_vec_tpg, d_ff_num, loop_num, debug);
             cout << "Generated inputs: " << endl;
@@ -369,13 +369,13 @@ int main(int argc, char **argv)
 
         // exit(0);
 
-        cout << lfsr->get16bit() << endl;
+        // cout << lfsr->get16bit() << endl;
 
         bool interaction = true;
         interaction = false; // debug
 
         isc_Circuit->Levelize();
-        isc_Circuit->init_bitset(true, true, true); // bool inputv, bool oe, bool oa
+        isc_Circuit->init_bitset(true, true, true); // bool inputs_value, bool output_expected, bool output_actual
 
         // isc_Circuit->init_level0_input_gate_assign(tpg_generated_input);
 
@@ -418,17 +418,6 @@ int main(int argc, char **argv)
                 isc_Circuit->print_bitset(true);
             }
 
-            vector<string> golden_signature = isc_Circuit->calc_po_signature(poly_vec_ora, sff_num_ora, debug);
-
-            // print out the golden_signature
-            cout << "Golden signature calculated: ";
-            for (int i = 0; i < golden_signature.size(); ++i)
-            {
-                cout << golden_signature[i];
-            }
-
-            cout << endl;
-
             /******************************************
              * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
             /******************************************/
@@ -449,6 +438,19 @@ int main(int argc, char **argv)
 
             cout << "Good circuit output calculated." << endl;
 
+            //calculate the golden signature
+            vector<string> golden_signature = isc_Circuit->calc_po_signature(poly_vec_ora, sff_num_ora, debug);
+            string golden_string = isc_Circuit->get_gate_output_actual_string();
+
+            // print out the golden_signature
+            cout << "Golden signature calculated: ";
+            for (int i = 0; i < golden_signature.size(); ++i)
+            {
+                cout << golden_signature[i];
+            }
+
+            cout << endl;
+
             if (interaction && read_input("Show patterns on Gates? 'yes' or 'no': "))
             {
                 isc_Circuit->print_bitset(true);
@@ -461,13 +463,12 @@ int main(int argc, char **argv)
                     interaction = false;
                 }
             }
-
             /******************************************
              * INJECT SA FAULTS
             /******************************************/
             // iterate the FAULTS in circuits
             cout << "\nInjecting SA faults one at a time." << endl;
-            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error, poly_vec_ora, sff_num_ora, golden_signature);
+            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error, poly_vec_ora, sff_num_ora, golden_signature,golden_string);
             // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
             loop_cnt++;
             cout << "Remaining TPG Pattern: " << tpg_generated_input.size() << endl;

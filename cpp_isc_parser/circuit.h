@@ -245,7 +245,7 @@ public:
 	vector<vector<int>> init_level0_input_gate_assign(vector<vector<int>> inputv, bool debug = false);
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
 	int iterate_gates_sa_errors(int detected_sa_error);
-	int iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature);
+	int iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signatur,string golden_string);
 	void init_bitset(bool v12, bool oe, bool oa);
 	void assign_input_value(vector<vector<int>> inputv);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);
@@ -735,6 +735,18 @@ public:
 	vector<string> calc_po_signature(vector<int> poly_vec_ora, int sff_num, bool debug = false)
 	{
 
+		string inputS = get_gate_output_actual_string();
+
+		LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
+
+		vector<string> golden_signature = tpg_has_input(lfsr_ora, poly_vec_ora, sff_num, inputS, debug); // just print
+
+		return golden_signature;
+	}
+
+
+	string get_gate_output_actual_string()
+	{
 		string inputS = "";
 
 		// function to get the PO actual value, then calculate the signature. << @TODO
@@ -747,11 +759,7 @@ public:
 			inputS += x;
 		}
 
-		LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
-
-		vector<string> golden_signature = tpg_has_input(lfsr_ora, poly_vec_ora, sff_num, inputS, debug); // just print
-
-		return golden_signature;
+		return inputS;
 	}
 
 }; // end of class

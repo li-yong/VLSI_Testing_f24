@@ -1249,7 +1249,7 @@ int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
 }
 
 ////iterate the gates in circuits
-int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature)
+int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature, string golden_string)
 {
 
     vector<GATE *> netlist = GetNetlist();
@@ -1339,10 +1339,24 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
             bool debug = false;
 
             vector<string> po_signature = calc_po_signature(poly_vec_ora, sff_num_ora, debug);
+            string po_signature_string = get_gate_output_actual_string();
+
+            if (po_signature_string == golden_string)
+            {
+                cout << "text of test circuit matches golden text." << endl;
+            }
+            else
+            {
+                cout << "text of test circuit does not match golden text." << endl;
+            }
 
             if (po_signature == golden_signature)
             {
                 cout << "signature of fault circuit matches golden signature." << endl;
+                if (po_signature_string != golden_string)
+                {
+                    cout << "Aliasing!." << endl;
+                }
             }
             else
             {
@@ -1377,51 +1391,57 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
                 break;
             }
 
-            // Iterate the PO GATES
+            // CHECK ALISA,  Iterate the PO GATES
             // iterate the gates in circuits. Check the output gate actual value vs expected value.
-            // for (unsigned i1 = 0; i1 < netlist.size(); i1++)
-            // {
-            //     GATE *g1;
-            //     g1 = netlist[i1];
-            //     int foc = g1->Get_isc_fo_cnt();
-            //     if (foc > 0 | g1->GetFunction() == G_FROM)
-            //     {
-            //         continue;
-            //     }
+            for (unsigned i1 = 0; i1 < netlist.size(); i1++)
+            {
+                GATE *g1;
+                g1 = netlist[i1];
+                int foc = g1->Get_isc_fo_cnt();
+                if (foc > 0 | g1->GetFunction() == G_FROM)
+                {
+                    continue;
+                }
 
-            //     if (g1->get_isc_bitset_output_expected() != g1->get_isc_bitset_output_actual() & g1->Get_isc_fo_cnt() == 0)
-            //     {
-            //         cout << "PO: " << g1->Get_isc_identifier() << endl;
-            //         cout << "expected output: " << g1->get_isc_bitset_output_expected() << endl;
-            //         cout << "actual   output: " << g1->get_isc_bitset_output_actual() << endl;
+                if (g1->get_isc_bitset_output_expected() != g1->get_isc_bitset_output_actual() & g1->Get_isc_fo_cnt() == 0)
+                {
+                    cout << "PO: " << g1->Get_isc_identifier() << endl;
+                    cout << "expected output: " << g1->get_isc_bitset_output_expected() << endl;
+                    cout << "actual   output: " << g1->get_isc_bitset_output_actual() << endl;
 
-            //         vector<int> differing_positions;
-            //         for (int i2 = 0; i2 < 64; i2++)
-            //         {
-            //             if (g1->get_isc_bitset_output_expected()[i2] != g1->get_isc_bitset_output_actual()[i2])
-            //             {
-            //                 differing_positions.push_back(i2);
-            //                 // break; // only need to find one position. YONG DEBUG
-            //             }
-            //         }
+                    vector<int> differing_positions;
+                    for (int i2 = 0; i2 < 64; i2++)
+                    {
+                        if (g1->get_isc_bitset_output_expected()[i2] != g1->get_isc_bitset_output_actual()[i2])
+                        {
+                            differing_positions.push_back(i2);
+                            // break; // only need to find one position. YONG DEBUG
+                        }
+                    }
 
-            //         // cout << "PO: " << g->Get_isc_identifier() << " is failing" << endl;
+                    // cout << "PO: " << g->Get_isc_identifier() << " is failing" << endl;
 
-            //         // remove the stuck at fault from the fault list.
-            //         cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
-            //         vector<string> salist = g->Get_isc_StuckAt();
-            //         salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
-            //         g->Set_isc_StuckAt(salist);
+                    if (po_signature == golden_signature)
+                    {
+                        cout << "signature of fault circuit matches golden signature. SOMETHING WRONG" << endl;
+                        exit(0);
+                    }
 
-            //         cout << error_gate_isc_ident << " " << stuck_error << " detected by " << differing_positions.size() << " Input Patterns" << ". Details of the first Input/Output pattern:" << endl;
-            //         gather_input_output_pattern_and_show_ptn_at_diff_postion({differing_positions[0]}, g1->Get_isc_identifier());
-            //         detected_sa_error += 1;
+                    // remove the stuck at fault from the fault list.
+                    cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
+                    vector<string> salist = g->Get_isc_StuckAt();
+                    salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
+                    g->Set_isc_StuckAt(salist);
 
-            //         break;
-            //     }
+                    cout << error_gate_isc_ident << " " << stuck_error << " detected by " << differing_positions.size() << " Input Patterns" << ". Details of the first Input/Output pattern:" << endl;
+                    gather_input_output_pattern_and_show_ptn_at_diff_postion({differing_positions[0]}, g1->Get_isc_identifier());
+                    detected_sa_error += 1;
 
-            //     // cout << "PO: " << g1->Get_isc_identifier() << ",did not detect the stuck error. " << endl;
-            // }
+                    break;
+                }
+
+                // cout << "PO: " << g1->Get_isc_identifier() << ",did not detect the stuck error. " << endl;
+            }
         }
     }
     return detected_sa_error;
