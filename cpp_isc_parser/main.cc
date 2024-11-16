@@ -31,7 +31,7 @@ int SetupOption(int argc, char **argv)
 {
 
     option.enroll("action", GetLongOpt::MandatoryValue,
-                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file.\n\t\t ppsfp: `Parallel Pattern Single Fault Propagation` Simulation on the circuit.\n\t\t ATPG: Automatic Test Pattern Generation (ATPG) with Path-Oriented Decision Making (PODEM) algorithm.", 0);
+                  "Action to perform, available options: \n\t\t parse_isc: parse the input isc file.\n\t\t ppsfp: `Parallel Pattern Single Fault Propagation` Simulation on the circuit.\n\t\t ATPG: Automatic Test Pattern Generation (ATPG) with Path-Oriented Decision Making (PODEM) algorithm.\n\t\t BIST: BIST Circuit simulation.", 0);
 
     option.enroll("file_isc", GetLongOpt::MandatoryValue,
                   "Input isc circuit file path. e.g C17.isc", 0);
@@ -285,7 +285,7 @@ int main(int argc, char **argv)
 
     } // for loop, netlist.
 
-    else if (action == "LFSR")
+    else if (action == "BIST")
     {
 
         vector<int> poly_vec = {3, 1}; // X^5+X^3+X+1.
@@ -298,74 +298,83 @@ int main(int argc, char **argv)
         vector<int> poly_vec_ora = {15, 13, 4};
         int sff_num_ora = 16;
 
-        int d_ff_num; // number of D flip-flops.
+        int scan_ff_num; // number of scan flip-flops.
 
-        bool enable_inputS; // Enable the inputS. Set to True if inputS is provided.
-        string inputS;      // The string feeding to the input of the LFSR. Not the feedback input.
+        // bool test_case_01010001; // Enable the inputS. Set to True if inputS is provided.
+        string inputS;           // The string feeding to the input of the LFSR. Not the feedback input.
 
         string initS; // The initial state of the LFSR.
 
-        LFSR *lfsr;
+        LFSR *lfsr_tpg;  //Test Pattern Generator LFSR
 
         bool debug = false;
+        debug = true;
 
-        enable_inputS = true;
-        enable_inputS = false;
+        bool test_case_01010001 = true;
+        test_case_01010001 = false;  
 
-        if (enable_inputS)
+        if (test_case_01010001)
         {
             inputS = "01010001";
+            initS = "00000"; // initial state is all 0 if inputS is provided.
+            lfsr_tpg = new LFSR(5);
+            scan_ff_num = 5;
+
+            inputS = "01010001";
+            bitset<8> input_bs(inputS);
+            cout << lfsr_tpg->get16bit() << endl;
+
+            vector<int> input_vector = isc_Circuit->stringToBinaryVector(inputS, true);
+            vector<string> signature = {};
+
+            for (int i = 0; i < input_vector.size(); ++i)
+            {
+
+                signature = isc_Circuit->ora_misr(lfsr_tpg, poly_vec, scan_ff_num, input_vector[i]); // just print
+                if (debug)
+                {
+                    cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
+
+                    for (int j = 0; j < signature.size(); ++j)
+                    {
+                        cout << signature[j];
+                    }
+                    cout << endl;
+                }
+            }
+            exit(0);
         }
 
         // Initialize the register with the input
         // Iterate from right (least significant bit) to left (most significant bit)
 
-        if (enable_inputS)
-        {
-            initS = "00000"; // initial state is all 0 if inputS is provided.
-            lfsr = new LFSR(5);
-            d_ff_num = 5;
-        }
-        else
-        {
-            initS = "101010101010101010101010100101010";
-            initS = "10101010101010101010101010010101";
+        initS = "101010101010101010101010100101010";
+        initS = "10101010101010101010101010010101";
 
-            initS = initS.substr(initS.size() - 32); // take the last 32 bits of the string.
+        initS = initS.substr(initS.size() - sff_num_tpg); // take the last 32 bits of the string.
 
-            lfsr = new LFSR(32);
-            d_ff_num = 32;
-        }
+        lfsr_tpg = new LFSR(sff_num_tpg); // Test Pattern Generator LFSR, 32bits
+        // scan_ff_num = 32;
 
         // LFSR lfsrnew(3);
 
         vector<int> bv = isc_Circuit->stringToBinaryVector(initS, true);
 
-        /* INIT LFSR  */
+        /* Initiate LFSR  */
 
         for (int i = 0; i < bv.size(); ++i)
         {
-            lfsr->setBit(i, bv[i]);
+            lfsr_tpg->setBit(i, bv[i]);
         }
 
         /* SCAN  */
         vector<vector<int>> tpg_generated_input = {};
 
-        if (enable_inputS)
-        {
-            inputS = "01010001";
-            bitset<8> input_bs(inputS);
-            cout << lfsr->get16bit() << endl;
-            isc_Circuit->tpg_has_input(lfsr, poly_vec, d_ff_num, inputS); // just print
-        }
-        else
-        {
-            int loop_num = 100; // 100
-            // cout << lfsr->get16bit() << endl;
+        int loop_num = 100; // 100
+        // cout << lfsr->get16bit() << endl;
 
-            tpg_generated_input = isc_Circuit->tpg_has_no_input(lfsr, poly_vec_tpg, d_ff_num, loop_num, debug);
-            cout << "Generated inputs: " << endl;
-        }
+        tpg_generated_input = isc_Circuit->tpg_lfsr(lfsr_tpg, poly_vec_tpg, sff_num_tpg, loop_num, debug);
+        cout << "Generated inputs: " << endl;
 
         // exit(0);
 
@@ -412,7 +421,7 @@ int main(int argc, char **argv)
 
             tpg_generated_input = isc_Circuit->init_level0_input_gate_assign(tpg_generated_input, debug);
 
-            cout << "TPG patterns generated on Input gates, parallel pattern count 32." << endl;
+            cout << "TPG patterns applied to Input gates, parallel pattern count 32." << endl;
             if (debug)
             {
                 isc_Circuit->print_bitset(true);
@@ -438,9 +447,10 @@ int main(int argc, char **argv)
 
             cout << "Good circuit output calculated." << endl;
 
-            //calculate the golden signature
-            vector<string> golden_signature = isc_Circuit->calc_po_signature(poly_vec_ora, sff_num_ora, debug);
-            string golden_string = isc_Circuit->get_gate_output_actual_string();
+            // calculate the golden signature
+            string circuit_output = isc_Circuit->get_circuit_output();
+            vector<string> golden_signature = isc_Circuit->calc_po_signature(circuit_output, poly_vec_ora, sff_num_ora, debug);
+            // string golden_string = isc_Circuit->get_circuit_output();
 
             // print out the golden_signature
             cout << "Golden signature calculated: ";
@@ -468,7 +478,7 @@ int main(int argc, char **argv)
             /******************************************/
             // iterate the FAULTS in circuits
             cout << "\nInjecting SA faults one at a time." << endl;
-            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error, poly_vec_ora, sff_num_ora, golden_signature,golden_string);
+            detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error, poly_vec_ora, sff_num_ora, golden_signature, circuit_output);
             // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
             loop_cnt++;
             cout << "Remaining TPG Pattern: " << tpg_generated_input.size() << endl;

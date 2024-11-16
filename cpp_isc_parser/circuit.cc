@@ -1338,8 +1338,10 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
             // Calculate output signature
             bool debug = false;
 
-            vector<string> po_signature = calc_po_signature(poly_vec_ora, sff_num_ora, debug);
-            string po_signature_string = get_gate_output_actual_string();
+            string circuit_output = get_circuit_output();
+
+            vector<string> po_signature = calc_po_signature(circuit_output, poly_vec_ora, sff_num_ora, debug);
+            string po_signature_string = get_circuit_output();
 
             if (po_signature_string == golden_string)
             {

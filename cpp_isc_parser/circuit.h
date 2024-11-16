@@ -245,7 +245,7 @@ public:
 	vector<vector<int>> init_level0_input_gate_assign(vector<vector<int>> inputv, bool debug = false);
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
 	int iterate_gates_sa_errors(int detected_sa_error);
-	int iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signatur,string golden_string);
+	int iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signatur, string golden_string);
 	void init_bitset(bool v12, bool oe, bool oa);
 	void assign_input_value(vector<vector<int>> inputv);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);
@@ -606,70 +606,66 @@ public:
 		return binaryRepresentation;
 	}
 
-	vector<string> tpg_has_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, string inputS, bool debug = false)
+	vector<string> ora_misr(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int input_int, bool debug = false)
 	{
 
-		int len = inputS.length();
+		// int len = inputS.length();
 
-		vector<int> input_vector = stringToBinaryVector(inputS, true);
+		// vector<int> input_vector = stringToBinaryVector(inputS, true);
 		vector<string> signature = {};
 
 		// Iterate from right (least significant bit) to left (most significant bit)
-		for (int i = 0; i < inputS.length(); ++i)
+		// for (int i = 0; i < inputS.length(); ++i)
+		// {
+		uint32_t get32bit = lfsr->get32bit();
+
+		vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
+
+		lfsr->rightShift(0);			// shift right 1 bit, fill 0 at MSB.
+		int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
+
+		/*
+		d-ff: X0, X1, X2, X3, X4
+		last_op: [0], 1, 2, 3, [4]
+		lsfr: bit[4], bit[3], bit[2], bit[1], bit[0]
+		*/
+
+		auto x0 = FB ^ input_int; // MSB.
+		lfsr->setBit(d_ff_num - 1, x0);
+
+		lfsr->setBit(0, last_op[d_ff_num - 2]); // LSB
+
+		// Middle terms in Polynomial.
+		// iterate poly_x
+		for (int j = 0; j < poly_vec.size(); ++j)
 		{
-			uint32_t get32bit = lfsr->get32bit();
-
-			vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
-
-			lfsr->rightShift(0);			// shift right 1 bit, fill 0 at MSB.
-			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
-
-			/*
-			d-ff: X0, X1, X2, X3, X4
-			last_op: [0], 1, 2, 3, [4]
-			lsfr: bit[4], bit[3], bit[2], bit[1], bit[0]
-			*/
-
-			auto x0 = FB ^ input_vector[i]; // MSB.
-			lfsr->setBit(d_ff_num - 1, x0);
-
-			lfsr->setBit(0, last_op[d_ff_num - 2]); // LSB
-
-			// Middle terms in Polynomial.
-			// iterate poly_x
-			for (int j = 0; j < poly_vec.size(); ++j)
-			{
-				auto x = FB ^ last_op[poly_vec[j] - 1];		 // xor (lsb, previous_postion_bit_in_last_run)
-				lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
-			}
-
-			// bitset<32> this_op(lfsr->get32bit());
-			vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
-			if (debug)
-			{
-				cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
-			}
-
-			signature = {};
-			for (int i = 0; i < this_op.size(); ++i)
-			{
-				if (debug)
-				{
-					cout << this_op[i];
-				}
-				signature.push_back(to_string(this_op[i]));
-			}
-
-			if (debug)
-			{
-				cout << '\n';
-			}
+			auto x = FB ^ last_op[poly_vec[j] - 1];		 // xor (lsb, previous_postion_bit_in_last_run)
+			lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
 		}
+
+		// bitset<32> this_op(lfsr->get32bit());
+		vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
+
+		signature = {};
+		for (int i = 0; i < this_op.size(); ++i)
+		{
+			if (debug)
+			{
+				cout << this_op[i];
+			}
+			signature.push_back(to_string(this_op[i]));
+		}
+
+		if (debug)
+		{
+			cout << '\n';
+		}
+		// }
 
 		return signature;
 	}
 
-	vector<vector<int>> tpg_has_no_input(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int loop_num, bool debug = false)
+	vector<vector<int>> tpg_lfsr(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int loop_num, bool debug = false)
 	{
 
 		vector<vector<int>> tpg_generated_inputs = {};
@@ -732,20 +728,31 @@ public:
 		return bitset32;
 	}
 
-	vector<string> calc_po_signature(vector<int> poly_vec_ora, int sff_num, bool debug = false)
-	{
-
-		string inputS = get_gate_output_actual_string();
+	vector<string> calc_po_signature(string inputS, vector<int> poly_vec_ora, int sff_num, bool debug = false)
+	{		
+		int input_int;
+		vector<int> input_vector = stringToBinaryVector(inputS, true);
 
 		LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
+		vector<string> golden_signature = {};
 
-		vector<string> golden_signature = tpg_has_input(lfsr_ora, poly_vec_ora, sff_num, inputS, debug); // just print
+		for (int i = 0; i < input_vector.size(); ++i)
+		{
+
+			if (debug)
+			{
+				cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
+			}
+
+			golden_signature = ora_misr(lfsr_ora, poly_vec_ora, sff_num, input_int, debug);
+		}
+
+		// vector<string> golden_signature = ora_misr(lfsr_ora, poly_vec_ora, sff_num, input_int, debug);
 
 		return golden_signature;
 	}
 
-
-	string get_gate_output_actual_string()
+	string get_circuit_output()
 	{
 		string inputS = "";
 
