@@ -449,7 +449,8 @@ int main(int argc, char **argv)
 
             // calculate the golden signature
             string circuit_output = isc_Circuit->get_circuit_output();
-            vector<string> golden_signature = isc_Circuit->calc_po_signature(circuit_output, poly_vec_ora, sff_num_ora, debug);
+            LFSR *lfsr_ora = new LFSR(16);
+            vector<string> golden_signature = isc_Circuit->calc_po_signature(circuit_output, lfsr_ora, poly_vec_ora, sff_num_ora, debug);
             // string golden_string = isc_Circuit->get_circuit_output();
 
             // print out the golden_signature

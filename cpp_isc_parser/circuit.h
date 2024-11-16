@@ -728,12 +728,12 @@ public:
 		return bitset32;
 	}
 
-	vector<string> calc_po_signature(string inputS, vector<int> poly_vec_ora, int sff_num, bool debug = false)
+	vector<string> calc_po_signature(string inputS, LFSR* lfsr_ora, vector<int> poly_vec_ora, int sff_num, bool debug = false)
 	{		
 		int input_int;
 		vector<int> input_vector = stringToBinaryVector(inputS, true);
 
-		LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
+		// LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
 		vector<string> golden_signature = {};
 
 		for (int i = 0; i < input_vector.size(); ++i)
