@@ -2,6 +2,16 @@
 
 This document explains the project 4 BIST implementation. 
 
+Code Repository: https://github.com/li-yong/VLSI_Testing_f24/
+
+# Terminology
+```
+LFSR : Linear-Feedback Shift Register
+MISR : Multiple Input Signature Register
+TPG  : Test Pattern Generator. Implemented with TPG.
+ORA  : Output Response Analyzer. Implemented with MISR.
+```
+
 # Logical Flow
 ```  
 Load and Initialize the circuit.
@@ -62,9 +72,9 @@ Initialize TPG_LFSR with 10101010101010101010101010010101
 ```
 
 ## TPG and ORA
-1. TPG_LFSR runs one clock to generate a test pattern.
-1. Simulate circuit to get the good circuit output.
-1. ORA_MISR generate the signature based on the circuit output.
+1. Circuit in `scan mode`, TPG_LFSR generate one test pattern and applied to the `PI` gates by `LFSR`.
+2. The circuit switch to `normal mode` to simulate the good circuit output.
+3. The circuit switch back to `scan mode`, ORA_MISR generate the signature based on the circuit output.
 ```
 Loop 0, TPG generated test pattern 10110101010101010101011101001010
 Good circuit output was simulated. Good circuit output: 10
