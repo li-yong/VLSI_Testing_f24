@@ -242,10 +242,10 @@ public:
 	bitset<64> isc_Evaluate(GATEPTR gptr, vector<string> fault_injection_gate_isc_identifier_list);
 	void print_bitset(bool bitset32 = false);
 	void init_level0_input_gate();
-	vector<vector<int>> init_level0_input_gate_assign(vector<vector<int>> inputv, bool debug = false);
+	vector<int> assign_tpg_to_input(vector<int> inputv, bool debug = false);
 	void update_fanout_bitset(GATE *gate, string, bitset<64> bitset, vector<string> fault_injection_gate_isc_identifier_list);
 	int iterate_gates_sa_errors(int detected_sa_error);
-	int iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signatur, string golden_string);
+	int iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature, string golden_string, int* alias_cnt, bool debug);
 	void init_bitset(bool v12, bool oe, bool oa);
 	void assign_input_value(vector<vector<int>> inputv);
 	void gather_input_output_pattern_and_show_ptn_at_diff_postion(vector<int> differing_positions, string err_out_gate_isc_identifier);
@@ -567,7 +567,7 @@ public:
 		}
 	}
 
-	vector<int> stringToBinaryVector(const string &binaryString, bool revert = true)
+	vector<int> convert_stringToBinaryVector(const string &binaryString, bool revert = true)
 	{
 		vector<int> result;
 		for (char ch : binaryString)
@@ -584,14 +584,16 @@ public:
 		return result;
 	}
 
-	vector<int> intToBinaryVector(int num, int N)
+	vector<int> convert_intToBinaryVector(uint32_t num, int N, bool revert=true)
 	{
 		vector<int> binaryRepresentation;
 
 		// Convert to binary representation
 		while (num > 0)
 		{
-			binaryRepresentation.push_back(num % 2); // Get the least significant bit
+			unsigned int t = num % 2;
+			// cout << t << endl;
+			binaryRepresentation.push_back(t); // Get the least significant bit
 			num /= 2;								 // Shift right by dividing by 2
 		}
 
@@ -600,8 +602,13 @@ public:
 		{
 			binaryRepresentation.push_back(0);
 		}
+
 		// Reverse to get the most significant bit on the left
-		std::reverse(binaryRepresentation.begin(), binaryRepresentation.end());
+		if (revert)
+		{
+			reverse(binaryRepresentation.begin(), binaryRepresentation.end());
+		}	
+		// std::reverse(binaryRepresentation.begin(), binaryRepresentation.end());
 
 		return binaryRepresentation;
 	}
@@ -611,7 +618,7 @@ public:
 
 		// int len = inputS.length();
 
-		// vector<int> input_vector = stringToBinaryVector(inputS, true);
+		// vector<int> input_vector = convert_stringToBinaryVector(inputS, true);
 		vector<string> signature = {};
 
 		// Iterate from right (least significant bit) to left (most significant bit)
@@ -619,7 +626,7 @@ public:
 		// {
 		uint32_t get32bit = lfsr->get32bit();
 
-		vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
+		vector<int> last_op = convert_intToBinaryVector(lfsr->get32bit(), d_ff_num);
 
 		lfsr->rightShift(0);			// shift right 1 bit, fill 0 at MSB.
 		int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
@@ -644,7 +651,7 @@ public:
 		}
 
 		// bitset<32> this_op(lfsr->get32bit());
-		vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
+		vector<int> this_op = convert_intToBinaryVector(lfsr->get32bit(), d_ff_num);
 
 		signature = {};
 		for (int i = 0; i < this_op.size(); ++i)
@@ -665,56 +672,36 @@ public:
 		return signature;
 	}
 
-	vector<vector<int>> tpg_lfsr(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int loop_num, bool debug = false)
+	vector<int> tpg_lfsr(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, bool debug = false)
 	{
 
-		vector<vector<int>> tpg_generated_inputs = {};
-		// Iterate from right (least significant bit) to left (most significant bit)
-		for (int i = 0; i < loop_num; ++i)
+		uint32_t get32bit = lfsr->get32bit();
+
+		vector<int> last_op = convert_intToBinaryVector(lfsr->get32bit(), d_ff_num);
+
+		lfsr->rightShift(0);			// shift right 1 bit, fill 0 at MSB.
+		int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
+
+		/*
+		d-ff: X0, X1, X2, X3, X4
+		last_op: [0], 1, 2, 3, [4]
+		lsfr: bit[4], bit[3], bit[2], bit[1], bit[0]
+		*/
+
+		lfsr->setBit(d_ff_num - 1, FB); // MSB.
+
+		lfsr->setBit(0, last_op[d_ff_num - 2]); // LSB
+
+		// Middle terms in Polynomial.
+		// iterate poly_x
+		for (int j = 0; j < poly_vec.size(); ++j)
 		{
-			uint32_t get32bit = lfsr->get32bit();
-
-			vector<int> last_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
-
-			lfsr->rightShift(0);			// shift right 1 bit, fill 0 at MSB.
-			int FB = last_op[d_ff_num - 1]; // the first bit, LSB.
-
-			/*
-			d-ff: X0, X1, X2, X3, X4
-			last_op: [0], 1, 2, 3, [4]
-			lsfr: bit[4], bit[3], bit[2], bit[1], bit[0]
-			*/
-
-			lfsr->setBit(d_ff_num - 1, FB); // MSB.
-
-			lfsr->setBit(0, last_op[d_ff_num - 2]); // LSB
-
-			// Middle terms in Polynomial.
-			// iterate poly_x
-			for (int j = 0; j < poly_vec.size(); ++j)
-			{
-				auto x = FB ^ last_op[poly_vec[j] - 1];		 // xor (lsb, previous_postion_bit_in_last_run)
-				lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
-			}
-
-			// bitset<32> this_op(lfsr->get32bit());
-			vector<int> this_op = intToBinaryVector(lfsr->get32bit(), d_ff_num);
-			tpg_generated_inputs.push_back(this_op);
-
-			if (debug)
-			{
-				cout << "loop " << i << ", feed last output to input " << FB << ", output: ";
-
-				for (int i = 0; i < this_op.size(); ++i)
-				{
-					cout << this_op[i];
-				}
-
-				cout << '\n';
-			}
+			auto x = FB ^ last_op[poly_vec[j] - 1];		 // xor (lsb, previous_postion_bit_in_last_run)
+			lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
 		}
 
-		return tpg_generated_inputs;
+		vector<int> this_op = convert_intToBinaryVector(lfsr->get32bit(), d_ff_num);
+		return this_op;
 	}
 
 	bitset<32> convertToBitset32(bitset<64> &bitset64)
@@ -728,10 +715,41 @@ public:
 		return bitset32;
 	}
 
-	vector<string> calc_po_signature(string inputS, LFSR* lfsr_ora, vector<int> poly_vec_ora, int sff_num, bool debug = false)
-	{		
+	vector<int> convert_bitset_to_int_vector_64(bitset<64> bits)
+	{
+
+		vector<int> result;
+
+		for (int i = 0; i < bits.size(); ++i)
+		{
+			result.push_back(bits[i]);
+		}
+
+		return result;
+	}
+
+	vector<int> convert_bitset_to_int_vector_32(bitset<32> bits)
+	{
+
+		vector<int> result;
+
+		for (int i = 0; i < bits.size(); ++i)
+		{
+			result.push_back(bits[i]);
+		}
+
+		return result;
+	}
+
+	vector<string> calc_po_signature(string inputS, LFSR *lfsr_ora, vector<int> poly_vec_ora, int sff_num, bool debug = false)
+	{
+		
+		if (debug){
+			cout << "calc_po_signature, inputS: " << inputS << endl;
+		}
+		
 		int input_int;
-		vector<int> input_vector = stringToBinaryVector(inputS, true);
+		vector<int> input_vector = convert_stringToBinaryVector(inputS, true);
 
 		// LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
 		vector<string> golden_signature = {};
@@ -744,6 +762,7 @@ public:
 				cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
 			}
 
+			
 			golden_signature = ora_misr(lfsr_ora, poly_vec_ora, sff_num, input_int, debug);
 		}
 
@@ -757,12 +776,17 @@ public:
 		string inputS = "";
 
 		// function to get the PO actual value, then calculate the signature. << @TODO
-		for (int po_index = 0; po_index < No_PO(); po_index++)
+		int number_of_po = No_PO();
+		for (int po_index = 0; po_index < number_of_po; po_index++)
 		{
 			GATE *po_gate = POGate(po_index);
 			// cout << po_gate->Get_isc_identifier() << endl;
 			bitset<64> b = po_gate->get_isc_bitset_output_actual();
-			string x = convertToBitset32(b).to_string();
+			vector<int> c = convert_bitset_to_int_vector_64(b);	
+
+			string x = to_string(c[63]);
+
+			cout << "PO " << po_index << " value: " << x << endl;
 			inputS += x;
 		}
 

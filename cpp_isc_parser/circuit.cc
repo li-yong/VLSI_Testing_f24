@@ -915,35 +915,40 @@ void CIRCUIT::init_level0_input_gate()
 }
 
 // handle level 0 input gates
-vector<vector<int>> CIRCUIT::init_level0_input_gate_assign(vector<vector<int>> inputv, bool debug)
+vector<int> CIRCUIT::assign_tpg_to_input(vector<int> inputv, bool debug)
 {
     // int index = 0;
 
     // get level 0 gates. Input gate only have one pin.
-    vector<GATE *> v = GetGateInLevel(0);
+    vector<GATE *> inputGates = GetGateInLevel(0);
 
     // cout << "get level 0 output gates" << endl;
-    for (long unsigned i = 0; i < v.size(); i++)
+    for (long unsigned i = 0; i < inputGates.size(); i++)
     {
         // cout << v[i]->Get_isc_identifier() << "  " << v[i]->GetLevel() << endl;
         bitset<64> bs = {};
 
-        for (int k = 0; k < inputv[0].size(); ++k)
+        for (int k = 0; k < 64; ++k)
         {
-            bs[k] = inputv[0][k];
+            bs[k] = inputv[i];
+        }
+        string bitString = bs.to_string();
+        string gate_name = inputGates[i]->Get_isc_identifier();
+
+        inputGates[i]->set_isc_bitset_output_expected(bs);
+        inputGates[i]->set_isc_bitset_output_actual(bs);
+        inputGates[i]->InputValues_bitset.push_back(bs);
+
+        if (debug)
+        {
+            cout << "Input gate " << gate_name << " value initialized to " << bitString << endl;
         }
 
-        v[i]->set_isc_bitset_output_expected(bs);
-        v[i]->set_isc_bitset_output_actual(bs);
-        v[i]->InputValues_bitset.push_back(bs);
-
-        string bitString = bs.to_string();
-
         // handle fanout
-        update_fanout_bitset(v[i], "EXPECT", bs);
-        update_fanout_bitset(v[i], "ACTUAL", bs);
+        update_fanout_bitset(inputGates[i], "EXPECT", bs);
+        update_fanout_bitset(inputGates[i], "ACTUAL", bs);
 
-        inputv.erase(inputv.begin()); // remove the 1st element
+        // inputv.erase(inputv.begin()); // remove the 1st element
         // index += 1;
     }
 
@@ -1249,7 +1254,7 @@ int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
 }
 
 ////iterate the gates in circuits
-int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature, string golden_string)
+int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature, string golden_output_string, int * alias_cnt,  bool debug)
 {
 
     vector<GATE *> netlist = GetNetlist();
@@ -1336,50 +1341,52 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
             }
 
             // Calculate output signature
-            bool debug = false;
 
-            string circuit_output = get_circuit_output();
+            string po_output_string = get_circuit_output();
             LFSR *lfsr_ora = new LFSR(16);
 
-            vector<string> po_signature = calc_po_signature(circuit_output,lfsr_ora, poly_vec_ora, sff_num_ora, debug);
-            string po_signature_string = get_circuit_output();
-
-            if (po_signature_string == golden_string)
+            if (po_output_string == golden_output_string)
             {
-                cout << "text of test circuit matches golden text." << endl;
+                cout << "po match, po_output_string " << po_output_string << " , golden_output_string " << golden_output_string << endl;
             }
             else
             {
-                cout << "text of test circuit does not match golden text." << endl;
+                cout << "po does not match, po_output_string " << po_output_string << " , golden_output_string " << golden_output_string << endl;
             }
+
+            vector<string> po_signature = calc_po_signature(po_output_string, lfsr_ora, poly_vec_ora, sff_num_ora, debug);
+
+            // print out sig
+            //  print out the golden_signature
+            cout << "\tGolden         signature: ";
+            for (int i = 0; i < golden_signature.size(); ++i)
+            {
+                cout << golden_signature[i];
+            }
+            cout << endl;
+
+            // print out the FLT circuit signature
+            cout << "\tFaulty circuit signature: ";
+            for (int i = 0; i < po_signature.size(); ++i)
+            {
+                cout << po_signature[i];
+            }
+            cout << endl;
+
+
 
             if (po_signature == golden_signature)
             {
-                cout << "signature of fault circuit matches golden signature." << endl;
-                if (po_signature_string != golden_string)
+                // cout << "signature match, po_signature " << po_signature <<" , golden_signature " << golden_signature << endl;
+                if (po_output_string != golden_output_string)
                 {
-                    cout << "Aliasing!." << endl;
+                    *alias_cnt += 1;
+                    cout << "output different but signature same. Aliasing!" << endl;                    
                 }
             }
             else
             {
                 cout << "signature of fault circuit does not match golden signature." << endl;
-
-                // print out the golden_signature
-                cout << "\tGolden         signature: ";
-                for (int i = 0; i < golden_signature.size(); ++i)
-                {
-                    cout << golden_signature[i];
-                }
-                cout << endl;
-
-                // print out the FLT circuit signature
-                cout << "\tFaulty circuit signature: ";
-                for (int i = 0; i < po_signature.size(); ++i)
-                {
-                    cout << po_signature[i];
-                }
-                cout << endl;
 
                 // remove the stuck at fault from the fault list.
                 cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
@@ -1394,57 +1401,57 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
                 break;
             }
 
-            // CHECK ALISA,  Iterate the PO GATES
+            // CHECK Aliasing,  Iterate the PO GATES
             // iterate the gates in circuits. Check the output gate actual value vs expected value.
-            for (unsigned i1 = 0; i1 < netlist.size(); i1++)
-            {
-                GATE *g1;
-                g1 = netlist[i1];
-                int foc = g1->Get_isc_fo_cnt();
-                if (foc > 0 | g1->GetFunction() == G_FROM)
-                {
-                    continue;
-                }
+            // for (unsigned i1 = 0; i1 < netlist.size(); i1++)
+            // {
+            //     GATE *g1;
+            //     g1 = netlist[i1];
+            //     int foc = g1->Get_isc_fo_cnt();
+            //     if (foc > 0 | g1->GetFunction() == G_FROM)
+            //     {
+            //         continue;
+            //     }
 
-                if (g1->get_isc_bitset_output_expected() != g1->get_isc_bitset_output_actual() & g1->Get_isc_fo_cnt() == 0)
-                {
-                    cout << "PO: " << g1->Get_isc_identifier() << endl;
-                    cout << "expected output: " << g1->get_isc_bitset_output_expected() << endl;
-                    cout << "actual   output: " << g1->get_isc_bitset_output_actual() << endl;
+            //     if (g1->get_isc_bitset_output_expected() != g1->get_isc_bitset_output_actual() & g1->Get_isc_fo_cnt() == 0)
+            //     {
+            //         cout << "PO: " << g1->Get_isc_identifier() << endl;
+            //         cout << "expected output: " << g1->get_isc_bitset_output_expected() << endl;
+            //         cout << "actual   output: " << g1->get_isc_bitset_output_actual() << endl;
 
-                    vector<int> differing_positions;
-                    for (int i2 = 0; i2 < 64; i2++)
-                    {
-                        if (g1->get_isc_bitset_output_expected()[i2] != g1->get_isc_bitset_output_actual()[i2])
-                        {
-                            differing_positions.push_back(i2);
-                            // break; // only need to find one position. YONG DEBUG
-                        }
-                    }
+            //         vector<int> differing_positions;
+            //         for (int i2 = 0; i2 < 64; i2++)
+            //         {
+            //             if (g1->get_isc_bitset_output_expected()[i2] != g1->get_isc_bitset_output_actual()[i2])
+            //             {
+            //                 differing_positions.push_back(i2);
+            //                 // break; // only need to find one position. YONG DEBUG
+            //             }
+            //         }
 
-                    // cout << "PO: " << g->Get_isc_identifier() << " is failing" << endl;
+            //         // cout << "PO: " << g->Get_isc_identifier() << " is failing" << endl;
 
-                    if (po_signature == golden_signature)
-                    {
-                        cout << "signature of fault circuit matches golden signature. SOMETHING WRONG" << endl;
-                        exit(0);
-                    }
+            //         if (po_signature == golden_signature)
+            //         {
+            //             cout << "faulty circuit signature matches golden signature. Aliasing+1" << endl;
+            //             // exit(0);
+            //         }
 
-                    // remove the stuck at fault from the fault list.
-                    cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
-                    vector<string> salist = g->Get_isc_StuckAt();
-                    salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
-                    g->Set_isc_StuckAt(salist);
+            //         // remove the stuck at fault from the fault list.
+            //         cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
+            //         vector<string> salist = g->Get_isc_StuckAt();
+            //         salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
+            //         g->Set_isc_StuckAt(salist);
 
-                    cout << error_gate_isc_ident << " " << stuck_error << " detected by " << differing_positions.size() << " Input Patterns" << ". Details of the first Input/Output pattern:" << endl;
-                    gather_input_output_pattern_and_show_ptn_at_diff_postion({differing_positions[0]}, g1->Get_isc_identifier());
-                    detected_sa_error += 1;
+            //         cout << error_gate_isc_ident << " " << stuck_error << " detected by " << differing_positions.size() << " Input Patterns" << ". Details of the first Input/Output pattern:" << endl;
+            //         gather_input_output_pattern_and_show_ptn_at_diff_postion({differing_positions[0]}, g1->Get_isc_identifier());
+            //         detected_sa_error += 1;
 
-                    break;
-                }
+            //         break;
+            //     }
 
-                // cout << "PO: " << g1->Get_isc_identifier() << ",did not detect the stuck error. " << endl;
-            }
+            //     // cout << "PO: " << g1->Get_isc_identifier() << ",did not detect the stuck error. " << endl;
+            // }
         }
     }
     return detected_sa_error;

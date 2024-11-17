@@ -17,7 +17,7 @@
             ],
             "args": [
                 "-action", "BIST",
-                  "-file_isc", "${workspaceFolder}/../ISCAS-85/c880.isc",
+                  "-file_isc", "${workspaceFolder}/../ISCAS-85/c17.isc",
             ],
             "args_ppsfs": [
                 "-action", "ppsfs",
