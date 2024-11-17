@@ -297,8 +297,6 @@ int main(int argc, char **argv)
         LFSR *lfsr_tpg = new LFSR(5);
         int scan_ff_num = 5;
 
-        inputS = "01010001";
-
         vector<int> input_vector = isc_Circuit->convert_stringToBinaryVector(inputS, true);
         vector<string> signature = {};
 
@@ -306,16 +304,13 @@ int main(int argc, char **argv)
         {
 
             signature = isc_Circuit->ora_misr(lfsr_tpg, poly_vec, scan_ff_num, input_vector[i]); // just print
-            if (debug)
-            {
-                cout << "\tmisr_loop " << i << ", input " << input_vector[i] << ", output: ";
+            cout << "\tmisr_loop " << i << ", input " << input_vector[i] << ", output: ";
 
-                for (int j = 0; j < signature.size(); ++j)
-                {
-                    cout << signature[j];
-                }
-                cout << endl;
+            for (int j = 0; j < signature.size(); ++j)
+            {
+                cout << signature[j];
             }
+            cout << endl;
         }
         exit(0);
     }
@@ -381,45 +376,12 @@ int main(int argc, char **argv)
         bool debug = false;
         // debug = true;
 
-        // Initialize the register with the input
-        // Iterate from right (least significant bit) to left (most significant bit)
-
-        initS = "101010101010101010101010100101010";
-        initS = "10101010101010101010101010010101";
-
-        initS = initS.substr(initS.size() - sff_num_tpg); // take the last 32 bits of the string.
-
-        lfsr_tpg = new LFSR(sff_num_tpg); // Test Pattern Generator LFSR, 32bits
-
-        vector<int> bv = isc_Circuit->convert_stringToBinaryVector(initS, true);
-
-        /* Initiate LFSR  */
-
-        for (int i = 0; i < bv.size(); ++i)
-        {
-            lfsr_tpg->setBit(i, bv[i]);
-            // cout << bv[i];
-            // auto d = lfsr_tpg->getBit(i);
-            // cout << d;
-        }
-
-        // cout << endl;
-
-        // uint32_t a = lfsr_tpg->get32bit();
-
-        // // a = 8;
-        // vector<int> b = isc_Circuit->convert_intToBinaryVector(a, 32);
-
-        // for (int i = 0; i < b.size(); ++i)
-        // {
-        //     cout << b[i];
-        // }
-        // cout << endl;
-
-        /* SCAN  */
+        /**************************************
+         * INIT THE CIRCUIT
+         *************************************/
 
         bool interaction = true;
-        interaction = false; // debug
+        // interaction = false; // debug
 
         isc_Circuit->Levelize();
         isc_Circuit->init_bitset(true, true, true); // bool inputs_value, bool output_expected, bool output_actual
@@ -433,13 +395,37 @@ int main(int argc, char **argv)
         int detected_sa_error = 0;
 
         int loop_num = 100; // 100
-        // cout << lfsr->get16bit() << endl;
+
+        /**************************************
+         * INIT GPT LFSR
+         *************************************/
+        // Initialize the register with the input
+        // Iterate from right (least significant bit) to left (most significant bit)
+
+        initS = "101010101010101010101010100101010";
+        initS = "10101010101010101010101010010101";
+
+        initS = initS.substr(initS.size() - sff_num_tpg); // take the last 32 bits of the string.
+
+        lfsr_tpg = new LFSR(sff_num_tpg); // Test Pattern Generator LFSR, 32bits
+
+        vector<int> bv = isc_Circuit->convert_stringToBinaryVector(initS, true);
+
+        /* Initiate LFSR  */
+        cout << "Initialize TPG_LFSR with " << initS << endl;
+        for (int i = 0; i < bv.size(); ++i)
+        {
+            lfsr_tpg->setBit(i, bv[i]);
+        }
 
         LFSR *lfsr_ora = new LFSR(16);
 
         int alias_cnt = 0;
         int loop_cnt = 0;
 
+        /**************************************
+         * SCAN LOOP
+         *************************************/
         while (loop_cnt < loop_num)
         {
             if (detected_sa_error_realtime == total_sa_error)
@@ -450,26 +436,23 @@ int main(int argc, char **argv)
 
             vector<int> tpg_generated_input = {};
 
+            // Generate the TPG pattern, 32 bits each pattern.
+            // If the Input Gate number is more than 32, then generate multiple patterns.
             while (tpg_generated_input.size() < isc_Circuit->No_PI())
             {
-
                 // isc_Circuit->print_lfsr_32(lfsr_tpg); // debug
-
                 vector<int> tmp = isc_Circuit->tpg_lfsr(lfsr_tpg, poly_vec_tpg, sff_num_tpg, debug);
                 tpg_generated_input.insert(tpg_generated_input.end(), tmp.begin(), tmp.end());
             }
 
-            // if (debug)
-            // {
-                cout << "\nLoop " << loop_cnt << ", TPG generated test pattern ";
+            cout << "\nLoop " << loop_cnt << ", TPG generated test pattern ";
 
-                for (int i = 0; i < tpg_generated_input.size(); ++i)
-                {
-                    cout << tpg_generated_input[i];
-                }
+            for (int i = 0; i < tpg_generated_input.size(); ++i)
+            {
+                cout << tpg_generated_input[i];
+            }
 
-                cout << '\n';
-            // }
+            cout << '\n';
 
             //  ASSIGN TPG GENERATED INPUT PATTERN TO GATES
             tpg_generated_input = isc_Circuit->assign_tpg_to_input(tpg_generated_input, debug);
@@ -477,19 +460,17 @@ int main(int argc, char **argv)
             /******************************************
              * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
             /******************************************/
-            // calc expect value for  level 1 to level max gates
+            // Simulate the circuit to generate all the Expected output.
             for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
             {
-                // isc_Circuit->print_bitset(true);
                 isc_Circuit->calc_output_level_1_max(gate_level, "EXPECT", vector<string>{});
-                // isc_Circuit->print_bitset(true);
             }
 
+            // Simulate the circuit to generate all the Actual output.
+            // As no fault injected, the output should be the same as the Expected output.
             for (int gate_level = 1; gate_level <= isc_Circuit->GetMaxLevel(); gate_level++)
             {
-                // isc_Circuit->print_bitset(true);
                 isc_Circuit->calc_output_level_1_max(gate_level, "ACTUAL", vector<string>{});
-                // isc_Circuit->print_bitset(true);
             }
 
             cout << "Good circuit output was simulated. ";
@@ -499,16 +480,14 @@ int main(int argc, char **argv)
                 cout << "good circuit inputs, expected output, actual output: " << endl;
                 isc_Circuit->print_bitset(true);
             }
-
-            // calculate the golden signature
+            /******************************************
+             * Calculate the golden signature
+             ******************************************/
             string circuit_output = isc_Circuit->get_circuit_output();
 
-            // if (debug)
-            // {
-                cout << "Good circuit output: " << circuit_output << endl;
-            // }
+            cout << "Good circuit output: " << circuit_output << endl;
 
-            cout << "Calculating signature on ORA. " ;
+            cout << "Calculating signature on ORA. ";
             vector<string> golden_signature = isc_Circuit->calc_po_signature(circuit_output, lfsr_ora, poly_vec_ora, sff_num_ora, debug);
 
             // print out the golden_signature
@@ -520,14 +499,14 @@ int main(int argc, char **argv)
 
             cout << endl;
 
-            if (interaction && read_input("Show patterns on Gates? 'yes' or 'no': "))
+            if (interaction && read_input("\nShow patterns on Gates? 'yes' or 'no': "))
             {
                 isc_Circuit->print_bitset(true);
             }
 
             if (interaction)
             {
-                if (!read_input("Interactive mode? 'yes' or 'no': "))
+                if (!read_input("\nInteractive mode? 'yes' or 'no': "))
                 {
                     interaction = false;
                 }
@@ -539,13 +518,13 @@ int main(int argc, char **argv)
             cout << "\nInjecting SA faults one at a time." << endl;
 
             detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error, poly_vec_ora, sff_num_ora, golden_signature, circuit_output, &alias_cnt, debug);
-            // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
             loop_cnt++;
-            // cout << "Loop cont: " << loop_cnt << endl;
 
-            // } // end of the while loop
         } // for loop, 100 times on BIST simulation.
 
+        /**************************************
+         * Print Result
+         *************************************/
         int left_sa_error = isc_Circuit->get_sa_error_cnt();
         detected_sa_error = total_sa_error - left_sa_error;
 
@@ -559,8 +538,7 @@ int main(int argc, char **argv)
         cout << "Alias Cnt            : " << alias_cnt << endl;
         cout << "Loop  Cnt            : " << loop_cnt << endl;
 
-        // cout << "Iteration Count      : " << loop_cnt << endl;
-    }
+    } // end of BIST
 
     else
     {
