@@ -290,7 +290,7 @@ int main(int argc, char **argv)
         vector<int> poly_vec = {3, 1}; // X^5+X^3+X+1.
 
         bool debug = false;
-        debug = true;
+        // debug = true;
 
         string inputS = "01010001";
         string initS = "00000"; // initial state is all 0 if inputS is provided.
@@ -401,21 +401,23 @@ int main(int argc, char **argv)
         {
             lfsr_tpg->setBit(i, bv[i]);
             // cout << bv[i];
-            auto d = lfsr_tpg->getBit(i);
-            cout << d;
+            // auto d = lfsr_tpg->getBit(i);
+            // cout << d;
         }
-        cout << endl;
 
-        uint32_t a = lfsr_tpg->get32bit();
 
-        // a = 8;
-        vector<int> b = isc_Circuit->convert_intToBinaryVector(a, 32);
+        // cout << endl;
 
-        for (int i = 0; i < b.size(); ++i)
-        {
-            cout << b[i];
-        }
-        cout << endl;
+        // uint32_t a = lfsr_tpg->get32bit();
+
+        // // a = 8;
+        // vector<int> b = isc_Circuit->convert_intToBinaryVector(a, 32);
+
+        // for (int i = 0; i < b.size(); ++i)
+        // {
+        //     cout << b[i];
+        // }
+        // cout << endl;
 
         /* SCAN  */
 
@@ -443,19 +445,18 @@ int main(int argc, char **argv)
 
         while (loop_cnt < loop_num)
         {
+            if (detected_sa_error_realtime == total_sa_error)
+            {
+                cout << "\nAll SA errors detected in " << loop_cnt << " loops." << endl;
+                break;
+            }
+
             vector<int> tpg_generated_input = {};
 
             while (tpg_generated_input.size() < isc_Circuit->No_PI())
             {
 
-                uint32_t a = lfsr_tpg->get32bit();
-                vector<int> b = isc_Circuit->convert_intToBinaryVector(a, sff_num_tpg);
-
-                for (int i = 0; i < b.size(); ++i)
-                {
-                    cout << b[i];
-                }
-                cout << endl;
+                isc_Circuit->print_lfsr_32(lfsr_tpg); // debug
 
                 vector<int> tmp = isc_Circuit->tpg_lfsr(lfsr_tpg, poly_vec_tpg, sff_num_tpg, debug);
                 tpg_generated_input.insert(tpg_generated_input.end(), tmp.begin(), tmp.end());
@@ -476,11 +477,11 @@ int main(int argc, char **argv)
             cout << "Remaining Generated Pattern: " << tpg_generated_input.size() << endl;
             cout << "Circuit Input Gate number: " << isc_Circuit->No_PI() << endl;
 
-            if (detected_sa_error_realtime == total_sa_error)
-            {
-                cout << "\nAll SA errors detected in " << loop_cnt << " loops." << endl;
-                break;
-            }
+            // if (detected_sa_error_realtime == total_sa_error)
+            // {
+            //     cout << "\nAll SA errors detected in " << loop_cnt << " loops." << endl;
+            //     break;
+            // }
 
             // cout << "\nLoop number: " << loop_num << endl;
 
@@ -491,7 +492,7 @@ int main(int argc, char **argv)
             // cout << "TPG patterns applied to Input gates, parallel pattern count 32." << endl;
             if (debug)
             {
-                isc_Circuit->print_bitset(true);
+                // isc_Circuit->print_bitset(true);
             }
 
             /******************************************
