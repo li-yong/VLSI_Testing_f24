@@ -1254,7 +1254,7 @@ int CIRCUIT::iterate_gates_sa_errors(int detected_sa_error)
 }
 
 ////iterate the gates in circuits
-int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature, string golden_output_string, int * alias_cnt,  bool debug)
+int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> poly_vec_ora, int sff_num_ora, vector<string> golden_signature, string golden_output_string, int *alias_cnt, bool debug)
 {
 
     vector<GATE *> netlist = GetNetlist();
@@ -1280,17 +1280,15 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
         {
 
             // reset circuit to remove all previous injected faults
-            //  cout << "\nResetting the circuit to remove all previous injected faults." << endl;
+            // cout << "\nResetting the circuit to remove all previous injected faults." << endl;
             // init_bitset(false, false, false, true); // bool v1, bool v2, bool oe, bool oa
             set_actual_from_expect();
 
             int sa_error_cnt = get_sa_error_cnt();
 
-            // cout << error_gate_isc_ident << " " << SAlist[n] << endl; //debug
-
-            // if (error_gate_isc_ident == "14fan")
+            // // if (debug)
             // {
-            //     cout << "debug" << endl;
+            //     print_bitset(true);
             // }
 
             vector<string> fault_injection_gate_isc_identifier_list = {error_gate_isc_ident};
@@ -1299,7 +1297,6 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
             {
                 cout << "\n== Injecting SA0 on " << error_gate_isc_ident << ". Remaining sa error: " << sa_error_cnt << endl;
                 g->set_isc_bitset_output_actual(bitset_all_zero);
-                // if (g->GetFunction == G_FROM){ //yong debug. Iterate the output fan list of the gate, set the output value to 0.
                 vector<GATE *> ofl = g->GetOutput_fan_list();
                 for (size_t i = 0; i < ofl.size(); i++)
                 {
@@ -1307,13 +1304,6 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
                     fault_injection_gate_isc_identifier_list.push_back(ofl[i]->Get_isc_identifier());
                 }
 
-                // if (g->GetFunction() == G_FROM)
-                // {
-                //     cout << "debug G_FROM, set INPUT gate to error value" << endl;
-                // }
-
-                //     g->Output_fan_list[0]->set_isc_bitset_output_actual(bitset_all_zero);
-                // }
                 stuck_error = "SA0";
             }
             else if (SAlist[n] == ">sa1")
@@ -1330,14 +1320,10 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
                 }
             }
 
-            // print_bitset(); // yong debug
-
             // evaluate actual output for each gate
             for (int gate_level = 1; gate_level <= GetMaxLevel(); gate_level++)
             {
-                // print_bitset(); // yong debug
                 calc_output_level_1_max(gate_level, "ACTUAL", fault_injection_gate_isc_identifier_list);
-                // print_bitset(); // yong debug
             }
 
             // Calculate output signature
@@ -1373,15 +1359,13 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
             }
             cout << endl;
 
-
-
             if (po_signature == golden_signature)
             {
                 // cout << "signature match, po_signature " << po_signature <<" , golden_signature " << golden_signature << endl;
                 if (po_output_string != golden_output_string)
                 {
                     *alias_cnt += 1;
-                    cout << "output different but signature same. Aliasing!" << endl;                    
+                    cout << "output different but signature same. Aliasing!" << endl;
                 }
             }
             else
@@ -1389,7 +1373,8 @@ int CIRCUIT::iterate_gates_sa_errors_lfsr(int detected_sa_error, vector<int> pol
                 cout << "signature of fault circuit does not match golden signature." << endl;
 
                 // remove the stuck at fault from the fault list.
-                cout << "stuck error detected on gate " << g->Get_isc_identifier() << ", removed the " << SAlist[n] << " from the SAlist." << endl;
+                // stuck error detected, removed SA_ERROR >sa0@3gat from the SAlist.
+                cout << "stuck error detected, removed SA_ERROR " << SAlist[n] << "@" << g->Get_isc_identifier() << " from the SAlist." << endl;
                 vector<string> salist = g->Get_isc_StuckAt();
                 salist.erase(remove(salist.begin(), salist.end(), SAlist[n]), salist.end());
                 g->Set_isc_StuckAt(salist);

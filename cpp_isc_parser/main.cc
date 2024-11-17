@@ -298,8 +298,6 @@ int main(int argc, char **argv)
         int scan_ff_num = 5;
 
         inputS = "01010001";
-        // bitset<8> input_bs(inputS);
-        // cout << lfsr_tpg->get16bit() << endl;
 
         vector<int> input_vector = isc_Circuit->convert_stringToBinaryVector(inputS, true);
         vector<string> signature = {};
@@ -310,7 +308,7 @@ int main(int argc, char **argv)
             signature = isc_Circuit->ora_misr(lfsr_tpg, poly_vec, scan_ff_num, input_vector[i]); // just print
             if (debug)
             {
-                cout << "loop " << i << ", input " << input_vector[i] << ", output: ";
+                cout << "\tmisr_loop " << i << ", input " << input_vector[i] << ", output: ";
 
                 for (int j = 0; j < signature.size(); ++j)
                 {
@@ -381,7 +379,7 @@ int main(int argc, char **argv)
         LFSR *lfsr_tpg; // Test Pattern Generator LFSR
 
         bool debug = false;
-        debug = true;
+        // debug = true;
 
         // Initialize the register with the input
         // Iterate from right (least significant bit) to left (most significant bit)
@@ -404,7 +402,6 @@ int main(int argc, char **argv)
             // auto d = lfsr_tpg->getBit(i);
             // cout << d;
         }
-
 
         // cout << endl;
 
@@ -456,15 +453,15 @@ int main(int argc, char **argv)
             while (tpg_generated_input.size() < isc_Circuit->No_PI())
             {
 
-                isc_Circuit->print_lfsr_32(lfsr_tpg); // debug
+                // isc_Circuit->print_lfsr_32(lfsr_tpg); // debug
 
                 vector<int> tmp = isc_Circuit->tpg_lfsr(lfsr_tpg, poly_vec_tpg, sff_num_tpg, debug);
                 tpg_generated_input.insert(tpg_generated_input.end(), tmp.begin(), tmp.end());
             }
 
-            if (debug)
-            {
-                cout << "Loop " << loop_cnt << ", TPG generated test pattern ";
+            // if (debug)
+            // {
+                cout << "\nLoop " << loop_cnt << ", TPG generated test pattern ";
 
                 for (int i = 0; i < tpg_generated_input.size(); ++i)
                 {
@@ -472,28 +469,10 @@ int main(int argc, char **argv)
                 }
 
                 cout << '\n';
-            }
-
-            cout << "Remaining Generated Pattern: " << tpg_generated_input.size() << endl;
-            cout << "Circuit Input Gate number: " << isc_Circuit->No_PI() << endl;
-
-            // if (detected_sa_error_realtime == total_sa_error)
-            // {
-            //     cout << "\nAll SA errors detected in " << loop_cnt << " loops." << endl;
-            //     break;
             // }
 
-            // cout << "\nLoop number: " << loop_num << endl;
-
             //  ASSIGN TPG GENERATED INPUT PATTERN TO GATES
-
             tpg_generated_input = isc_Circuit->assign_tpg_to_input(tpg_generated_input, debug);
-
-            // cout << "TPG patterns applied to Input gates, parallel pattern count 32." << endl;
-            if (debug)
-            {
-                // isc_Circuit->print_bitset(true);
-            }
 
             /******************************************
              * CACLUATE THE ERROR FREE CIRCUIT OUTPUT
@@ -513,19 +492,24 @@ int main(int argc, char **argv)
                 // isc_Circuit->print_bitset(true);
             }
 
-            cout << "Good circuit output was simulated." << endl;
+            cout << "Good circuit output was simulated. ";
+
+            if (debug)
+            {
+                cout << "good circuit inputs, expected output, actual output: " << endl;
+                isc_Circuit->print_bitset(true);
+            }
 
             // calculate the golden signature
             string circuit_output = isc_Circuit->get_circuit_output();
 
-            if (debug)
-            {
-                cout << "Circuit output: " << circuit_output << endl;
-            }
+            // if (debug)
+            // {
+                cout << "Good circuit output: " << circuit_output << endl;
+            // }
 
-            cout << "Calculating signature on ORA" << endl;
+            cout << "Calculating signature on ORA. " ;
             vector<string> golden_signature = isc_Circuit->calc_po_signature(circuit_output, lfsr_ora, poly_vec_ora, sff_num_ora, debug);
-            // string golden_string = isc_Circuit->get_circuit_output();
 
             // print out the golden_signature
             cout << "Golden signature calculated: ";
@@ -557,9 +541,7 @@ int main(int argc, char **argv)
             detected_sa_error_realtime += isc_Circuit->iterate_gates_sa_errors_lfsr(detected_sa_error, poly_vec_ora, sff_num_ora, golden_signature, circuit_output, &alias_cnt, debug);
             // isc_Circuit->iterate_gates_sa_errors(detected_sa_error);
             loop_cnt++;
-            cout << "Remaining TPG Pattern: " << tpg_generated_input.size() << endl;
-            cout << "Circuit Input Gate number: " << isc_Circuit->No_PI() << endl;
-            cout << "Loop cont: " << loop_cnt << endl;
+            // cout << "Loop cont: " << loop_cnt << endl;
 
             // } // end of the while loop
         } // for loop, 100 times on BIST simulation.

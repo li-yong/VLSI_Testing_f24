@@ -616,14 +616,8 @@ public:
 	vector<string> ora_misr(LFSR *lfsr, vector<int> poly_vec, int d_ff_num, int input_int, bool debug = false)
 	{
 
-		// int len = inputS.length();
-
-		// vector<int> input_vector = convert_stringToBinaryVector(inputS, true);
 		vector<string> signature = {};
 
-		// Iterate from right (least significant bit) to left (most significant bit)
-		// for (int i = 0; i < inputS.length(); ++i)
-		// {
 		uint32_t get32bit = lfsr->get32bit();
 
 		vector<int> last_op = convert_intToBinaryVector(lfsr->get32bit(), d_ff_num);
@@ -650,24 +644,22 @@ public:
 			lfsr->setBit(d_ff_num - poly_vec[j] - 1, x); // setBit(position, value)
 		}
 
-		// bitset<32> this_op(lfsr->get32bit());
 		vector<int> this_op = convert_intToBinaryVector(lfsr->get32bit(), d_ff_num);
 
 		signature = {};
 		for (int i = 0; i < this_op.size(); ++i)
 		{
-			if (debug)
-			{
-				cout << this_op[i];
-			}
 			signature.push_back(to_string(this_op[i]));
 		}
 
 		if (debug)
 		{
-			cout << '\n';
+			for (int i = 0; i < signature.size(); ++i)
+			{
+				cout << signature[i];
+			}
+			cout << endl;
 		}
-		// }
 
 		return signature;
 	}
@@ -753,22 +745,45 @@ public:
 			cout << b[i];
 		}
 		cout << endl;
-		cout << endl;
+		// cout << "" << endl;
 	}
+
+	void print_misr_16(LFSR *ora_misr)
+	{
+
+		uint16_t a = ora_misr->get16bit();
+		vector<int> b = convert_intToBinaryVector(a, 16, false);
+		cout << "ora_misr: ";
+
+		for (int i = 0; i < b.size(); ++i)
+		{
+			cout << b[i];
+		}
+		cout << endl;
+		// cout << "" << endl;
+	}
+
+	// Call MISR to calculate the signature
+	// Input:
+	// 1. inputS: the input string, e.g., "10101010101010101010101010010101"
+	// 2. lfsr_ora: the ORA MISR object
+	// 3. poly_vec_ora: the polynomial vector, e.g., {1, 2, 3, 4}
+	// 4. sff_num: the number of flip-flops
+	// 5. debug: debug flag. Default is false.
+
+	// Output:
+	// 1. golden_signature: the golden signature
 
 	vector<string> calc_po_signature(string inputS, LFSR *lfsr_ora, vector<int> poly_vec_ora, int sff_num, bool debug = false)
 	{
 
-		if (debug)
-		{
-			cout << "calc_po_signature, inputS: " << inputS << endl;
-			print_lfsr_32(lfsr_ora);
-		}
+		// Reverse the input string. MISR process from MSB to LSB.
+		reverse(inputS.begin(), inputS.end());
+
 
 		int input_int;
 		vector<int> input_vector = convert_stringToBinaryVector(inputS, true);
 
-		// LFSR *lfsr_ora = new LFSR(16); // all bits set to 0
 		vector<string> golden_signature = {};
 
 		for (int i = 0; i < input_vector.size(); ++i)
@@ -777,13 +792,11 @@ public:
 
 			if (debug)
 			{
-				cout << "loop " << i << ", input " << input_int << ", output: ";
+				cout << "\tmisr_loop " << i << ", input " << input_int << ", output: ";
 			}
 
 			golden_signature = ora_misr(lfsr_ora, poly_vec_ora, sff_num, input_int, debug);
 		}
-
-		// vector<string> golden_signature = ora_misr(lfsr_ora, poly_vec_ora, sff_num, input_int, debug);
 
 		return golden_signature;
 	}
@@ -803,7 +816,7 @@ public:
 
 			string x = to_string(c[63]);
 
-			cout << "PO " << po_index << " value: " << x << endl;
+			// cout << "PO " << po_index << " value: " << x << endl;
 			inputS += x;
 		}
 

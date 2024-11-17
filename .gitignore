@@ -35,3 +35,4 @@
 *.input
 /archive
 /del
+*.exe
