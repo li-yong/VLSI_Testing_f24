@@ -551,7 +551,7 @@ int main(int argc, char **argv)
 
         double err_detected_ratio = (double)detected_sa_error / (double)total_sa_error;
 
-        cout << "\n=== LFSR Simulation Completed ===" << endl;
+        cout << "\n=== BIST Simulation Completed ===" << endl;
         cout << "Circuit              : " << file_isc << endl;
         cout << "Total SA Errors      : " << total_sa_error << endl;
         cout << "Detected Errors      : " << detected_sa_error << endl;

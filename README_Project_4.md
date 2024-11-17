@@ -38,13 +38,6 @@ For 1 to 100:
 
 
 
-		IF (OP != OP_golden) and (Sig == Sig_golden):
-			aliasing += 1
-		
-
-
-
-
 
 
 
