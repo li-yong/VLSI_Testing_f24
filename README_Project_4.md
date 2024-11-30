@@ -12,6 +12,23 @@ TPG  : Test Pattern Generator. Implemented with TPG.
 ORA  : Output Response Analyzer. Implemented with MISR.
 ```
 
+# Build the binary
+
+```
+$ cd ~/GitHub/VLSI_Testing_f24/cpp_isc_parser
+$ make
+g++ -c -Wall -DDEBUG -g -std=c++11  -o circuit.o circuit.cc
+g++ -c -Wall -DDEBUG -g -std=c++11  -o main.o main.cc
+g++ -c -Wall -DDEBUG -g -std=c++11  -o GetLongOpt.o GetLongOpt.cc
+g++ -c -Wall -DDEBUG -g -std=c++11  -o parser_isc.o parser_isc.cc
+g++ -c -Wall -DDEBUG -g -std=c++11  -o LFSR.o LFSR.cc
+g++ -Wall -DDEBUG -g -std=c++11 -o cpp_isc_parser.exe circuit.o main.o GetLongOpt.o parser_isc.o  LFSR.o  
+
+$ ls 
+cpp_isc_parser.exe
+```
+
+
 # Logical Flow
 ```  
 Load and Initialize the circuit.
