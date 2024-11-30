@@ -1,0 +1,261 @@
+ISC file: c17.isc
+
+Circuit Gates:
+Num of Gate 17
+Num of PI 5
+Num of PO 2
+Circuit initialized.
+Initialize TPG_LFSR with 10101010101010101010101010010101
+
+Loop_cnt 0, TPG generated test pattern 10110101010101010101011101001010
+Good circuit output was simulated. Good circuit output: 10
+Calculating signature on ORA. Golden signature calculated: 0100000000000000
+
+Injecting SA faults one at a time.
+
+== Injecting SA1 on 1gat. Remaining sa error: 22
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 2gat. Remaining sa error: 22
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA0 on 3gat. Remaining sa error: 22
+po does not match, po_output_string 00 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa0@3gat from the SAlist.
+
+== Injecting SA1 on 8fan. Remaining sa error: 21
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 9fan. Remaining sa error: 21
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 6gat. Remaining sa error: 21
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 7gat. Remaining sa error: 21
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 10gat. Remaining sa error: 21
+po does not match, po_output_string 00 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@10gat from the SAlist.
+
+== Injecting SA0 on 11gat. Remaining sa error: 20
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 11gat. Remaining sa error: 20
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 14fan. Remaining sa error: 20
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 15fan. Remaining sa error: 20
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA0 on 16gat. Remaining sa error: 20
+po does not match, po_output_string 11 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa0@16gat from the SAlist.
+
+== Injecting SA1 on 20fan. Remaining sa error: 19
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 21fan. Remaining sa error: 19
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 19gat. Remaining sa error: 19
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA0 on 22gat. Remaining sa error: 19
+po does not match, po_output_string 00 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa0@22gat from the SAlist.
+
+== Injecting SA0 on 23gat. Remaining sa error: 18
+po match, po_output_string 10 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 0100000000000000
+
+== Injecting SA1 on 23gat. Remaining sa error: 18
+po does not match, po_output_string 11 , golden_output_string 10
+	Golden         signature: 0100000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@23gat from the SAlist.
+
+Loop_cnt 1, TPG generated test pattern 01011010101010101010101110100101
+Good circuit output was simulated. Good circuit output: 11
+Calculating signature on ORA. Golden signature calculated: 1101000000000000
+
+Injecting SA faults one at a time.
+
+== Injecting SA1 on 1gat. Remaining sa error: 17
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@1gat from the SAlist.
+
+== Injecting SA1 on 2gat. Remaining sa error: 16
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@2gat from the SAlist.
+
+== Injecting SA1 on 3gat. Remaining sa error: 15
+po does not match, po_output_string 00 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 0000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@3gat from the SAlist.
+
+== Injecting SA1 on 8fan. Remaining sa error: 14
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@8fan from the SAlist.
+
+== Injecting SA1 on 9fan. Remaining sa error: 13
+po does not match, po_output_string 00 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 0000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@9fan from the SAlist.
+
+== Injecting SA1 on 6gat. Remaining sa error: 12
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@6gat from the SAlist.
+
+== Injecting SA1 on 7gat. Remaining sa error: 11
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@7gat from the SAlist.
+
+== Injecting SA0 on 11gat. Remaining sa error: 10
+po does not match, po_output_string 00 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 0000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa0@11gat from the SAlist.
+
+== Injecting SA1 on 14fan. Remaining sa error: 9
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@14fan from the SAlist.
+
+== Injecting SA1 on 15fan. Remaining sa error: 8
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@15fan from the SAlist.
+
+== Injecting SA1 on 16gat. Remaining sa error: 7
+po does not match, po_output_string 01 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@16gat from the SAlist.
+
+== Injecting SA1 on 20fan. Remaining sa error: 6
+po does not match, po_output_string 01 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1000000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@20fan from the SAlist.
+
+== Injecting SA1 on 21fan. Remaining sa error: 5
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@21fan from the SAlist.
+
+== Injecting SA1 on 19gat. Remaining sa error: 4
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@19gat from the SAlist.
+
+== Injecting SA1 on 22gat. Remaining sa error: 3
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@22gat from the SAlist.
+
+== Injecting SA0 on 23gat. Remaining sa error: 2
+po does not match, po_output_string 10 , golden_output_string 11
+	Golden         signature: 1101000000000000
+	Faulty circuit signature: 0100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa0@23gat from the SAlist.
+
+Loop_cnt 2, TPG generated test pattern 11001101010101010101011111010010
+Good circuit output was simulated. Good circuit output: 11
+Calculating signature on ORA. Golden signature calculated: 1111010000000000
+
+Injecting SA faults one at a time.
+
+== Injecting SA1 on 11gat. Remaining sa error: 1
+po match, po_output_string 11 , golden_output_string 11
+	Golden         signature: 1111010000000000
+	Faulty circuit signature: 1100000000000000
+signature of fault circuit does not match golden signature.
+stuck error detected, removed SA_ERROR >sa1@11gat from the SAlist.
+
+All SA errors detected in 3 loops.
+
+=== BIST Simulation Completed ===
+Circuit              : c17.isc
+Total SA Errors      : 22
+Detected Errors      : 22
+Detection Ratio      : 1
+Alias Cnt            : 0
+Alias Prob, P(A)     : 0
+Alias Prob Theoretic : 1.52588e-05
