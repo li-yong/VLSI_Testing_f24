@@ -102,12 +102,13 @@ stuck error detected, removed SA_ERROR >sa0@3gat from the SAlist.
 
 ```
 === BIST Simulation Completed ===
-Circuit              : ../ISCAS-85/c17.isc
+Circuit              : c17.isc
 Total SA Errors      : 22
 Detected Errors      : 22
 Detection Ratio      : 1
 Alias Cnt            : 0
-Loop  Cnt            : 3
+Alias Prob, P(A)     : 0
+Alias Prob Theoretic : 1.52588e-05
 ```
 
 

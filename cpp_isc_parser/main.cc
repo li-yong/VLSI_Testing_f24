@@ -7,6 +7,7 @@
 #include <typeinfo>
 #include <random>
 
+#include <cmath>
 #include <vector>
 #include <bitset>
 #include <algorithm>
@@ -381,7 +382,7 @@ int main(int argc, char **argv)
          *************************************/
 
         bool interaction = true;
-        // interaction = false; // debug
+        interaction = false; // debug
 
         isc_Circuit->Levelize();
         isc_Circuit->init_bitset(true, true, true); // bool inputs_value, bool output_expected, bool output_actual
@@ -445,7 +446,7 @@ int main(int argc, char **argv)
                 tpg_generated_input.insert(tpg_generated_input.end(), tmp.begin(), tmp.end());
             }
 
-            cout << "\nLoop " << loop_cnt << ", TPG generated test pattern ";
+            cout << "\nLoop_cnt " << loop_cnt << ", TPG generated test pattern ";
 
             for (int i = 0; i < tpg_generated_input.size(); ++i)
             {
@@ -536,7 +537,9 @@ int main(int argc, char **argv)
         cout << "Detected Errors      : " << detected_sa_error << endl;
         cout << "Detection Ratio      : " << err_detected_ratio << endl;
         cout << "Alias Cnt            : " << alias_cnt << endl;
-        cout << "Loop  Cnt            : " << loop_cnt << endl;
+        cout << "Alias Prob, P(A)     : " << alias_cnt/total_sa_error << endl;
+        cout << "Alias Prob Theoretic : " << 1.0/pow(2,16) << endl;
+        // cout << "Loop  Cnt            : " << loop_cnt << endl;
 
     } // end of BIST
 
