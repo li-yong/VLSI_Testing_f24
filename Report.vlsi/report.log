@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.10.18)  11 DEC 2024 11:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.10.18)  11 DEC 2024 12:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/ryan/GitHub/Xen-OPTEE-Hypervisor/Report.vlsi/report.tex
-(/home/ryan/GitHub/Xen-OPTEE-Hypervisor/Report.vlsi/report.tex
+**/home/ryan/GitHub/VLSI_Testing_f24/Report.vlsi/report.tex
+(/home/ryan/GitHub/VLSI_Testing_f24/Report.vlsi/report.tex
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-09-10>
 (/usr/local/texlive/2024/texmf-dist/tex/latex/acmart/acmart.cls
@@ -1107,7 +1107,12 @@ LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
 
 
 
-Underfull \vbox (badness 5077) has occurred while \output is active []
+Overfull \hbox (5.57495pt too wide) in paragraph at lines 107--110
+\T1/LinuxLibertineT-TLF/m/n/12 (-20) is an is-sue of ac-ces-si-bil-ity. Ac-ces-si-bil-ity to the minute
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
@@ -1121,28 +1126,17 @@ Package fancyhdr Warning: \headheight is too small (13.0pt):
 [1.1{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}
 
 {/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}]
-Overfull \hbox (5.59924pt too wide) in paragraph at lines 104--105
-\T1/LinuxLibertineT-TLF/m/n/12 (-20) Recent re-search pro-vides con-crete so-lu-tions to tackle
- []
-
-
-Underfull \vbox (badness 3168) has occurred while \output is active []
-
-
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 126.
-LaTeX Font Info:    Trying to load font information for TS1+LinuxBiolinumT-TLF on input line 126.
+(Font)              scaled to size 10.0pt on input line 163.
+LaTeX Font Info:    Trying to load font information for TS1+LinuxBiolinumT-TLF on input line 163.
 (/usr/local/texlive/2024/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
 File: TS1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/LinuxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 126.
+(Font)              scaled to size 10.0pt on input line 163.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1156,8 +1150,8 @@ Package fancyhdr Warning: \headheight is too small (13.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.0pt}.
 
 [2.2{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/libertine/lbtn_afusau.enc}]
-Overfull \hbox (4.42435pt too wide) in paragraph at lines 138--139
-\T1/LinuxLibertineT-TLF/m/n/12 (-20) aware test-ing meth-ods will be-come crit-i-cal as chiplet
+Overfull \hbox (1.10643pt too wide) in paragraph at lines 164--165
+[]\T1/LinuxLibertineT-TLF/m/n/12 (-20) Dynamic con-fig-u-ra-tion tech-niques in-volv-ing TAP
  []
 
 
@@ -1205,18 +1199,18 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 80666576EC0A20E39D8503791B7F477C;179.
  ) 
 Here is how much of TeX's memory you used:
- 32226 strings out of 473579
- 575442 string characters out of 5728233
- 1163323 words of memory out of 5000000
+ 32229 strings out of 473579
+ 575505 string characters out of 5728233
+ 1162323 words of memory out of 5000000
  54058 multiletter control sequences out of 15000+600000
- 681710 words of font info for 303 fonts, out of 8000000 for 9000
+ 681983 words of font info for 305 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,12n,131p,1054b,604s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,131p,1050b,604s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb>
-Output written on report.pdf (3 pages, 307922 bytes).
+Output written on report.pdf (3 pages, 308445 bytes).
 PDF statistics:
- 114 PDF objects out of 1000 (max. 8388607)
- 94 compressed objects within 1 object stream
+ 113 PDF objects out of 1000 (max. 8388607)
+ 93 compressed objects within 1 object stream
  20 named destinations out of 1000 (max. 500000)
  65581 words of extra memory for PDF output out of 74296 (max. 10000000)
 
