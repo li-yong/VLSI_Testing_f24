@@ -11,13 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "--file_isc",
-                "${workspaceFolder}/../circuits/ISCAS-85/c880.isc",
-                "--action",
-                "parse_to_json",
-                "--out_json",
-                "${workspaceFolder}/../circuits/c17.json",
-                "--debug"
+           
             ]
         }
     ]
